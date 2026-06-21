@@ -1,0 +1,58 @@
+{
+  "poNumber": "PO-0050",
+  "category": "Laptop Automation Cat",
+  "defaultCost": 200,
+  "payloadMappings": [
+    {
+      "payloadFieldName": "make",
+      "attribute": "Make (Product)"
+    },
+    {
+      "payloadFieldName": "model",
+      "attribute": "Model (Product)"
+    },
+    {
+      "payloadFieldName": "cpu",
+      "attribute": "CPU (Product)"
+    },
+    {
+      "payloadFieldName": "ram_fmt",
+      "attribute": "RAM (Product)"
+    },
+    {
+      "payloadFieldName": "disk1_size_fmt",
+      "attribute": "HDD (Product)"
+    },
+    {
+      "payloadFieldName": "serial",
+      "attribute": "Serial Number (Item)"
+    }
+    
+
+
+  ],
+  "uniquenessTestAttribute": "Display Technology (Product)",
+  "uniquenessTestFieldName": "Display Technology",
+  "editRowPayloadFieldName": "Battery Cell Count",
+  "editRowUpdatedPayloadFieldName": "Battery Cell Count Updated",
+  "editRowTestAttribute": "Battery Cell Count (Product)",
+  "editRowUpdatedAttribute": "Technical Specifications (Product)",
+  "duplicateFieldName": "Technical Support Email",
+  "duplicateAttributeName": "Technical Support Email (Product)",
+  "duplicateFieldAttribute": "Processor (Product)",
+  "ProductOnlyCategory": "RAM Automation Cat",
+  "prerequisiteProductAttribs": ["RAM", "HDD", "Make", "CPU"],
+  "prerequisiteMaxLength": "255",
+  "attributeCreatedToast": "Attribute created.",
+  "attributeDeletedToast": "Attribute Deleted",
+  "duplicateFieldNameError": "Payload field names must be unique",
+  "confSavedMessage": "BrainBox configuration saved.",
+  "CategoryAttributesforPayload": [
+    { "payloadFieldName": "make", "attribute": "Make (Product)" },
+    { "payloadFieldName": "model", "attribute": "Model Number (Product)" },
+    { "payloadFieldName": "cpu", "attribute": "CPU (Product)" },
+    { "payloadFieldName": "ram_fmt", "attribute": "RAM (Product)" },
+    { "payloadFieldName": "disk1_size_fmt", "attribute": "HDD (Product)" },
+    { "payloadFieldName": "serial", "attribute": "Serial Number (Item)" }
+  ]
+}

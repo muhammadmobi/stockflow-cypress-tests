@@ -1,0 +1,14 @@
+{
+  "admin": {
+    "email": "user",
+    "password": "password"
+  },
+  "invalid": {
+    "email": "invalid@example.com",
+    "password": "wrongpassword"
+  },
+  "worker": {
+    "email": "user",
+    "password": "password"
+  }
+}

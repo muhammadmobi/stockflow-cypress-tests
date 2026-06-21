@@ -1,0 +1,69 @@
+{
+    "categoryName": "RAM Automation Cat",
+    "isProductOnly": true,
+
+    "textAttribute": {
+        "name": "Memory Generation",
+        "updatedName": "Memory Generation Updated"
+    },
+    "multiLineTextAttribute": {
+        "name": "Compatibility Notes",
+        "updatedName": "Compatibility Notes Updated"
+    },
+    "numberAttribute": {
+        "name": "Memory Capacity",
+        "updatedName": "Memory Capacity Updated"
+    },
+    "emailAttribute": {
+        "name": "Vendor Contact",
+        "updatedName": "Vendor Contact Updated"
+    },
+    "urlAttribute": {
+        "name": "Datasheet Link",
+        "updatedName": "Datasheet Link Updated"
+    },
+    "decimalAttribute": {
+        "name": "Operating Voltage",
+        "updatedName": "Operating Voltage Updated"
+    },
+    "amountAttribute": {
+        "name": "MSRP",
+        "updatedName": "MSRP Updated"
+    },
+    "percentAttribute": {
+        "name": "Performance Boost",
+        "updatedName": "Performance Boost Updated"
+    },
+    "listAttribute": {
+        "name": "RAMbrand", 
+        "updatedName": "Brand Updated",
+        "options": ["Corsair", "Kingston", "G.Skill" , "ADATA"],
+        "newOption": "Crucial",
+        "bulkOptions": "Samsung, Micron, ADATA"
+    },
+    "booleanAttribute": {
+        "name": "ECC Supported",
+        "updatedName": "ECC Supported Updated"
+    },
+
+    "validation": {
+        "emptyNameError": "Name is required",
+        "duplicateNameError": "already exists",
+        "emptyBulkAddError": "",
+        "specialChars": "Special@#$, Another&*",
+        "longText": "This is an excessively long option name designed to test the system's ability to handle and validate long text inputs without crashing or displaying errors"
+    },
+
+    "commonAttributes": {
+        "textAttr": "Display Technology",
+        "multiLineTextAttr": "Included Accessories",
+        "numberAttr": "Processing Cores",
+        "emailAttr": "Support Contact",
+        "urlAttr": "Product Page",
+        "decimalAttr": "Diagonal Size",
+        "amountAttr": "Market Price",
+        "percentAttr": "Efficiency Rating",
+        "listAttr": "Storage Solution",
+        "booleanAttr": "Eco-Friendly Certified"
+    }
+}

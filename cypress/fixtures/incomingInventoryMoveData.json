@@ -1,0 +1,43 @@
+{
+  "moveProduct": {
+    "messages": {
+      "success": "Product moved successfully!",
+      "selectPOError": "Please select a purchase order",
+      "noProductError": "No product to move",
+      "confirmDialogTitle": "Confirm Product Move"
+    }
+  },
+  "ramKingston": {
+    "brand": "Kingston",
+    "memoryGeneration": "DDR4",
+    "displayName": "DDR4",
+    "cost": "45",
+    "price": "75",
+    "supportContact": "support@ram.com",
+    "qty": 5
+  },
+  "ram": {
+    "category": "RAM Automation Cat",
+    "RAMbrand": "Corsair",
+    "memoryGeneration": "DDR5",
+    "displayName": "DDR5",
+    "qty": 5
+  },
+  "laptop": {
+    "category": "Laptop Automation Cat",
+    "modelNumber": "ThinkPad X1 Carbon",
+    "brand": "Lenovo",
+    "displayName": "Lenovo ThinkPad X1 Carbon",
+    "cost": "1500",
+    "price": "2500",
+    "supportContact": "support@lenovo.com",
+    "sharedSerials": [
+      "MoveLapSerial0001",
+      "MoveLapSerial0002",
+      "MoveLapSerial0003"
+    ]
+  },
+  "defaults": {
+    "qty": 5
+  }
+}

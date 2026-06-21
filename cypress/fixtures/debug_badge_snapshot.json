@@ -1,0 +1,12 @@
+{
+  "Expected": "8",
+  "Incoming": "1",
+  "Available": "1",
+  "Received": "5",
+  "Missing": "2",
+  "Damaged": "1",
+  "Disputed": "1",
+  "Sold": "0",
+  "Stocked out (others)": "1",
+  "Reserved": "1"
+}

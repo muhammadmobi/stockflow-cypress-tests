@@ -1,0 +1,6 @@
+{
+    "scanTestConfig": {
+        "stockInQty": "1",
+        "expectedItemCount": "2"
+    }
+}

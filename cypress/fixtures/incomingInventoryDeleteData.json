@@ -1,0 +1,60 @@
+{
+  "deleteProduct": {
+    "confirmation": {
+      "valid": "DELETE",
+      "invalidLowercase": "delete",
+      "invalidEmpty": "",
+      "invalidPartial": "DEL",
+      "invalidWrongText": "REMOVE"
+    },
+    "messages": {
+      "success": "Product deleted successfully",
+      "confirmPrompt": "Type DELETE to confirm",
+      "deleteHeading": "Confirm Product Deletion",
+      "permanentWarning": "This action is permanent and cannot be undone"
+    }
+  },
+  "testProducts": {
+    "productOnly": {
+      "category": "RAM Delete Test Cat",
+      "brand": "TestRamBrand",
+      "memoryGeneration": "DDR4",
+      "displayName": "DDR4",
+      "qty": 5
+    },
+    "withItems": {
+      "category": "Laptop Delete Test Cat",
+      "brand": "TestLaptopBrand",
+      "modelNumber": "TestModel X1",
+      "displayName": "TestLaptopBrand TestModel X1",
+      "serials": [
+        "DEL-LAP-001",
+        "DEL-LAP-002",
+        "DEL-LAP-003"
+      ]
+    },
+    "withVariants": {
+      "category": "Clothing Delete Test Cat",
+      "brand": "TestClothingBrand",
+      "displayName": "Test Shirt",
+      "allowVariants": true
+    }
+  },
+  "categories": {
+    "ram": {
+      "name": "RAM Delete Test Cat",
+      "allowItems": false,
+      "allowVariants": false
+    },
+    "laptop": {
+      "name": "Laptop Delete Test Cat",
+      "allowItems": true,
+      "allowVariants": false
+    },
+    "clothing": {
+      "name": "Clothing Delete Test Cat",
+      "allowItems": false,
+      "allowVariants": true
+    }
+  }
+}

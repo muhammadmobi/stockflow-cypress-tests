@@ -1,0 +1,28 @@
+{
+  "pageHeading": "Sign in to your account",
+  "labels": {
+    "email": "Email address",
+    "password": "Password"
+  },
+  "buttons": {
+    "signIn": "Sign in"
+  },
+  "errors": {
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "invalidCredentials": "Invalid credentials"
+  },
+  "landingPage": {
+    "title": "Inventory Dashboard",
+    "heading": "Inventory Actions"
+  },
+  "routes": {
+    "dashboard": "/dashboard",
+    "userview": "/MobileViewScreen"
+  },
+  "profile": {
+    "adminRole": "admin",
+    "userRole": "User",
+    "logoutButton": "Logout"
+  }
+}

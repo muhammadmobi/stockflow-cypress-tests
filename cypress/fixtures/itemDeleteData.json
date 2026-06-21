@@ -1,0 +1,23 @@
+{
+  "laptop": {
+    "category": "laptop automation cat",
+    "brand": "Lenovo",
+    "modelNumber": "ThinkPad X1 Delete",
+    "cost": "1500",
+    "price": "2500",
+    "supportContact": "support@lenovo.com"
+  },
+  "serials": {
+    "incoming": "IDEL-INCOMING-001",
+    "available": "IDEL-AVAILABLE-002",
+    "damaged": "IDEL-DAMAGED-003",
+    "disputed": "IDEL-DISPUTED-004",
+    "reserved": "IDEL-RESERVED-005",
+    "missing": "IDEL-MISSING-006",
+    "cancel": "IDEL-CANCEL-007",
+    "stockedOut": "IDEL-STOCKEDOUT-008",
+    "cancelThenDelete": "IDEL-CANTHENDELETE-009",
+    "lastItem": "IDEL-LASTITEM-010",
+    "persistCheck": "IDEL-PERSIST-011"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "poPrefixes": {
+    "export": "PO-EXP-AUTO"
+  },
+  "categories": {
+    "laptop": "Laptop Automation Cat",
+    "ram": "RAM Automation Cat"
+  },
+  "products": {
+    "laptop": {
+      "modelNumber": "ThinkPad T14",
+      "brand": "Lenovo",
+      "cost": "1799.99",
+      "price": "2499.99",
+      "supportContact": "help@brand.com"
+    },
+    "ram": {
+      "brand": "Kingston",
+      "memoryGeneration": "DDR4",
+      "cost": "75.00",
+      "price": "120.00",
+      "supportContact": "help@brand.com",
+      "defaultQuantity": 10
+    }
+  },
+  "statusTileLabel": "Incoming",
+  "statusEnums": {
+    "available": "Available",
+    "incoming": "Incoming",
+    "received": "Received",
+    "reserved": "Reserved",
+    "damaged": "Damaged",
+    "missing": "Missing",
+    "disputed": "Disputed",
+    "sold": "Sold",
+    "stockedOut": "StockedOut"
+  },
+  "tileLabels": {
+    "available": "Available",
+    "incoming": "Incoming",
+    "received": "Received",
+    "reserved": "Reserved",
+    "damaged": "Damaged",
+    "missing": "Missing",
+    "disputed": "Disputed",
+    "sold": "Sold",
+    "stockedOut": "Stocked out (others)"
+  },
+  "mixedQtyStatusSeed": {
+    "expected": 10,
+    "received": 4,
+    "available": 3,
+    "reserved": 1,
+    "missing": 1,
+    "damaged": 1,
+    "disputed": 1,
+    "incomingExpected": 5
+  },
+  "expectedHeaders": {
+    "productOnly": [
+      "Category",
+      "RAMbrand",
+      "Memory Generation",
+      "Support Contact",
+      "Name",
+      "Cost",
+      "Price",
+      "Available Quantity",
+      "Incoming Quantity",
+      "Reserved Quantity",
+      "Received Quantity",
+      "Expected Quantity"
+    ],
+    "productItem": [
+      "Category",
+      "Model Number",
+      "Brand",
+      "Support Contact",
+      "Serial Number",
+      "Asset Tag ID",
+      "Asset Security Code",
+      "Name",
+      "Status",
+      "Cost",
+      "Price"
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "categories": {
+    "catA": "RAM Automation Cat",
+    "catAId": 106,
+    "catB": "Laptop Automation Cat",
+    "catBId": 105,
+    "all": "All"
+  },
+  "products": {
+    "epActiveRam": {
+      "category": "RAM Automation Cat",
+      "description": "Active pure product in CatA — memoryGeneration set to unique ICF-Active-<ts> at runtime"
+    },
+    "epInactiveRam": {
+      "category": "RAM Automation Cat",
+      "description": "Deactivated via PATCH /products/:id/deactivate in before(); restored or deleted in after()"
+    },
+    "epActiveLaptop": {
+      "category": "Laptop Automation Cat",
+      "brand": "Lenovo",
+      "description": "Active product in CatB — modelNumber set to ICF-Laptop-<ts> at runtime"
+    },
+    "epLowStockRam": {
+      "category": "RAM Automation Cat",
+      "description": "Active, threshold=10, qty=0 → appears in Low Stock tab. memoryGeneration = ICF-LowStock-<ts>"
+    }
+  },
+  "threshold": {
+    "bvaLowerInvalid": -1,
+    "bvaLowerValid": 0,
+    "bvaLowerPlusOne": 1,
+    "epTypical": 10,
+    "epNonInteger": 1.5,
+    "epNull": null
+  },
+  "search": {
+    "epNoMatch": "ZZZZ-NO-MATCH-ICF-9999"
+  },
+  "tabValues": {
+    "epActive":    "active",
+    "epInactive":  "inactive",
+    "epLowStock":  "low-stock"
+  },
+  "sessionStorageKey": "inventoryProductStatusTab",
+  "messages": {
+    "deactivatedOk":        "Product deactivated successfully.",
+    "activatedOk":          "Product activated successfully.",
+    "bulkDeactivatedOk":    "product(s) deactivated successfully",
+    "bulkActivatedOk":      "product(s) activated successfully",
+    "bulkSkipped":          "skipped (stock > 0)",
+    "thresholdNegative":    "non-negative",
+    "thresholdNonInteger":  "integer"
+  },
+  "api": {
+    "paramProductStatus":   "productStatus",
+    "paramCategoryId":      "categoryId",
+    "paramSortBy":          "sortBy",
+    "paramSortOrder":       "sortOrder",
+    "paramSearch":          "search",
+    "paramLowStock":        "lowStock",
+    "sortOrderAsc":         "asc",
+    "sortOrderDesc":        "desc",
+    "sortOrderAscUpper":    "ASC",
+    "sortOrderDescUpper":   "DESC",
+    "sortByQty":            "quantity",
+    "sortByAvailQty":       "availableQuantity"
+  }
+}

@@ -1,0 +1,111 @@
+{
+    "common text": {
+        "name": "Display Technology",
+        "updatedName": "Display Technology Updated",
+        "defaultValue": "Standard Value",
+        "minLength": "0",
+        "maxLength": "255",
+        "vlookupKey": "OLED",
+        "vlookupValue": "Organic LED",
+        "vlookupKeyUpdated": "OLED-Display"
+    },
+    "common multiLineText": {
+        "name": "Included Accessories",
+        "updatedName": "Included Accessories Updated",
+        "minLength": "0",
+        "maxLength": "2000"
+    },
+    "common number": {
+        "name": "Processing Cores",
+        "updatedName": "Processing Cores Updated",
+        "invalidMaxValue": "9999999999999999",
+        "invalidMaxValueError": "Max Value must be less than or equal to 999999999999999"
+    },
+    "common email": {
+        "name": "Support Contact",
+        "updatedName": "Support Contact Updated",
+        "defaultValue": "user@example.com"
+    },
+    "common url": {
+        "name": "Product Page",
+        "updatedName": "Product Page Updated",
+        "defaultValue": "https://example.com"
+    },
+    "common decimal": {
+        "name": "Diagonal Size",
+        "updatedName": "Diagonal Size Updated",
+        "defaultValue": "15.5"
+    },
+    "common amount": {
+        "name": "Market Price",
+        "updatedName": "Market Price Updated",
+        "defaultValue": "100.00"
+    },
+    "common percent": {
+        "name": "Efficiency Rating",
+        "updatedName": "Efficiency Rating Updated",
+        "defaultValue": "25"
+    },
+    "common list": {
+        "name": "Storage Solution",
+        "updatedName": "Storage Solution Updated",
+        "options": ["SSD", "HDD", "Hybrid", "NVMe"]
+    },
+    "common boolean": {
+        "name": "Eco Friendly Certified",
+        "updatedName": "Eco Friendly Certified Updated"
+    },
+    "item text": {
+        "name": "Asset Security Code",
+        "updatedName": "Asset Security Code Updated",
+        "defaultValue": "Standard Value",
+        "minLength": "0",
+        "maxLength": "255"
+    },
+    "item multiLineText": {
+        "name": "Maintenance Log Summary",
+        "updatedName": "Maintenance Log Summary Updated",
+        "minLength": "0",
+        "maxLength": "2000"
+    },
+    "item number": {
+        "name": "Previous Repair Count",
+        "updatedName": "Previous Repair Count Updated",
+        "invalidMaxValue": "9999999999999999",
+        "invalidMaxValueError": "Max Value must be less than or equal to 999999999999999"
+    },
+    "item email": {
+        "name": "Custodian Email",
+        "updatedName": "Custodian Email Updated",
+        "defaultValue": "user@example.com"
+    },
+    "item url": {
+        "name": "Asset Management Link",
+        "updatedName": "Asset Management Link Updated",
+        "defaultValue": "https://example.com"
+    },
+    "item decimal": {
+        "name": "Battery Wear Level",
+        "updatedName": "Battery Wear Level Updated",
+        "defaultValue": "15.5"
+    },
+    "item amount": {
+        "name": "Scrap Value",
+        "updatedName": "Scrap Value Updated",
+        "defaultValue": "100.00"
+    },
+    "item percent": {
+        "name": "Utilization Rate",
+        "updatedName": "Utilization Rate Updated",
+        "defaultValue": "25"
+    },
+    "item list": {
+        "name": "Department Allocation",
+        "updatedName": "Department Allocation Updated",
+        "options": ["HR", "IT", "Sales" , "Quality"]
+    },
+    "item boolean": {
+        "name": "Active Status",
+        "updatedName": "Active Status Updated"
+    }
+}

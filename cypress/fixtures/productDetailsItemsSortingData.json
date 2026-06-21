@@ -1,0 +1,76 @@
+{
+  "laptop": {
+    "category": "Laptop Automation Cat",
+    "brand": "Lenovo",
+    "modelNumber": "ThinkPad X1 Carbon",
+    "cost": "1500",
+    "price": "2500",
+    "supportContact": "support@lenovo.com"
+  },
+  "testData": {
+    "epSingleItem": {
+      "description": "BVA - Lower boundary: exactly 1 item",
+      "serials": ["SN-SINGLE-001"]
+    },
+    "epMultipleItems": {
+      "description": "Standard partition: 5 items for sorting tests",
+      "serials": ["ZEBRA-001", "ALPHA-002", "BETA-003", "CHARLIE-004", "DELTA-005"]
+    },
+    "epManyItems": {
+      "description": "BVA - Upper boundary: 100+ items for pagination test",
+      "count": 100,
+      "prefix": "PAGINATION-"
+    },
+    "itemsWithAttributes": {
+      "description": "EP - Valid partition: items with status/location/container for sorting",
+      "items": [
+        { "serial": "ZEBRA-001", "status": "Available", "location": "Warehouse C", "container": "CONT-003" },
+        { "serial": "ALPHA-002", "status": "Reserved", "location": "Warehouse A", "container": "CONT-001" },
+        { "serial": "BETA-003", "status": "Available", "location": "Warehouse B", "container": "CONT-002" },
+        { "serial": "CHARLIE-004", "status": "Reserved", "location": "Warehouse A", "container": "CONT-004" },
+        { "serial": "DELTA-005", "status": "Available", "location": "Warehouse B", "container": "CONT-005" }
+      ]
+    }
+  },
+  "expectedResults": {
+    "sortStates": {
+      "ascending": "ascending",
+      "descending": "descending",
+      "none": "none"
+    },
+    "serialNumber": {
+      "asc": ["ALPHA-002", "BETA-003", "CHARLIE-004", "DELTA-005", "ZEBRA-001"],
+      "desc": ["ZEBRA-001", "DELTA-005", "CHARLIE-004", "BETA-003", "ALPHA-002"]
+    },
+    "status": {
+      "asc": ["Available", "Available", "Available", "Reserved", "Reserved"],
+      "desc": ["Reserved", "Reserved", "Available", "Available", "Available"]
+    },
+    "location": {
+      "asc": ["Warehouse A", "Warehouse A", "Warehouse B", "Warehouse B", "Warehouse C"],
+      "desc": ["Warehouse C", "Warehouse B", "Warehouse B", "Warehouse A", "Warehouse A"]
+    },
+    "container": {
+      "asc": ["CONT-001", "CONT-002", "CONT-003", "CONT-004", "CONT-005"],
+      "desc": ["CONT-005", "CONT-004", "CONT-003", "CONT-002", "CONT-001"]
+    }
+  },
+  "searchTerms": {
+    "alphaPrefix": "ALPHA"
+  },
+  "messages": {
+    "success": "Items loaded successfully",
+    "emptyState": "No records to display",
+    "error": "Failed to load items"
+  },
+  "timeouts": {
+    "initialLoad": 15000,
+    "sortWait": 10000,
+    "pageTransition": 5000
+  },
+  "errorMessages": {
+    "noAscendingState": "Could not reach ascending sort state after maximum attempts",
+    "noDescendingState": "Could not reach descending sort state after maximum attempts",
+    "sortNotApplied": "Sort did not apply correctly - values not in expected order"
+  }
+}

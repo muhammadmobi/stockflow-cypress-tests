@@ -1,0 +1,42 @@
+{
+  "categories": {
+    "productOnly": "Test AIO",
+    "itemCategory": "TestItem Category",
+    "incorrectCatName": "NonExistentCategory"
+  },
+  "defaults": {
+    "productCost": "150",
+    "productPrice": "300",
+    "itemCost": "100",
+    "itemPrice": "200",
+    "poNumber": "PO-Import-testing",
+    "TestCPU": "Intel Core i3",
+    "TestRAM": "8GB",
+    "ExtraColumnValue": "ExtraValue1",
+    "InvalidTestCPU": "Core i9-14900K"
+  },
+  "filenameFormats": {
+    "product": "ProductTestFile",
+    "item": "ItemTestFile",
+    "mixed": "MultiCategoryTestFile"
+  },
+  "serialNumberPrefix": "TestScriptSN",
+  "validations": {
+    "duplicateHandling": "Duplicates are ignored during import",
+    "successMessage": "File imported successfully"
+  },
+  "importTestQuantity": {
+    "productQty": "20",
+    "ProductItemQty": "30",
+    "BulkItemQty": "200",
+    "DuplicateImportTestQty": "210",
+    "MixedImportProductQty": "15",
+    "stockInQty": "1"
+  },
+  "errorMessages": {
+    "missingRequiredColumn": "Field Testram is required.",
+    "missingSerialNumber": "Field Serial Number is required.",
+    "invalidCPU": "Column: TestCPU contains invalid list value.",
+    "invalidCategory": "Invalid or missing category."
+  }
+}

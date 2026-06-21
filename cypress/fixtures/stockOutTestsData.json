@@ -1,0 +1,17 @@
+{
+  "reasons": {
+    "sold": {
+      "reason": "Sold",
+      "description": "sold for test script on {date}"
+    },
+    "shipped": {
+      "reason": "Shipped",
+      "description": "shipped for test script on {date}"
+    },
+    "stockoutFromBTO": {
+      "reason": "stockout from bto",
+      "description": "stockout from BTO for test script on {date}"
+    }
+
+  }
+}

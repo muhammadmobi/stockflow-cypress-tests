@@ -1,0 +1,16 @@
+{
+  "statuses": {
+    "available": "Available",
+    "damaged": "Damaged",
+    "missing": "Missing",
+    "disputed": "Disputed",
+    "stockedOut": "StockedOut"
+  },
+  "messages": {
+    "successToast": "successfully"
+  },
+  "qty": {
+    "bvaLowerInvalid": 0,
+    "bvaRepresentative": 1
+  }
+}

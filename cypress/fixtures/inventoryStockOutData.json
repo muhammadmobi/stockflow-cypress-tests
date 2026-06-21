@@ -1,0 +1,61 @@
+{
+  "categories": {
+    "ram": "RAM Automation Cat",
+    "laptop": "Laptop Automation Cat"
+  },
+  "products": {
+    "ram": {
+      "brand": "Kingston",
+      "memoryGeneration": "DDR4",
+      "cost": "75.00",
+      "price": "120.00",
+      "supportContact": "help@brand.com",
+      "defaultQuantity": 10
+    },
+    "laptop": {
+      "modelNumber": "ThinkPad T14",
+      "brand": "Lenovo",
+      "cost": "1799.99",
+      "price": "2499.99",
+      "supportContact": "help@brand.com"
+    }
+  },
+  "poPrefix": {
+    "ramSo": "PO-SO-RAM",
+    "laptopSo": "PO-SO-LPT"
+  },
+  "productOnly": {
+    "seedQty": 10,
+    "seedQtyPo2": "3",
+    "epStockOutQty": "1",
+    "bvaLowerInvalid": "0",
+    "bvaLowerValid": "1",
+    "epAboveAvailable": "9999",
+    "seedQtyForZero": 5
+  },
+  "reasons": {
+    "sold": "Sold",
+    "lost": "Lost",
+    "bto": "Stockout from BTO",
+    "brainbox": "Stockout from Brainbox"
+  },
+  "serial": {
+    "nonExistent": "XX-NONEXIST-SO-9999"
+  },
+  "messages": {
+    "productStockedOut": "Stocked-out",
+    "itemStockedOut": "stocked out",
+    "scanSuccess": "Scan successfully",
+    "reasonRequired": "required",
+    "failedStockOut": "Failed"
+  },
+  "statusEnums": {
+    "incoming": "Incoming",
+    "available": "Available",
+    "damaged": "Damaged",
+    "missing": "Missing",
+    "disputed": "Disputed",
+    "reserved": "Reserved",
+    "stockedOut": "StockedOut"
+  }
+}

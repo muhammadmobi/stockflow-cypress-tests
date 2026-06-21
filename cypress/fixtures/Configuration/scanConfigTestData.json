@@ -1,0 +1,5 @@
+{
+ "CommonUniqueAttrib" : "Asset Security Code" ,
+ "UniqueItemAttrib" : "Asset Tag ID" ,
+ "ScanConfigUpdateMsg" : "Scan config updated"
+}

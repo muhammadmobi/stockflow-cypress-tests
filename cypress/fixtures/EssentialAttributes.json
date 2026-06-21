@@ -1,0 +1,5 @@
+{
+    "product": ["Make", "Model", "Quantity", "Cost", "Price"],
+    "variant": ["Make", "Model","Quantity", "TestSize", "Cost", "Price"],
+    "item": ["Make", "Model", "SerialNumber", "Cost", "Price", "TestBatchNo"]
+  }

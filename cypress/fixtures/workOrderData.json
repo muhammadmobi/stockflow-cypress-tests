@@ -1,0 +1,98 @@
+{
+  "url": "/work-order",
+  "api": {
+    "bulkStockOutUrl": "**/work-orders/bulk-stockout"
+  },
+  "breadcrumb": {
+    "dashboardLabel": "Dashboard",
+    "currentPageLabel": "Work Order"
+  },
+  "createPage": {
+    "url": "/work-order/create-work-order",
+    "heading": "Create Work Order",
+    "breadcrumb": {
+      "dashboardLabel": "Dashboard",
+      "workOrderLabel": "Work Order",
+      "currentPageLabel": "Create-work-order"
+    }
+  },
+  "listView": {
+    "columns": ["Work Order Number", "Sales Order Number", "Invoice Number", "Status", "Actions"],
+    "detailUrlPattern": "/work-order/",
+    "sortableColumns": {
+      "workOrderNumber": "Work Order Number",
+      "status": {
+        "columnName": "Status",
+        "ascFirstValue": "Open",
+        "descFirstValue": "Cancelled",
+        "_sortNote": "Values reflect backend enum order (Open=1, Draft=2, Closed=3, Cancelled=4), NOT alphabetical. ASC puts Open first, DESC puts Cancelled first. Update if the enum order changes."
+      }
+    }
+  },
+  "toasts": {
+    "cancelSuccess": "Work order cancelled successfully",
+    "forceOpenSuccess": "Work order opened successfully",
+    "noProductSelected": "Please select a product",
+    "createSuccess": "Work Order created successfully",
+    "stockOutSuccess": "Stocked Out Successfully",
+    "stockOutNonOpenError": [
+      "Cannot stock out work order",
+      "must be Open to stock out"
+    ]
+  },
+  "createForm": {
+    "invalidQuantityInput": "abc",
+    "validQuantity": "1",
+    "bvaLowerInvalid": "0",
+    "validationErrors": {
+      "quantityExceedsStock": "Quantity cannot exceed total stock"
+    }
+  },
+  "detailView": {
+    "infoLabels": ["Sales Order Number", "Invoice Number", "Work Order Number", "Start Date", "Status"],
+    "tableColumns": ["Name", "Part Number", "Reserved", "Actual Quantity", "Stock Out Date & Time"],
+    "statuses": {
+      "open": "Open",
+      "draft": "Draft",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "pagination": {
+    "defaultPageSize": 75,
+    "pageSizeOptions": ["75", "100", "150", "200", "300"],
+    "altPageSize": "100"
+  },
+  "search": {
+    "emptyQueryLabel": "Result(s) for \"\"",
+    "invalidSearch": {
+      "term": "INVALID-XXXXXXXXXXX",
+      "noResultLabel": "No Result"
+    },
+    "byStatus": {
+      "open":      { "term": "Open",      "resultLabel": "Result(s) for \"Open\"" },
+      "draft":     { "term": "Draft",     "resultLabel": "Result(s) for \"Draft\"" },
+      "closed":    { "term": "Closed",    "resultLabel": "Result(s) for \"Closed\"" },
+      "cancelled": { "term": "Cancelled", "resultLabel": "Result(s) for \"Cancelled\"" }
+    }
+  },
+  "scan": {
+    "modalTitle": "Work Orders Scan",
+    "scanEndpoint": "**/work-orders/scan",
+    "scannedItemsListHeader": "Scanned Items",
+    "epInvalidEmptySerial": "   ",
+    "toasts": {
+      "scanSuccessFragment": "scanned successfully",
+      "wrongProductErrorFragments": [
+        "is not an item of selected product",
+        "does not exist in inventory"
+      ],
+      "duplicateScanErrorFragment": "is already associated with this product in this work order",
+      "serialRequiredError": "Serial number is required"
+    },
+    "scannedItemsPage": {
+      "headerLabels": ["Work Order Number", "Name"],
+      "urlPattern": "/work-order/"
+    }
+  }
+}

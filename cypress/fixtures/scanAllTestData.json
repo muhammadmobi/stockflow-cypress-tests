@@ -1,0 +1,84 @@
+{
+  "po": {
+    "defaultOpen": "PO-Automation-Tests",
+    "defaultClosed": "PO-Closed-Tests"
+  },
+  "api": {
+    "incomingItems": "/incoming-items",
+    "markStatus": "/incoming-items/mark-status",
+    "scanAll": "/incoming-items/scan-all",
+    "stockOutBySerial": "/products/stockout-by-serial-number",
+    "stockOutProduct": "/products/stock-out",
+    "workOrders": "/work-orders",
+    "workOrderScan": "/work-orders/scan"
+  },
+  "categories": {
+    "ram": "RAM Automation Cat",
+    "laptop": "Laptop Automation Cat"
+  },
+  "products": {
+    "ram": {
+      "brand": "Kingston",
+      "memoryGeneration": "DDR4",
+      "cost": "45.00",
+      "price": "75.00",
+      "supportContact": "support@ram.com",
+      "defaultQuantity": "5"
+    },
+    "laptop": {
+      "modelNumber": "ThinkPad X1 Carbon",
+      "brand": "Lenovo",
+      "cost": "1500.00",
+      "price": "2500.00",
+      "supportContact": "support@lenovo.com"
+    }
+  },
+  "messages": {
+    "allItemsAlreadyScanned": "All items in this purchase order have already been scanned.",
+    "settingsUpdated": "Settings successfully updated."
+  },
+  "searchTerms": {
+    "ram": "Kingston DDR4",
+    "laptop": "Lenovo ThinkPad X1 Carbon"
+  },
+  "badgeLabels": {
+    "alwaysZero": [
+      "Damaged",
+      "Disputed",
+      "Missing",
+      "Sold",
+      "Stocked out (others)",
+      "Reserved"
+    ]
+  },
+  "expectedBadges": {
+    "singleProductFullyReceived": {
+      "Expected": 5,
+      "Available": 5,
+      "Received": 5,
+      "Incoming": 0
+    },
+    "mixedProductFullyReceived": {
+      "Expected": 8,
+      "Available": 8,
+      "Received": 8,
+      "Incoming": 0
+    }
+  },
+  "status": {
+    "missing": "Missing",
+    "damaged": "Damaged",
+    "disputed": "Disputed",
+    "stockedOut": "StockedOut",
+    "soldReason": "Sold",
+    "otherStockOutReason": "Lost"
+  },
+  "defaults": {
+    "workOrderStatus": "Open",
+    "fallbackProductName": "Automation Product",
+    "fallbackPartNumber": "AUTO-PART",
+    "damageReason": "Physical Damage",
+    "stockOutDescription": "Automation stock-out",
+    "stockOutLevel": "Product"
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "categoryName": "Laptop Automation Cat",
+
+  "validation": {
+    "emptyNameError": "Name is required",
+    "duplicateNameError": "already exists",
+    "duplicateProductAttr": {
+      "name": "Display Technology",
+      "type": "Text"
+    },
+    "invalidEmail": {
+      "name": "Invalid Email Test",
+      "type": "Email",
+      "defaultValue": "plainaddress",
+      "error": "Ensure the value follows a valid email format (e.g., example@domain.com)."
+    },
+    "invalidUrl": {
+      "name": "Invalid URL Test",
+      "type": "URL",
+      "defaultValue": "not-a-url",
+      "error": "Ensure the value follows a valid URL format (e.g., https://www.example.com)."
+    },
+    "minMaxLength": {
+      "name": "Length Test",
+      "type": "MultiLineText",
+      "minLength": "100",
+      "maxLength": "50",
+      "error": "Min length must be less than max length"
+    },
+    "invalidDecimal": {
+      "name": "Decimal Error",
+      "type": "Decimal",
+      "defaultValue": "abc.123",
+      "error": "Limit the decimal places to two (e.g., 123.45)."
+    },
+    "duplicateItemAttrExisting": "Asset Security Code",
+    "duplicateItemAttrToRename": "Maintenance Log Summary",
+    "emptyList": {
+      "name": "Empty List",
+      "error": "Required"
+    }
+  },
+
+  "cat product text": {
+    "name": "Model Number",
+    "updatedName": "Model Number Updated",
+    "required": "Yes",
+    "type": "Text"
+  },
+  "cat product multiLineText": {
+    "name": "Technical Specifications",
+    "updatedName": "Technical Specifications Updated",
+    "minLength": "0",
+    "maxLength": "2000",
+    "type": "MultiLineText",
+    "required": "No"
+  },
+  "cat product number": {
+    "name": "Battery Cell Count",
+    "required": "No",
+    "type": "Number",
+    "updatedName": "Battery Cell Count Updated"
+  },
+  "cat product email": {
+    "name": "Technical Support Email",
+    "type": "Email",
+    "required": "No",
+    "updatedName": "Technical Support Email Updated"
+  },
+  "cat product url": {
+    "name": "Driver Download Page",
+    "type": "URL",
+    "required": "No",
+    "updatedName": "Driver Download Page Updated"
+  },
+  "cat product decimal": {
+    "name": "Weight",
+    "type": "Decimal",
+    "required": "No",
+    "updatedName": "Weight Updated"
+  },
+  "cat product amount": {
+    "name": "MSRP",
+    "type": "Amount",
+    "required": "No",
+    "updatedName": "MSRP Updated"
+  },
+  "cat product percent": {
+    "name": "Battery Percentage",
+    "type": "Percent",
+    "required": "No",
+    "updatedName": "Battery Percentage Updated"
+  },
+  "cat product list": {
+    "name": "Brand",
+    "type": "List",
+    "required": "No",
+    "updatedName": "Brand Updated",
+    "options": ["Dell", "HP", "Lenovo", "Asus"],
+    "addRowOption": "Razer",
+    "bulkOptions": "MSI, Acer, Samsung"
+  },
+  "cat product boolean": {
+    "name": "Has Touchscreen",
+    "type": "Boolean",
+    "required": "No",
+    "updatedName": "Has Touchscreen Updated"
+  },
+
+  "cat item text": {
+    "name": "Asset Tag ID",
+    "type": "Text",
+    "required": "Yes",
+    "updatedName": "Asset Tag ID Updated"
+  },
+  "cat item multiLineText": {
+    "name": "Service History",
+    "type": "MultiLineText",
+    "updatedName": "Service History Updated",
+    "minLength": "0",
+    "maxLength": "2000",
+    "required": "No"
+  },
+  "cat item number": {
+    "name": "Total Service Count",
+    "type": "Number",
+    "updatedName": "Total Service Count Updated",
+    "required": "No"
+  },
+  "cat item email": {
+    "name": "Assigned User Email",
+    "type": "Email",
+    "updatedName": "Assigned User Email Updated",
+    "required": "No"
+  },
+  "cat item url": {
+    "name": "Warranty Registration Link",
+    "type": "URL",
+    "required": "No",
+    "updatedName": "Warranty Registration Link Updated"
+  },
+  "cat item decimal": {
+    "name": "Current Battery Health",
+    "type": "Decimal",
+    "required": "No",
+    "updatedName": "Current Battery Health Updated"
+  },
+  "cat item amount": {
+    "name": "Actual Purchase Price",
+    "type": "Amount",
+    "required": "No",
+    "updatedName": "Actual Purchase Price Updated"
+  },
+  "cat item percent": {
+    "name": "Annual Depreciation Rate",
+    "type": "Percent",
+    "required": "No",
+    "updatedName": "Annual Depreciation Rate Updated"
+  },
+  "cat item list": {
+    "name": "Item Storage Capacity",
+    "type": "List",
+    "required": "No",
+    "updatedName": "Item Storage Capacity UPD",
+    "options": ["256GB", "512GB", "1TB", "2TB"],
+    "newOption": "NewOption",
+    "bulkOptions": "3TB, 4TB, 5TB"
+  },
+  "cat item boolean": {
+    "name": "Item Warranty Status",
+    "type": "Boolean",
+    "required": "No",
+    "updatedName": "Item Warranty Status UPD"
+  },
+
+  "itemValidation": {
+    "duplicateOption": "DuplicateOption",
+    "emptyBulkAdd": "",
+    "specialChars": "Special@#$, Another&*",
+    "duplicateOptions": "DupName, DupName",
+    "longText": "This is an excessively long option name designed to test the system's ability to handle and validate long text inputs without crashing or displaying errors.",
+    "specialCharOption": "Special@Char$",
+    "longName": "This is an excessively long option name designed to test the system's ability to handle and validate long text inputs without crashing or displaying errors.",
+    "emptyListError": "At least one option is required",
+
+    "emptyNameError": "Name is required",
+    "duplicateNameError": "already exists",
+
+    "duplicateProductAttrName": "Model Number",
+    "duplicateItemAttrName": "Asset Tag ID Updated",
+
+    "invalidMLTMaxLength": "3000",
+    "mltMaxLengthError": "Max Value must be less than or equal to 2000",
+
+    "invalidMLTMinLength": "100",
+    "invalidMLTMaxLengthForMin": "50",
+    "mltMinMaxError": "Min length must be less than max length",
+
+    "invalidNumberMaxValue": "9999999999999999",
+    "numberMaxValueError": "Max Value must be less than or equal to 999999999999999",
+
+    "invalidEmailDefault": "plainaddress",
+    "emailDefaultError": "Ensure the value follows a valid email format (e.g., example@domain.com).",
+
+    "invalidUrlDefault": "not-a-url",
+    "urlDefaultError": "Ensure the value follows a valid URL format (e.g., https://www.example.com).",
+
+    "emptyListName": "Empty List Cat Test",
+    "emptyListError2": "Required",
+
+    "tempAttrName": "Temp Validation Attr",
+
+    "invalidDecimalDefault": "abc.123",
+    "decimalDefaultError": "Limit the decimal places to two (e.g., 123.45).",
+
+    "negativeAmountDefault": "-500",
+    "amountNegativeError": "Ensure the value is a positive decimal number with a maximum of 15 digits and 2 decimal places.",
+
+    "percentOver100Default": "150",
+    "percentOver100Error": "Ensure the value is between 0 and 100 with up to 2 decimal places.",
+
+    "bulkTestListName": "Temp Test List",
+    "bulkTestListOptions": [
+      "TestOption1",
+      "TestOption2",
+      "TestOption3",
+      "TestOption4"
+    ]
+  }
+}

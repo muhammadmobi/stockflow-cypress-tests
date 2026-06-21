@@ -1,0 +1,64 @@
+[
+  {
+    "name":"TextTestAttrib",
+    "type":"Text",
+    "created":""
+  },
+  {
+    "name":"MultiLineTestAttrib",
+    "type":"MultiLineText",
+    "created":""
+
+  },
+  
+  {
+    "name":"NumberTestAttrib",
+    "type":"Number",
+    "created":""
+
+  }, {
+    "name":"DecimalTestAttrib",
+    "type":"Decimal",
+    "created":""
+
+  },
+  
+ 
+    {
+      "name":"BooleanTestAttrib",
+      "type":"Boolean",
+      "created":""
+  
+    }
+    ,
+    {
+        "name":"PercentTestAttrib",
+        "type":"Percent",
+        "created":""
+    
+      }, 
+    {
+        "name":"AmountTestAttrib",
+        "type":"Amount",
+        "created":""
+    
+      },
+  
+ 
+    
+    {
+        "name":"EmailTest",
+        "type":"Email",
+        "created":""
+    
+      },
+      {
+        "name":"URLTestAttrib",
+        "type":"URL",
+        "created":""
+    
+      }
+  
+  
+
+]

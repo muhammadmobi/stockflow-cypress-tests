@@ -1,0 +1,30 @@
+{
+  "expectedAttributes": [
+    "Display Technology",
+    "Included Accessories",
+    "Processing Cores",
+    "Support Contact",
+    "Product Page",
+    "Diagonal Size",
+    "Market Price",
+    "Efficiency Rating",
+    "Storage Solution",
+    "Eco Friendly Certified"
+  ],
+  "unexpectedAttributes": [
+    "Cost",
+    "Price"
+  ],
+  "selectAttr1": "Display Technology",
+  "selectAttr2": "Diagonal Size",
+  "selectAttr3": "Storage Solution",
+  "customText": "-",
+  "removeAttr": "Diagonal Size",
+  "tagsAfterRemoval": ["Display Technology", "-", "Storage Solution"],
+  "customTextForSave": "Condition A",
+  "tagsAfterCustomSave": ["Display Technology", "-", "Storage Solution", "Condition A"],
+  "replaceNewAttr": "Processing Cores",
+  "replaceNewText": "Cores",
+  "tagsAfterReplace": ["Processing Cores", "Cores"],
+  "settingsUpdatedToast": "Settings successfully updated."
+}

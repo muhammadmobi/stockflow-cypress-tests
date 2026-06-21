@@ -1,0 +1,174 @@
+{
+  "cases": [
+    {
+      "id": "SW_INC_028",
+      "po": "PO-ScanAllMisc-080",
+      "type": "item",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 1,
+        "Reserved": 0,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_029",
+      "po": "PO-ScanAllMisc-081",
+      "type": "item",
+      "expected": {
+        "Expected": 5,
+        "Available": 0,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Reserved": 1,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_030",
+      "po": "PO-ScanAllMisc-082",
+      "type": "item",
+      "expected": {
+        "Expected": 10,
+        "Available": 4,
+        "Received": 9,
+        "Incoming": 1,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 1,
+        "Reserved": 1,
+        "Stocked out (others)": 1
+      }
+    },
+    {
+      "id": "SW_INC_031",
+      "po": "PO-ScanAllMisc-083",
+      "type": "quantity",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 4,
+        "Incoming": 1,
+        "Missing": 1,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Reserved": 0,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_032",
+      "po": "PO-ScanAllMisc-084",
+      "type": "quantity",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 1,
+        "Disputed": 0,
+        "Sold": 0,
+        "Reserved": 0,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_033",
+      "po": "PO-ScanAllMisc-085",
+      "type": "quantity",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 1,
+        "Sold": 0,
+        "Reserved": 0,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_034",
+      "po": "PO-ScanAllMisc-086",
+      "type": "quantity",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Reserved": 0,
+        "Stocked out (others)": 1
+      }
+    },
+    {
+      "id": "SW_INC_035",
+      "po": "PO-ScanAllMisc-087",
+      "type": "quantity",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 1,
+        "Reserved": 0,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_036",
+      "po": "PO-ScanAllMisc-088",
+      "type": "quantity",
+      "expected": {
+        "Expected": 5,
+        "Available": 4,
+        "Received": 5,
+        "Incoming": 0,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Reserved": 1,
+        "Stocked out (others)": 0
+      }
+    },
+    {
+      "id": "SW_INC_037",
+      "po": "PO-ScanAllMisc-089",
+      "type": "quantity",
+      "expected": {
+        "Expected": 10,
+        "Available": 4,
+        "Received": 9,
+        "Incoming": 1,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 1,
+        "Reserved": 1,
+        "Stocked out (others)": 1
+      }
+    }
+  ]
+}

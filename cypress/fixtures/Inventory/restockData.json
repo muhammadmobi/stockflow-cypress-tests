@@ -1,0 +1,9 @@
+{
+  "qty": {
+    "epTypical": 5,
+    "bvaLowerValid": 1,
+    "bvaLowerInvalid": 0,
+    "epNegative": -3,
+    "epAboveBuffer": 999999
+  }
+}

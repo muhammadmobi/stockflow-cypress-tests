@@ -1,0 +1,278 @@
+{
+  "productItem": {
+    "basic": {
+      "afterMissing": {
+        "Expected": 1,
+        "Incoming": 0,
+        "Available": 0,
+        "Received": 0,
+        "Missing": 1,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      },
+      "afterDamaged": {
+        "Expected": 1,
+        "Incoming": 0,
+        "Available": 0,
+        "Received": 1,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      },
+      "afterDisputed": {
+        "Expected": 1,
+        "Incoming": 0,
+        "Available": 0,
+        "Received": 1,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      },
+      "afterSold": {
+        "Expected": 1,
+        "Incoming": 0,
+        "Available": 0,
+        "Received": 1,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 1,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      }
+    },
+    "regression": {
+      "afterMissing": {
+        "Expected": 8,
+        "Incoming": 1,
+        "Available": 1,
+        "Received": 5,
+        "Missing": 2,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterDamaged": {
+        "Expected": 8,
+        "Incoming": 1,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 2,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterDisputed": {
+        "Expected": 8,
+        "Incoming": 1,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 2,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterStockedOut": {
+        "Expected": 8,
+        "Incoming": 1,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 2,
+        "Reserved": 1
+      },
+      "afterAvailable": {
+        "Expected": 8,
+        "Incoming": 1,
+        "Available": 2,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterIncoming": {
+        "Expected": 8,
+        "Incoming": 2,
+        "Available": 1,
+        "Received": 5,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterReserved": {
+        "Expected": 8,
+        "Incoming": 1,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 2
+      }
+    }
+  },
+  "productOnly": {
+    "basic": {
+      "afterMissing": {
+        "Expected": 5,
+        "Incoming": 4,
+        "Available": 0,
+        "Received": 0,
+        "Missing": 1,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 0,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      },
+      "afterDamaged": {
+        "Expected": 5,
+        "Incoming": 4,
+        "Available": 0,
+        "Received": 1,
+        "Missing": 0,
+        "Damaged": 1,
+        "Disputed": 0,
+        "Sold": 0,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      },
+      "afterDisputed": {
+        "Expected": 5,
+        "Incoming": 4,
+        "Available": 0,
+        "Received": 1,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      },
+      "afterSold": {
+        "Expected": 5,
+        "Incoming": 4,
+        "Available": 0,
+        "Received": 1,
+        "Missing": 0,
+        "Damaged": 0,
+        "Disputed": 0,
+        "Sold": 1,
+        "Stocked out (others)": 0,
+        "Reserved": 0
+      }
+    },
+    "regression": {
+      "afterMissing": {
+        "Expected": 15,
+        "Incoming": 8,
+        "Available": 1,
+        "Received": 5,
+        "Missing": 2,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterDamaged": {
+        "Expected": 15,
+        "Incoming": 8,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 2,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterDisputed": {
+        "Expected": 15,
+        "Incoming": 8,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 2,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterStockedOut": {
+        "Expected": 15,
+        "Incoming": 8,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 2,
+        "Reserved": 1
+      },
+      "afterAvailable": {
+        "Expected": 15,
+        "Incoming": 8,
+        "Available": 2,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterIncoming": {
+        "Expected": 15,
+        "Incoming": 9,
+        "Available": 1,
+        "Received": 5,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 1
+      },
+      "afterReserved": {
+        "Expected": 15,
+        "Incoming": 8,
+        "Available": 1,
+        "Received": 6,
+        "Missing": 1,
+        "Damaged": 1,
+        "Disputed": 1,
+        "Sold": 0,
+        "Stocked out (others)": 1,
+        "Reserved": 2
+      }
+    }
+  }
+}

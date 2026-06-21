@@ -1,0 +1,134 @@
+{
+  "ram": {
+    "category": "RAM Automation Cat",
+    "allowItems": false
+  },
+  "laptop": {
+    "category": "Laptop Automation Cat",
+    "allowItems": true,
+    "modelNumber": "ThinkPad-X1-Seed",
+    "brand": "Lenovo",
+    "cost": 1200,
+    "price": 1500,
+    "supportContact": "support@lenovo.com"
+  },
+  "testProducts": {
+    "ram": {
+      "primary": {
+        "brand": "Kingston",
+        "memoryGeneration": "DDR4",
+        "searchTerm": "Kingston DDR4",
+        "displayName": "Kingston DDR4",
+        "quantity": 5,
+        "cost": 45,
+        "price": 65,
+        "supportContact": "support@kingston.com"
+      },
+      "secondary": {
+        "brand": "Kingston",
+        "memoryGeneration": "DDR5",
+        "searchTerm": "Kingston DDR5",
+        "displayName": "Kingston DDR5",
+        "quantity": 3,
+        "cost": 95,
+        "price": 120,
+        "supportContact": "support@kingston.com"
+      }
+    },
+    "laptop": {
+      "primary": {
+        "brand": "Lenovo",
+        "modelNumber": "ThinkPad-X1",
+        "searchTerm": "Lenovo ThinkPad-X1",
+        "displayName": "Lenovo ThinkPad-X1",
+        "quantity": 2,
+        "cost": 1200,
+        "price": 1500,
+        "serialPrefix": "LP-X1-",
+        "supportContact": "support@lenovo.com"
+      },
+      "secondary": {
+        "brand": "Lenovo",
+        "modelNumber": "ThinkPad-X390",
+        "searchTerm": "Lenovo ThinkPad-X390",
+        "displayName": "Lenovo ThinkPad-X390",
+        "quantity": 2,
+        "cost": 900,
+        "price": 1200,
+        "serialPrefix": "LP-X390-",
+        "supportContact": "support@lenovo.com"
+      }
+    }
+  },
+  "ramKingston": {
+    "cost": 45,
+    "price": 65,
+    "supportContact": "support@kingston.com"
+  },
+  "excelPoSeedRam": {
+    "description": "Different RAM brand than primary test product so seeded PO line is not duplicate (backend rejects duplicate product on PO).",
+    "brand": "Corsair",
+    "memoryGeneration": "DDR5",
+    "quantity": 3,
+    "cost": 42,
+    "price": 60,
+    "supportContact": "support@corsair.com",
+    "displayName": "Corsair DDR5 16GB"
+  },
+  "ramProduct": {
+    "brand": "Kingston",
+    "memoryGeneration": "DDR4",
+    "quantity": 5,
+    "cost": 45,
+    "price": 65,
+    "supportContact": "support@kingston.com",
+    "displayName": "Kingston DDR4 16GB"
+  },
+  "laptopProduct": {
+    "modelNumber": "ThinkPad-X1",
+    "brand": "Lenovo",
+    "cost": 1200,
+    "price": 1500,
+    "supportContact": "support@lenovo.com",
+    "serialPrefix": "LP-ADD-",
+    "quantity": 2,
+    "displayName": "Lenovo ThinkPad-X1 Gen10"
+  },
+  "addProductToPO": {
+    "validEntry": {
+      "searchTerm": "Kingston DDR4",
+      "expectedQuantity": "10",
+      "cost": "1299.99"
+    },
+    "secondProduct": {
+      "searchTerm": "Kingston DDR5",
+      "expectedQuantity": "5",
+      "cost": "999.00"
+    }
+  },
+  "boundaryTests": {
+    "qty": {
+      "bvaLowerValid": "1",
+      "bvaUpperValid": "9999",
+      "bvaLowerInvalid": "0",
+      "bvaUpperInvalid": "10000"
+    },
+    "cost": {
+      "bvaMinValid": "0.01",
+      "bvaMaxValid": "999999.99",
+      "bvaZero": "0"
+    }
+  },
+  "invalidInputs": {
+    "noResultsSearch": "NonExistentProductXYZ123",
+    "epNegativeQty": "-5",
+    "epZeroQty": "0",
+    "epNegativeCost": "-50"
+  },
+  "messages": {
+    "addSuccess": "Product has been added to the PO successfully.",
+    "addFailed": "Failed to Add Product",
+    "selectProduct": "Please select a product",
+    "qtyHelperError": "Expected quantity must be greater than 0"
+  }
+}

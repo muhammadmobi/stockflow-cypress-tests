@@ -1,0 +1,39 @@
+{
+  "categories": {
+    "laptop": { "name": "Laptop Automation Cat" },
+    "ram":    { "name": "RAM Automation Cat" },
+    "all":    "All"
+  },
+  "brand": "Lenovo",
+  "ramBrand": "Corsair",
+  "ramBrand2": "GSkill",
+  "fields": {
+    "category":          "Category",
+    "brand":             "Brand",
+    "modelNumber":       "Model Number",
+    "memoryGeneration":  "Memory Generation",
+    "rambrand":          "RAMbrand",
+    "batteryCellCount":  "Battery Cell Count"
+  },
+  "configGate": {
+    "type":       "inventoryCategoryFilter",
+    "allowed":    ["Brand", "Model Number"],
+    "disallowed": ["RAMbrand", "Memory Generation", "Battery Cell Count", "Category"]
+  },
+  "excludedFields": ["Quantity", "Cost", "Serial Number"],
+  "tabs": {
+    "active":   "Active Products",
+    "inactive": "Inactive Products",
+    "items":    "Items View"
+  },
+  "stockOutReason": "Sold",
+  "stockOutDesc":   "GroupBy automation seed",
+  "workOrderDefaults": {
+    "partNumber": "GB-PART-001"
+  },
+  "localStorageKey": "inventory-grouping-fields",
+  "noMatchSearch":   "ZZZZ-NOMATCH-GB-9999",
+  "searchTerm":      "GB-LT",
+  "groupedEndpoint":  "/products/grouped",
+  "standardEndpoint": "/products"
+}

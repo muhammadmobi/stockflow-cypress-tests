@@ -1,0 +1,7 @@
+{
+  "addReason": "AutomationTestReason",
+  "duplicateReason": "Sold",
+  "protectedReason": "Sold",
+  "settingsUpdatedToast": "Settings successfully updated.",
+  "duplicateToast": "Reason (Sold) already exists"
+}

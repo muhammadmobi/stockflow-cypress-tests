@@ -1,0 +1,60 @@
+{
+  "api": {
+    "reports": "/incoming-items/reports",
+    "scannedItems": "/incoming-items/scanned-items",
+    "markStatus": "/incoming-items/mark-status",
+    "uploadInventory": "/excel/upload-inventory"
+  },
+  "categories": {
+    "laptop": "Laptop Automation Cat",
+    "ram": "RAM Automation Cat"
+  },
+  "products": {
+    "laptop": {
+      "modelNumber": "ThinkPad X1 Carbon",
+      "brand": "Lenovo",
+      "cost": "1500.00",
+      "price": "2500.00",
+      "supportContact": "support@lenovo.com"
+    },
+    "ram": {
+      "brand": "Kingston",
+      "memoryGeneration": "DDR4",
+      "cost": "45.00",
+      "price": "75.00",
+      "supportContact": "support@ram.com",
+      "defaultQuantity": "5"
+    }
+  },
+  "tabs": {
+    "foundItems": "Found Items",
+    "notFound": "Not Found",
+    "notScanned": "Not Scanned"
+  },
+  "statLabels": {
+    "quantities": ["Expected", "Available", "Received", "Reserved", "Incoming"],
+    "statuses": ["Damaged", "Disputed", "Missing", "Sold", "Stocked out (others)"]
+  },
+  "rowActions": {
+    "notFound": {
+      "epRemove": "Remove"
+    },
+    "notScanned": {
+      "epDisputed": "Disputed",
+      "epDamaged": "Damaged"
+    }
+  },
+  "messages": {
+    "statusUpdated": "Status updated successfully",
+    "noRecords": "No records to display"
+  },
+  "columns": {
+    "serialNumber": "Serial Number",
+    "poNumber": "PO. Number",
+    "stockInDate": "Stock In Date & Time",
+    "status": "Status"
+  },
+  "poPrefixes": {
+    "scanReport": "PO-ScanRpt"
+  }
+}

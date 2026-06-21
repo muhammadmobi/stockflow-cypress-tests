@@ -1,0 +1,68 @@
+{
+  "ramKingston": {
+    "brand": "Kingston",
+    "memoryGeneration": "DDR4",
+    "displayName": "DDR4",
+    "cost": "45",
+    "price": "75",
+    "supportContact": "support@ram.com"
+  },
+
+  "ram": {
+    "category": "RAM Automation Cat",
+    "RAMbrand": "Corsair",
+    "memoryGeneration": "DDR5",
+    "displayName": "DDR5",
+    "cost": "45",
+    "price": "75"
+  },
+
+  "laptop": {
+    "category": "Laptop Automation Cat",
+    "modelNumber": "ThinkPad X1 Carbon",
+    "brand": "Lenovo",
+    "displayName": "Lenovo ThinkPad X1 Carbon",
+    "cost": "1500",
+    "price": "2500",
+    "supportContact": "support@lenovo.com",
+    "sharedSerials": [
+      "CPLapSerial0001",
+      "CPLapSerial0002",
+      "CPLapSerial0003"
+    ]
+  },
+
+  "defaults": {
+    "qty": 5
+  },
+
+  "costPriceUpdates": {
+    "newCost": 250,
+    "newPrice": 450,
+    "updatedCostOnly": 310,
+    "updatedPriceOnly": 560
+  },
+
+  "mixedPOSerials": [
+    "CPMixedSerial0001",
+    "CPMixedSerial0002"
+  ],
+
+  "successMessages": {
+    "costPriceUpdated": "cost updated successfully",
+    "columnsUpdated": "Columns settings successfully updated."
+  },
+
+  "validation": {
+    "negativeCost": -50,
+    "negativePrice": -100,
+    "positiveCost": 100,
+    "positivePrice": 200,
+    "zeroValue": 0
+  },
+
+  "errorMessages": {
+    "costNegative": "Cost must greater than or equal to 0",
+    "priceNegative": "Price must greater than or equal to 0"
+  }
+}

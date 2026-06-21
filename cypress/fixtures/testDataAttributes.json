@@ -1,0 +1,1247 @@
+{
+  "categories": [
+    {
+      "id": 105,
+      "name": "Laptop Automation Cat",
+      "description": "...",
+      "allowItems": true,
+      "allowVariants": false,
+      "allowVariantItems": false
+    },
+    {
+      "id": 106,
+      "name": "RAM Automation Cat",
+      "description": "...",
+      "allowItems": false,
+      "allowVariants": false,
+      "allowVariantItems": false
+    }
+  ],
+  "attributes": [
+    {
+      "id": 1242,
+      "name": "Display Technology",
+      "fieldName": "displayTechnology",
+      "type": "Text",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 1000,
+            "message": "Display Technology cannot exceed 1000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": "",
+        "isVlookupEnabled": false,
+        "vLookups": []
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1243,
+      "name": "Included Accessories",
+      "fieldName": "includedAccessories",
+      "type": "MultiLineText",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 2000,
+            "message": "Included Accessories cannot exceed 2000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1244,
+      "name": "Processing Cores",
+      "fieldName": "processingCores",
+      "type": "Number",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "min": 0,
+          "max": 999999999999999,
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1245,
+      "name": "Support Contact",
+      "fieldName": "supportContact",
+      "type": "Email",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "message": "Ensure the value follows a valid email format (e.g., example@domain.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1246,
+      "name": "Product Page",
+      "fieldName": "productPage",
+      "type": "URL",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(https?:\\/\\/)?([a-z0-9\\-]+\\.)+[a-z]{2,6}(\\/[^\\s]*)?$",
+            "message": "Ensure the value follows a valid URL format (e.g., https://www.example.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1247,
+      "name": "Diagonal Size",
+      "fieldName": "diagonalSize",
+      "type": "Decimal",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d+(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to two decimal places are allowed (e.g., 123.45)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1248,
+      "name": "Market Price",
+      "fieldName": "marketPrice",
+      "type": "Amount",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d{1,15}(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to 15 digits and 2 decimal places are allowed."
+          },
+          "currency": {
+            "label": "USD",
+            "value": "usd"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1249,
+      "name": "Efficiency Rating",
+      "fieldName": "efficiencyRating",
+      "type": "Percent",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(100(\\.00?)?|[0-9]{1,2}(\\.[0-9]{1,2})?)$",
+            "message": "Only positive percentages between 0 and 100 with up to two decimal places are allowed."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1250,
+      "name": "Storage Solution",
+      "fieldName": "storageSolution",
+      "type": "List",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "required": false
+        },
+        "listOptions": [
+          {
+            "label": "SSD",
+            "value": "SSD"
+          },
+          {
+            "label": "HDD",
+            "value": "HDD"
+          },
+          {
+            "label": "Hybrid",
+            "value": "Hybrid"
+          },
+          {
+            "label": "NVMe",
+            "value": "NVMe"
+          }
+        ]
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1251,
+      "name": "Eco Friendly Certified",
+      "fieldName": "ecoFriendlyCertified",
+      "type": "Boolean",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "checkByDefault": false,
+          "required": false
+        }
+      },
+      "entityType": "Product",
+      "categoryName": null
+    },
+    {
+      "id": 1252,
+      "name": "Asset Security Code",
+      "fieldName": "assetSecurityCode",
+      "type": "Text",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 1000,
+            "message": "Asset Security Code cannot exceed 1000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": "",
+        "isVlookupEnabled": false,
+        "vLookups": []
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1253,
+      "name": "Maintenance Log Summary",
+      "fieldName": "maintenanceLogSummary",
+      "type": "MultiLineText",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 2000,
+            "message": "Maintenance Log Summary cannot exceed 2000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1254,
+      "name": "Previous Repair Count",
+      "fieldName": "previousRepairCount",
+      "type": "Number",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "min": 0,
+          "max": 999999999999999,
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1255,
+      "name": "Custodian Email",
+      "fieldName": "custodianEmail",
+      "type": "Email",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "message": "Ensure the value follows a valid email format (e.g., example@domain.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1256,
+      "name": "Asset Management Link",
+      "fieldName": "assetManagementLink",
+      "type": "URL",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(https?:\\/\\/)?([a-z0-9\\-]+\\.)+[a-z]{2,6}(\\/[^\\s]*)?$",
+            "message": "Ensure the value follows a valid URL format (e.g., https://www.example.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1257,
+      "name": "Battery Wear Level",
+      "fieldName": "batteryWearLevel",
+      "type": "Decimal",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d+(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to two decimal places are allowed (e.g., 123.45)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1258,
+      "name": "Scrap Value",
+      "fieldName": "scrapValue",
+      "type": "Amount",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d{1,15}(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to 15 digits and 2 decimal places are allowed."
+          },
+          "currency": {
+            "label": "USD",
+            "value": "usd"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1259,
+      "name": "Utilization Rate",
+      "fieldName": "utilizationRate",
+      "type": "Percent",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(100(\\.00?)?|[0-9]{1,2}(\\.[0-9]{1,2})?)$",
+            "message": "Only positive percentages between 0 and 100 with up to two decimal places are allowed."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1260,
+      "name": "Department Allocation",
+      "fieldName": "departmentAllocation",
+      "type": "List",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "required": false
+        },
+        "listOptions": [
+          {
+            "label": "HR",
+            "value": "HR"
+          },
+          {
+            "label": "IT",
+            "value": "IT"
+          },
+          {
+            "label": "Sales",
+            "value": "Sales"
+          },
+          {
+            "label": "Quality",
+            "value": "Quality"
+          }
+        ]
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1261,
+      "name": "Active Status",
+      "fieldName": "activeStatus",
+      "type": "Boolean",
+      "categoryId": null,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "checkByDefault": false,
+          "required": false
+        }
+      },
+      "entityType": "Item",
+      "categoryName": null
+    },
+    {
+      "id": 1262,
+      "name": "Model Number",
+      "fieldName": "modelNumber",
+      "type": "Text",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 1000,
+            "message": "Model Number cannot exceed 1000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": "",
+        "isVlookupEnabled": false,
+        "vLookups": []
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1263,
+      "name": "Technical Specifications",
+      "fieldName": "technicalSpecifications",
+      "type": "MultiLineText",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 2000,
+            "message": "Technical Specifications cannot exceed 2000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1264,
+      "name": "Battery Cell Count",
+      "fieldName": "batteryCellCount",
+      "type": "Number",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "min": 0,
+          "max": 999999999999999,
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1265,
+      "name": "Technical Support Email",
+      "fieldName": "technicalSupportEmail",
+      "type": "Email",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "message": "Ensure the value follows a valid email format (e.g., example@domain.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1266,
+      "name": "Driver Download Page",
+      "fieldName": "driverDownloadPage",
+      "type": "URL",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(https?:\\/\\/)?([a-z0-9\\-]+\\.)+[a-z]{2,6}(\\/[^\\s]*)?$",
+            "message": "Ensure the value follows a valid URL format (e.g., https://www.example.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1267,
+      "name": "Weight",
+      "fieldName": "weight",
+      "type": "Decimal",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d+(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to two decimal places are allowed (e.g., 123.45)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1268,
+      "name": "MSRP",
+      "fieldName": "msrp",
+      "type": "Amount",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d{1,15}(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to 15 digits and 2 decimal places are allowed."
+          },
+          "currency": {
+            "label": "USD",
+            "value": "usd"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1269,
+      "name": "Battery Percentage",
+      "fieldName": "batteryPercentage",
+      "type": "Percent",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(100(\\.00?)?|[0-9]{1,2}(\\.[0-9]{1,2})?)$",
+            "message": "Only positive percentages between 0 and 100 with up to two decimal places are allowed."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1270,
+      "name": "Brand",
+      "fieldName": "brand",
+      "type": "List",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "required": false
+        },
+        "listOptions": [
+          {
+            "label": "Dell",
+            "value": "Dell"
+          },
+          {
+            "label": "HP",
+            "value": "HP"
+          },
+          {
+            "label": "Lenovo",
+            "value": "Lenovo"
+          },
+          {
+            "label": "Asus",
+            "value": "Asus"
+          }
+        ]
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1271,
+      "name": "Has Touchscreen",
+      "fieldName": "hasTouchscreen",
+      "type": "Boolean",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "checkByDefault": false,
+          "required": false
+        }
+      },
+      "entityType": "Product",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1272,
+      "name": "Asset Tag ID",
+      "fieldName": "assetTagId",
+      "type": "Text",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 1000,
+            "message": "Asset Tag ID cannot exceed 1000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": "",
+        "isVlookupEnabled": false,
+        "vLookups": []
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1273,
+      "name": "Service History",
+      "fieldName": "serviceHistory",
+      "type": "MultiLineText",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 2000,
+            "message": "Service History cannot exceed 2000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1274,
+      "name": "Total Service Count",
+      "fieldName": "totalServiceCount",
+      "type": "Number",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "min": 0,
+          "max": 999999999999999,
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1275,
+      "name": "Assigned User Email",
+      "fieldName": "assignedUserEmail",
+      "type": "Email",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "message": "Ensure the value follows a valid email format (e.g., example@domain.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1276,
+      "name": "Warranty Registration Link",
+      "fieldName": "warrantyRegistrationLink",
+      "type": "URL",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(https?:\\/\\/)?([a-z0-9\\-]+\\.)+[a-z]{2,6}(\\/[^\\s]*)?$",
+            "message": "Ensure the value follows a valid URL format (e.g., https://www.example.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1277,
+      "name": "Current Battery Health",
+      "fieldName": "currentBatteryHealth",
+      "type": "Decimal",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d+(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to two decimal places are allowed (e.g., 123.45)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1278,
+      "name": "Actual Purchase Price",
+      "fieldName": "actualPurchasePrice",
+      "type": "Amount",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d{1,15}(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to 15 digits and 2 decimal places are allowed."
+          },
+          "currency": {
+            "label": "USD",
+            "value": "usd"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1279,
+      "name": "Annual Depreciation Rate",
+      "fieldName": "annualDepreciationRate",
+      "type": "Percent",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(100(\\.00?)?|[0-9]{1,2}(\\.[0-9]{1,2})?)$",
+            "message": "Only positive percentages between 0 and 100 with up to two decimal places are allowed."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1280,
+      "name": "Item Storage Capacity",
+      "fieldName": "itemStorageCapacity",
+      "type": "List",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "required": false
+        },
+        "listOptions": [
+          {
+            "label": "256GB",
+            "value": "256GB"
+          },
+          {
+            "label": "512GB",
+            "value": "512GB"
+          },
+          {
+            "label": "1TB",
+            "value": "1TB"
+          },
+          {
+            "label": "2TB",
+            "value": "2TB"
+          }
+        ]
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1281,
+      "name": "Item Warranty Status",
+      "fieldName": "itemWarrantyStatus",
+      "type": "Boolean",
+      "categoryId": 105,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "checkByDefault": false,
+          "required": false
+        }
+      },
+      "entityType": "Item",
+      "categoryName": "Laptop Automation Cat"
+    },
+    {
+      "id": 1282,
+      "name": "Memory Generation",
+      "fieldName": "memoryGeneration",
+      "type": "Text",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 1000,
+            "message": "Memory Generation cannot exceed 1000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": "",
+        "isVlookupEnabled": false,
+        "vLookups": []
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1283,
+      "name": "Compatibility Notes",
+      "fieldName": "compatibilityNotes",
+      "type": "MultiLineText",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "minLength": 0,
+          "maxLength": {
+            "value": 2000,
+            "message": "Compatibility Notes cannot exceed 2000 characters"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1284,
+      "name": "Memory Capacity",
+      "fieldName": "memoryCapacity",
+      "type": "Number",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "min": 0,
+          "max": 999999999999999,
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1285,
+      "name": "Vendor Contact",
+      "fieldName": "vendorContact",
+      "type": "Email",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "message": "Ensure the value follows a valid email format (e.g., example@domain.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1286,
+      "name": "Datasheet Link",
+      "fieldName": "datasheetLink",
+      "type": "URL",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(https?:\\/\\/)?([a-z0-9\\-]+\\.)+[a-z]{2,6}(\\/[^\\s]*)?$",
+            "message": "Ensure the value follows a valid URL format (e.g., https://www.example.com)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1287,
+      "name": "Operating Voltage",
+      "fieldName": "operatingVoltage",
+      "type": "Decimal",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d+(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to two decimal places are allowed (e.g., 123.45)."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1288,
+      "name": "MSRP",
+      "fieldName": "msrp",
+      "type": "Amount",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^\\d{1,15}(\\.\\d{1,2})?$",
+            "message": "Only positive numbers with up to 15 digits and 2 decimal places are allowed."
+          },
+          "currency": {
+            "label": "USD",
+            "value": "usd"
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1289,
+      "name": "Performance Boost",
+      "fieldName": "performanceBoost",
+      "type": "Percent",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "pattern": {
+            "value": "^(100(\\.00?)?|[0-9]{1,2}(\\.[0-9]{1,2})?)$",
+            "message": "Only positive percentages between 0 and 100 with up to two decimal places are allowed."
+          },
+          "required": false
+        },
+        "defaultValue": ""
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1290,
+      "name": "RAMbrand",
+      "fieldName": "rambrand",
+      "type": "List",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "required": false
+        },
+        "listOptions": [
+          {
+            "label": "Corsair",
+            "value": "Corsair"
+          },
+          {
+            "label": "GSkill",
+            "value": "GSkill"
+          },
+          {
+            "label": "Kingston",
+            "value": "Kingston"
+          },
+          {
+            "label": "ADATA",
+            "value": "ADATA"
+          }
+        ]
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    },
+    {
+      "id": 1291,
+      "name": "ECC Supported",
+      "fieldName": "eccSupported",
+      "type": "Boolean",
+      "categoryId": 106,
+      "locked": false,
+      "editable": true,
+      "unique": false,
+      "required": false,
+      "otherInfo": {
+        "controlRules": {
+          "checkByDefault": false,
+          "required": false
+        }
+      },
+      "entityType": "Product",
+      "categoryName": "RAM Automation Cat"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "categories": {
+    "all":    "All",
+    "ram":    { "name": "RAM Automation Cat",    "id": 106 },
+    "laptop": { "name": "Laptop Automation Cat", "id": 105 }
+  },
+  "attributes": {
+    "commonProduct": {
+      "displayTechnology": {
+        "label": "Display Technology",
+        "fieldName": "displayTechnology",
+        "entityType": "Product",
+        "accordion": "Common"
+      }
+    },
+    "commonItem": {
+      "assetSecurityCode": {
+        "label": "Asset Security Code",
+        "fieldName": "assetSecurityCode",
+        "entityType": "Item",
+        "accordion": "Common"
+      }
+    },
+    "ramProduct": {
+      "memoryGeneration": {
+        "label": "Memory Generation",
+        "fieldName": "memoryGeneration",
+        "entityType": "Product",
+        "accordion": "RAM Automation Cat"
+      },
+      "rambrand": {
+        "label": "RAMbrand",
+        "fieldName": "rambrand",
+        "entityType": "Product",
+        "accordion": "RAM Automation Cat"
+      }
+    },
+    "laptopProduct": {
+      "modelNumber": {
+        "label": "Model Number",
+        "fieldName": "modelNumber",
+        "entityType": "Product",
+        "accordion": "Laptop Automation Cat"
+      },
+      "brand": {
+        "label": "Brand",
+        "fieldName": "brand",
+        "entityType": "Product",
+        "accordion": "Laptop Automation Cat"
+      }
+    },
+    "laptopItem": {
+      "assetTagId": {
+        "label": "Asset Tag ID",
+        "fieldName": "assetTagId",
+        "entityType": "Item",
+        "accordion": "Laptop Automation Cat"
+      }
+    }
+  },
+  "ramBrandOptions": ["Corsair", "GSkill", "Kingston", "ADATA"],
+  "laptopBrandOptions": ["Dell", "HP", "Lenovo", "Asus"],
+  "noMatchValue": "ZZZZ-NO-MATCH-AS-9999",
+  "errorMessage": "Please enter at least one search value to proceed.",
+  "noFieldsMessage": "No searchable fields configured.",
+  "filterFieldQuery": "memory",
+  "caseTestUpperSuffix": "DDR5-AS-ILIKE-UPPER"
+}

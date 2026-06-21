@@ -1,0 +1,13 @@
+{
+  "category": "RAM Automation Cat",
+  "toggleColumn": "Memory Generation",
+  "anchorColumn": "Support Contact",
+
+  "_comment_groups": "The dialog is a global attribute picker (GET /attributes?all=true&entityType=Product) grouped by category. Columns from BOTH automation categories plus the common group must be listed regardless of which category is selected.",
+  "commonGroup": "Common Attributes",
+  "commonColumn": "Support Contact",
+  "ramGroup": "RAM Automation Cat",
+  "ramColumn": "Memory Generation",
+  "laptopGroup": "Laptop Automation Cat",
+  "laptopColumn": "Model Number"
+}

@@ -1,0 +1,132 @@
+{
+  "ram": {
+    "category": "RAM Automation Cat"
+  },
+
+  "ramKingston": {
+    "brand": "Kingston",
+    "memoryGeneration": "DDR4",
+    "displayName": "DDR4",
+    "tableMatchText": "DDR4",
+    "cost": "45",
+    "price": "75",
+    "supportContact": "support@kingston.com",
+    "_role": "P1 active product-only — non-zero for all 9 stats"
+  },
+
+  "ramCorsair": {
+    "brand": "Corsair",
+    "memoryGeneration": "DDR5",
+    "displayName": "DDR5",
+    "tableMatchText": "DDR5",
+    "cost": "50",
+    "price": "85",
+    "supportContact": "support@corsair.com",
+    "_role": "P2 untouched product-only — zero for all stats except Incoming"
+  },
+
+  "ramHyperX": {
+    "brand": "HyperX",
+    "memoryGeneration": "DDR3",
+    "displayName": "DDR3",
+    "tableMatchText": "DDR3",
+    "cost": "30",
+    "price": "60",
+    "supportContact": "support@hyperx.com",
+    "_role": "P5 fully-received product-only — Available/Received > 0, Incoming = 0"
+  },
+
+  "laptop": {
+    "category": "Laptop Automation Cat"
+  },
+
+  "laptopThinkPad": {
+    "modelNumber": "ThinkPad X1 Carbon Test",
+    "brand": "Lenovo ",
+    "displayName": "Lenovo ThinkPad X1 Carbon Test",
+    "tableMatchText": "Lenovo ",
+    "cost": "1500",
+    "price": "2500",
+    "supportContact": "support@lenovo.com",
+    "serialPrefix": "StatsThink",
+    "_role": "P3 active product-item — non-zero for all 9 stats"
+  },
+
+  "laptopLatitude": {
+    "modelNumber": "Latitude E7470 Test",
+    "brand": "Dell ",
+    "displayName": "Dell Latitude E7470 Test",
+    "tableMatchText": "Dell",
+    "cost": "1200",
+    "price": "2000",
+    "supportContact": "support@dell.com",
+    "serialPrefix": "StatsLat",
+    "_role": "P4 untouched product-item — zero for all stats except Incoming"
+  },
+
+  "laptopEliteBook": {
+    "modelNumber": "EliteBook 840 G8 Test",
+    "brand": "HP ",
+    "displayName": "HP EliteBook 840 G8 Test",
+    "tableMatchText": "EliteBook",
+    "cost": "1100",
+    "price": "1800",
+    "supportContact": "support@hp.com",
+    "serialPrefix": "StatsHP",
+    "_role": "P6 fully-received product-item — Available/Received > 0, Incoming = 0"
+  },
+
+  "qty": {
+    "activeExpected": 30,
+    "untouchedExpected": 30,
+    "fullExpected": 5,
+    "activeStockIn": 25,
+    "fullStockIn": 5
+  },
+
+  "seed": {
+    "damagedQty": 3,
+    "disputedQty": 2,
+    "missingQty": 2,
+    "soldQty": 2,
+    "shippedQty": 2,
+    "reservedQty": 2,
+    "damageReason": "Broken UI"
+  },
+
+  "reasons": {
+    "sold": "Sold",
+    "shipped": "Shipped"
+  },
+
+  "filters": {
+    "available": "Available",
+    "received": "Received",
+    "incoming": "Incoming",
+    "damaged": "Damaged",
+    "disputed": "Disputed",
+    "missing": "Missing",
+    "sold": "Sold",
+    "stockedOut": "StockedOut",
+    "reserved": "Reserved"
+  },
+
+  "tileLabels": {
+    "available": "Available",
+    "received": "Received",
+    "incoming": "Incoming",
+    "damaged": "Damaged",
+    "disputed": "Disputed",
+    "missing": "Missing",
+    "sold": "Sold",
+    "stockedOutOther": "Stocked out (others)",
+    "reserved": "Reserved"
+  },
+
+  "successMessages": {
+    "ramKingstonStockedIn": "RAM Automation Cat (Kingston, DDR4) stocked in successfully",
+    "ramHyperXStockedIn": "RAM Automation Cat (HyperX, DDR3) stocked in successfully",
+    "thinkPadStockedIn": "Laptop Automation Cat stocked in successfully",
+    "eliteBookStockedIn": "Laptop Automation Cat stocked in successfully"
+  }
+}
