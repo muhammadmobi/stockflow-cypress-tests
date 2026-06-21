@@ -1,0 +1,222 @@
+[
+  {
+    "id": "SW_INC_038",
+    "rowNum": 136,
+    "data": [
+      null,
+      "Smoke",
+      "Check-In by Quantity (Stock In)",
+      "SW_INC_038",
+      "Stock in full expected quantity (5) for a RAM Automation Cat product and verify Received and Available both increase by 5 and Incoming becomes 0",
+      "1. Navigate to Incoming Inventory and select PO-Automation-Tests.\n2. Locate the RAM Automation Cat product (Corsair, DDR5) row.\n3. Open the 3-dot menu → \"Stock In\" (Check-In).\n4. Enter Quantity: 5.\n5. Click Submit.",
+      "PO: PO-Automation-Tests\nProduct: RAM Automation Cat (Corsair, DDR5) | Expected Qty: 5\nStock-in Qty: 5",
+      "User is logged in as Admin.\nPO-Automation-Tests is Open.\nRAM Automation Cat product (RAM Brand: Corsair, Memory Generation: DDR5) is already imported to PO-Automation-Tests with Expected Qty = 5 and Received = 0.",
+      null,
+      "1. Success toast: \"Quantity '5' stocked in for Corsair DDR5\".\n2. Received = 5, Available = 5, Incoming = 0 for this product in the list.",
+      null,
+      null,
+      null,
+      "Positive"
+    ]
+  },
+  {
+    "id": "SW_INC_039",
+    "rowNum": 137,
+    "data": [
+      null,
+      "Regression",
+      "Check-In by Quantity (Stock In)",
+      "SW_INC_039",
+      "Partially stock-in qty 2 out of 5 expected for a product and verify Received, Available, and Incoming update correctly.",
+      "1. Import a new RAM Automation Cat product (Kingston, DDR4) into PO-Automation-Tests with Expected Qty = 5.\n2. Navigate to Incoming Inventory and select PO-Automation-Tests.\n3. Locate the RAM Automation Cat product (Kingston, DDR4) row.\n4. Open the 3-dot menu → \"Stock In\".\n5. Enter Quantity: 2.\n6. Click Submit.",
+      "PO: PO-Automation-Tests\nProduct: RAM Automation Cat (Kingston, DDR4) | Expected Qty: 5 | Current Received: 0\nStock-in Qty: 2",
+      "User is logged in as Admin.\nPO-Automation-Tests is Open.\nPrerequisite: Import RAM Automation Cat product (Kingston, DDR4) into PO-Automation-Tests with Expected Qty = 5 and Received = 0 (do not reuse the Corsair DDR5 product from other tests).",
+      "Delete the imported product from PO-Automation-Tests after this test.",
+      "1. Success toast: \"Quantity '2' stocked in for Kingston DDR4\".\n2. Received = 2, Available = 2, Incoming = 3.",
+      null,
+      null,
+      null,
+      "Positive"
+    ]
+  },
+  {
+    "id": "SW_INC_040",
+    "rowNum": 138,
+    "data": [
+      null,
+      "Regression",
+      "Check-In by Quantity (Stock In)",
+      "SW_INC_040",
+      "Verify that entering quantity 0 in the Check-In form shows an error and does not perform stock-in",
+      "1. Navigate to Incoming Inventory and select PO-Automation-Tests.\n2. Open the 3-dot menu → \"Stock In\" for the RAM Automation Cat product.\n3. Enter Quantity: 0.\n4. Click Submit.",
+      "Stock-in Qty: 0",
+      "User is logged in as Admin.\nPO-Automation-Tests is Open.\nRAM Automation Cat product (RAM Brand: Corsair, Memory Generation: DDR5) is already imported to PO-Automation-Tests with Expected Qty = 5 and Received = 0.",
+      null,
+      "1. Error should be shown on tool tip :\"Value must be greater than or equal to 1.\"",
+      null,
+      null,
+      null,
+      "Negative"
+    ]
+  },
+  {
+    "id": "SW_INC_041",
+    "rowNum": 139,
+    "data": [
+      null,
+      "Regression",
+      "Check-In by Quantity (Stock In)",
+      "SW_INC_041",
+      "Verify that entering a stock-in quantity greater than the current incoming quantity shows the appropriate error toast",
+      "1. Navigate to Incoming Inventory and select PO-Automation-Tests.\n2. Confirm RAM Automation Cat product has Expected = 5 and Received = 0 (Incoming = 5).\n3. Open 3-dot menu → \"Stock In\".\n4. Enter Quantity: 10 (greater than Incoming = 5).\n5. Click Submit.",
+      "Product: RAM Automation Cat (Corsair, DDR5)\nIncoming Qty: 5 | Stock-in Qty attempted: 10",
+      "User is logged in as Admin.\nPO-Automation-Tests is Open.\nRAM Automation Cat product (RAM Brand: Corsair, Memory Generation: DDR5) is already imported to PO-Automation-Tests with Expected Qty = 5 and Received = 0.",
+      null,
+      "1. Error toast Message appears: \"Cannot check-in quantity \"quantity\" for \"Product Name\" as it exceeds the expected quantity.\n2. Product Quantities remain unchanged.",
+      null,
+      null,
+      null,
+      "Negative"
+    ]
+  },
+  {
+    "id": "SW_INC_042",
+    "rowNum": 140,
+    "data": [
+      null,
+      "Regression",
+      "Check-In by Quantity (Stock In)",
+      "SW_INC_042",
+      "Verify that attempting Check-In on a product in a Closed PO results in an error.",
+      "1. Navigate to Incoming Inventory and select PO-Closed-Tests.\n2. Locate the RAM Automation Cat product (Corsair, DDR5) in the product list.\n3. Open 3-dot menu → \"Stock In\".\n4. Enter Quantity: 2.\n5. Click Submit.",
+      "PO: PO-Closed-Tests (Status = Closed)\nProduct: RAM Automation Cat (Corsair, DDR5)\nStock-in Qty: 2",
+      "User is logged in as Admin.\nPO-Closed-Tests exists and its Status = Closed.\nRAM Automation Cat product exists in PO-Closed-Tests.",
+      null,
+      "1. Error returned: \"PO PO-Closed-Tests is closed.\"\n2. Received quantity is not changed.",
+      null,
+      null,
+      null,
+      "Negative"
+    ]
+  },
+  {
+    "id": "SW_INC_043",
+    "rowNum": 141,
+    "data": [
+      null,
+      "Regression",
+      "Check-In by Quantity (Stock In)",
+      "SW_INC_043",
+      "Verify that stocking-in a surplus quantity (more than expected) is allowed and Available exceeds Expected in the product list",
+      "1. Navigate to Incoming Inventory and select PO-Automation-Tests.\n2. Confirm RAM Automation Cat product (Corsair, DDR5) has Expected = 5 and Received = 0.\n3. Open 3-dot menu → \"Stock In\".\n4. Enter Quantity: 8 (surplus — 3 more than expected = 5).\n5. Click Submit.",
+      "Product: RAM Automation Cat (Corsair, DDR5)\nExpected Qty: 5 | Stock-in Qty: 8 (surplus)",
+      "User is logged in as Admin.\nPO-Automation-Tests is Open.\nRAM Automation Cat product (RAM Brand: Corsair, Memory Generation: DDR5) is already imported to PO-Automation-Tests with Expected Qty = 5 and Received = 0.",
+      null,
+      "1. Success toast: \"Quantity '8' stocked in for Corsair DDR5\".\n2. Received = 8, Available = 8, Incoming = -3.\n3. Surplus counter on the PO (Surplus Qty) increases by 3 on the Purchase Orders page.",
+      null,
+      null,
+      null,
+      "Positive"
+    ]
+  },
+  {
+    "id": "SW_INC_044",
+    "rowNum": 143,
+    "data": [
+      null,
+      "Smoke",
+      "Product Item Stock In test using quantity.",
+      "SW_INC_044",
+      "Stock In product of product Item using quantity equal to expected quantity. received quantity increases , available increases and Incoming decreases other quantities dont change like missing , damage , disputes , sold , stock out others",
+      "1. Navigate to Incoming Inventory → Select PO-StockInItem-01.\n2. Confirm Laptop Automation Cat has Expected = 2, Received = 0, Incoming = 2.\n3. Open 3-dot menu on the Laptop Automation Cat row → Click Stock In.\n4. Enter Quantity: 2.\n5. Click Submit.",
+      "PO: PO-StockInItem-01\nProduct: Laptop Automation Cat | Model Number: ThinkPad X1 Carbon | Brand: Lenovo | Cost: 1500.00 | Price: 2500.00\nExpected Qty: 2 | Stock-in Qty: 2 (equal to expected)",
+      "User is logged in as Admin.\nImport prerequisite:\n  1. Prepare an Excel import file with 1 row (quantity check-in enabled for item without SN):\n     - Category=Laptop Automation Cat | Model Number=ThinkPad X1 Carbon | Brand=Lenovo | Cost=1500.00 | Price=2500.00 | Support Contact=support@lenovo.com | Quantity=2\n  2. Navigate to Incoming Inventory → Click Import.\n  3. Enter PO Number: PO-StockInItem-01.\n  4. Upload the Excel file → Click Upload → Click OK.\n  5. Verify import success.\nPre-action:\n  6. Navigate to Incoming Inventory → Select PO-StockInItem-01.\n  7. Verify Product: Expected = 2, Received = 0, Incoming = 2.",
+      "Delete the PO after this test.",
+      "1. Success toast is displayed.\n2. Product Received quantity increases to 2.\n3. Product Available quantity increases to 2.\n4. Product Incoming quantity decreases to 0.\n5. Expected quantity remains 2.\n6. Missing, Damaged, Disputed, Sold, Stocked Out (others) and Reserved count should be 0.\n7. PO total quantities reflect these accurate counts.",
+      null,
+      null,
+      null,
+      "Positive"
+    ]
+  },
+  {
+    "id": "SW_INC_045",
+    "rowNum": 144,
+    "data": [
+      null,
+      "Regression",
+      "Product Item Stock In test using quantity.",
+      "SW_INC_045",
+      "Stock In product of product Item using quantity less than expected quantity.",
+      "1. Navigate to Incoming Inventory → Select PO-StockInItem-02.\n2. Confirm Laptop Automation Cat has Expected = 2, Received = 0, Incoming = 2.\n3. Open 3-dot menu on the Laptop Automation Cat row → Click Stock In.\n4. Enter Quantity: 1.\n5. Click Submit.",
+      "PO: PO-StockInItem-02\nProduct: Laptop Automation Cat | Model Number: ThinkPad X1 Carbon | Brand: Lenovo | Cost: 1500.00 | Price: 2500.00\nExpected Qty: 2 | Stock-in Qty: 1 (less than expected)",
+      "User is logged in as Admin.\nImport prerequisite:\n  1. Prepare an Excel import file with 1 row:\n     - Category=Laptop Automation Cat | Model Number=ThinkPad X1 Carbon | Brand=Lenovo | Cost=1500.00 | Price=2500.00 | Support Contact=support@lenovo.com | Quantity=2\n  2. Navigate to Incoming Inventory → Click Import.\n  3. Enter PO Number: PO-StockInItem-02.\n  4. Upload the Excel file → Click Upload → Click OK.\n  5. Verify import success.\nPre-action:\n  6. Navigate to Incoming Inventory → Select PO-StockInItem-02.\n  7. Verify Product: Expected = 2, Received = 0, Incoming = 2.",
+      "Delete the PO after this test.",
+      "1. Success toast is displayed.\n2. Product Received quantity increases to 1.\n3. Product Available quantity increases to 1.\n4. Product Incoming quantity decreases to 1.\n5. Expected quantity remains 2.\n6. Missing, Damaged, Disputed, Sold, Stocked Out (others) and Reserved count should be 0.",
+      null,
+      null,
+      null,
+      "Positive"
+    ]
+  },
+  {
+    "id": "SW_INC_046",
+    "rowNum": 145,
+    "data": [
+      null,
+      "Regression",
+      "Product Item Stock In test using quantity.",
+      "SW_INC_046",
+      "Stock In product of product Item using quantity more than expected quantity. we will get error , Cannot check-in quantity \"1\" for product Name as it exceeds the expected quantity.",
+      "1. Navigate to Incoming Inventory → Select PO-StockInItem-03.\n2. Confirm Laptop Automation Cat has Expected = 2, Received = 0, Incoming = 2.\n3. Open 3-dot menu on the Laptop Automation Cat row → Click Stock In.\n4. Enter Quantity: 3.\n5. Click Submit.",
+      "PO: PO-StockInItem-03\nProduct: Laptop Automation Cat | Model Number: ThinkPad X1 Carbon | Brand: Lenovo | Cost: 1500.00 | Price: 2500.00\nExpected Qty: 2 | Stock-in Qty: 3 (more than expected)",
+      "User is logged in as Admin.\nImport prerequisite:\n  1. Prepare an Excel import file with 1 row:\n     - Category=Laptop Automation Cat | Model Number=ThinkPad X1 Carbon | Brand=Lenovo | Cost=1500.00 | Price=2500.00 | Support Contact=support@lenovo.com | Quantity=2\n  2. Navigate to Incoming Inventory → Click Import.\n  3. Enter PO Number: PO-StockInItem-03.\n  4. Upload the Excel file → Click Upload → Click OK.\n  5. Verify import success.\nPre-action:\n  6. Navigate to Incoming Inventory → Select PO-StockInItem-03.\n  7. Verify Product: Expected = 2, Received = 0, Incoming = 2.",
+      "Delete the PO after this test.",
+      "1. Submission is blocked and returns an error.\n2. Error message displayed: Cannot check-in quantity \"1\" for product ThinkPad X1 Carbon as it exceeds the expected quantity.\n3. Product quantities do not change.",
+      null,
+      null,
+      null,
+      "Negative"
+    ]
+  },
+  {
+    "id": "SW_INC_047",
+    "rowNum": 146,
+    "data": [
+      null,
+      "Regression",
+      "Product Item Stock In test using quantity.",
+      "SW_INC_047",
+      "Stock In product of product Item using negative quantity. Tooltip error appear on UI Value must be greater or equal to 1.",
+      "1. Navigate to Incoming Inventory → Select PO-StockInItem-04.\n2. Open 3-dot menu on the Laptop Automation Cat row → Click Stock In.\n3. Enter Quantity: -1.\n4. Click Submit.",
+      "PO: PO-StockInItem-04\nStock-in Qty: -1",
+      "User is logged in as Admin.\nImport prerequisite:\n  1. Prepare an Excel file with Laptop product Qty=2.\n  2. Import under PO-StockInItem-04.\n  3. Verify import success.",
+      "Delete the PO after this test.",
+      "1. Tooltip error appear on UI Value must be greater or equal to 1.\n2. Submission is blocked.\n3. Product quantities do not change.",
+      null,
+      null,
+      null,
+      "Negative"
+    ]
+  },
+  {
+    "id": "SW_INC_048",
+    "rowNum": 147,
+    "data": [
+      null,
+      "Regression",
+      "Product Item Stock In test using quantity.",
+      "SW_INC_048",
+      "Stock In product of product Item using 0 quantity. Tooltip error appear on UI Value must be greater or equal to 1.",
+      "1. Navigate to Incoming Inventory → Select PO-StockInItem-05.\n2. Open 3-dot menu on the Laptop Automation Cat row → Click Stock In.\n3. Enter Quantity: 0.\n4. Click Submit.",
+      "PO: PO-StockInItem-05\nStock-in Qty: 0",
+      "User is logged in as Admin.\nImport prerequisite:\n  1. Prepare an Excel file with Laptop product Qty=2.\n  2. Import under PO-StockInItem-05.\n  3. Verify import success.",
+      "Delete the PO after this test.",
+      "1. Tooltip error appear on UI Value must be greater or equal to 1.\n2. Submission is blocked.\n3. Product quantities do not change.",
+      null,
+      null,
+      null,
+      "Negative"
+    ]
+  }
+]
