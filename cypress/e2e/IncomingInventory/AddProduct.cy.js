@@ -51,7 +51,7 @@ import {
  *   SW-IMP-ADD-TC18 — Search specificity: add ThinkPad-X1 (not X390) to PO
  *   SW-IMP-ADD-TC19 — Brand-only search regression (both products shown)
  *
- * Few-shot reference: ViewItemsAndDetailsTests.cy.js
+ * Related spec: ViewItemsAndDetailsTests.cy.js
  */
 
 const LOG_FILE = "cypress/logs/AddProduct-debug.log";
