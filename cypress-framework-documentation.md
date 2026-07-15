@@ -238,3 +238,25 @@ npx cypress run
 `cypress-mochawesome-reporter` writes per-spec JSON; `mochawesome-merge` + the
 report generator assemble a single HTML report. `npm run smoke-tests` runs the
 smoke suite and serves the report locally.
+
+---
+
+## 16. Coverage additions
+
+Additional suites layered on top of the core framework. All use faker-generated
+data (see `cypress/support/helpers/dataFactory.js`) so no fixed records are
+embedded, and every created resource is cleaned up in `after()`/in-test.
+
+**API (`cypress/e2e/api/`)**
+- `AuthSecurityAPI` — token issuance and protected-route guards (missing / malformed / empty Bearer).
+- `PurchaseOrderAPI` — PO create, list, active-number lookup, status filter, cleanup.
+- `AttributesBoundaryAPI` — equivalence-partition & boundary cases (name length, missing/invalid type, duplicates, unknown ids).
+- `ProductAPI` — product CRUD against a self-seeded product-only category.
+
+**UI validation & edge cases**
+- `Auth/LoginValidationTests` — masking, email-format, unknown credentials, whitespace, repeated failures, long-input boundary.
+- `Category/CategoryValidationTests` — unique create, duplicate rejection, discard-on-cancel, long / special-character names.
+- `Product/ProductValidationTests` — blocked submissions for missing category, missing required fields, negative cost, non-numeric quantity.
+- `WorkOrder/WorkOrderListTests` — column layout, breadcrumb, search empty-state, column sorting.
+
+Run just the API layer with `npm run cy:run:api`.

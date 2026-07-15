@@ -11,6 +11,8 @@
     "cy:run:report": "cypress run --reporter cypress-mochawesome-reporter",
     "cy:run:single": "cypress run --browser chrome --spec",
     "cy:run:smoke": "cypress run --browser chrome --spec \"cypress/e2e\" --env grepTags=@smoke",
+    "cy:run:regression": "cypress run --browser chrome --env grepTags=@regression",
+    "cy:run:api": "cypress run --browser chrome --spec \"cypress/e2e/api/**/*.cy.js\"",
     "merge-reports": "npx mochawesome-merge cypress/results/*.json > mochawesome.json",
     "generate-report": "npx marge mochawesome.json --reportDir mochawesome-report --inline",
     "serve-report": "http-server mochawesome-report",
