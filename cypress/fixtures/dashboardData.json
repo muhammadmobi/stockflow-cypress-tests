@@ -1,0 +1,110 @@
+{
+  "pageHeading": "Inventory Dashboard",
+  "pageSubtitle": "Overview of your inventory status and quick actions",
+  "endpoints": {
+    "reports": "/incoming-items/reports",
+    "inventoryValue": "/reports/inventory-value-report"
+  },
+  "sections": {
+    "financialOverview": "Financial Overview",
+    "systemOverview": "System Overview",
+    "inventoryQuantities": "Inventory Quantities",
+    "itemStatusOverview": "Item Status Overview"
+  },
+  "financialOverviewLabel": "Total Inventory Value",
+  "systemOverviewCards": [
+    "Total Products",
+    "Total Purchase Orders",
+    "Total Work Orders"
+  ],
+  "inventoryQuantityCards": [
+    "Expected Items",
+    "Available Items",
+    "Received Items",
+    "Reserved Items",
+    "Incoming Items"
+  ],
+  "inventoryQuantityFilterLabels": [
+    "Expected",
+    "Available",
+    "Received",
+    "Reserved",
+    "Incoming"
+  ],
+  "itemStatusCards": [
+    "Damaged Items",
+    "Disputed Items",
+    "Missing Items",
+    "Sold Items",
+    "Stocked out (others)"
+  ],
+  "itemStatusFilterLabels": [
+    "Damaged",
+    "Disputed",
+    "Missing",
+    "Sold",
+    "Stocked out (others)"
+  ],
+  "kpiCardLabels": [
+    "Total Inventory Value",
+    "Total Products",
+    "Purchase Orders",
+    "Work Orders"
+  ],
+  "dashboardCardTitles": {
+    "stockMovement": "Stock Movement",
+    "warehouseUtilization": "Warehouse Utilization",
+    "inventoryOverview": "Inventory Overview",
+    "itemStatus": "Item Status",
+    "poHealth": "Purchase Order Health",
+    "workOrders": "Work Orders",
+    "assetTracking": "Asset Tracking"
+  },
+  "timeRangeLabels": [
+    "All",
+    "Last 7 Days",
+    "Last 30 Days",
+    "This Quarter",
+    "Custom"
+  ],
+  "inventoryOverviewRows": [
+    "Expected",
+    "Available",
+    "Incoming Stock",
+    "Reserved Stock"
+  ],
+  "itemStatusRows": [
+    "Damaged Items",
+    "Missing Items",
+    "Disputed Items"
+  ],
+  "poHealthRows": [
+    "Total POs",
+    "Open POs",
+    "Closed POs"
+  ],
+  "workOrderRows": [
+    "Open",
+    "Closed",
+    "Cancelled"
+  ],
+  "assetTrackingRows": [
+    "Total Assets",
+    "Active Components",
+    "Reassembled"
+  ],
+  "customDateRange": {
+    "validFrom": "2026-01-01",
+    "validTo": "2026-03-31"
+  },
+  "trendsEpBva": {
+    "bvaLowerValid": 1,
+    "bvaUpperValid": 90
+  },
+  "kpiDecisionTable": {
+    "c1Neither": {},
+    "c2Both": { "startDate": "2025-01-01", "endDate": "2025-03-31" },
+    "c3StartOnly": { "startDate": "2025-01-01" },
+    "c4EndOnly": { "endDate": "2025-03-31" }
+  }
+}
