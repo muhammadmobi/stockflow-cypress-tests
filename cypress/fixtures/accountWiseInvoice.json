@@ -1,0 +1,86 @@
+{
+  "sales_person": [],
+  "additional_surcharges": [],
+  "custom_fields": {},
+  "customer_id": "06f989f9-307d-49e0-89cf-0c2bd479d52b",
+  "customer_name": "Crumble",
+  "tax": 0,
+  "discount": 0,
+  "status": "Sent",
+  "email": [
+    "testerprimary@yopmail.com",
+    "maria.khan@example.com",
+    "jane.smith@example.com"
+  ],
+  "subject": "",
+  "items": [
+    {
+      "account_id": "9b5d1162-5316-4133-bf25-3dc5aa6a7e07",
+      "account_name": "Revenue",
+      "item_id": "PLACEHOLDER",
+      "name": "",
+      "description": "PLACEHOLDER",
+      "item": "PLACEHOLDER",
+      "quantity": 1,
+      "price": 9.99,
+      "custom_fields": {
+        "partnumber": "PLACEHOLDER"
+      }
+    }
+  ],
+  "billing_address_1": "13 Drown StNewport, VT 05855, USA",
+  "billing_address_2": "Suite 100",
+  "billing_city": "New York",
+  "billing_state": "New York",
+  "billing_zip_code": "10001",
+  "billing_country": "United States",
+  "shipping_address_1": "456 Oak Avenue",
+  "shipping_address_2": "",
+  "shipping_city": "Los Angeles",
+  "shipping_state": "California",
+  "shipping_zip_code": "90001",
+  "shipping_country": "United States",
+  "from_address_1": "1 Example Way",
+  "from_address_2": "",
+  "from_city": "Springfield",
+  "from_state": "Illinois",
+  "from_zip_code": "62701",
+  "from_phone": "+1 555-555-0100",
+  "cc": [],
+  "bcc": [],
+  "order_id": "PLACEHOLDER",
+  "tax_type": "Exclusive",
+  "term": "NET 7",
+  "discount_type": "Percentage",
+  "invoice_date": "PLACEHOLDER",
+  "location": {
+    "id": "",
+    "name": ""
+  },
+  "metadata": {
+    "companyObject": {
+      "id": "e319e30e-d1cf-44bd-9e0c-bcd0ceb53285",
+      "name": "Example Logistics LLC",
+      "company_city": "Springfield",
+      "company_logo": "https://attachment.dev.test.example.com/api/v1/attachments/539b1bb8-96e8-4bac-9fe1-afb31dd290b3/download",
+      "company_email": "support@yopmail.com",
+      "company_phone": "+1 555-555-0100",
+      "company_state": "Illinois",
+      "company_country": "USA",
+      "company_zip_code": "62701",
+      "company_address_1": "1 Example Way",
+      "company_address_2": ""
+    },
+    "bankDetailsObject": {
+      "account_title": "Test Account Holder",
+      "account_number": "********",
+      "routing": "********",
+      "swift_code": "********",
+      "bank_name": "Test Bank"
+    },
+    "work_order": true,
+    "enable_online_payment": true,
+    "accountWiseItems": false
+  },
+  "creditMemo": []
+}
