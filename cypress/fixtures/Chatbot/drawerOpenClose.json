@@ -1,0 +1,14 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/02-DrawerOpenClose.cy.js. Drawer open/close transitions stub /chatbot/suggestions so the empty-state suggestion fetch does not flake the open-state assertions.",
+
+  "expectedCopy": {
+    "drawerTitle": "StockWise AI"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  }
+}
