@@ -1,0 +1,16 @@
+{
+  "manageTypes": {
+    "epDuplicateName": {
+      "description": "EP — already-exists partition: a name that resolves to a pre-existing type. The backend returns 400 Container type already exists and the FE surfaces it via toast.error().",
+      "suffix": "Dup"
+    },
+    "epUniqueName": {
+      "description": "EP — new unique name partition: a disposable name that has never been used. Resolves 201 and the new row appears in the modal list.",
+      "suffix": "Unq"
+    }
+  },
+  "deleteContainer": {
+    "loadDelta": 1,
+    "description": "One unit loaded into the container via POST /containers/:id/quantities so cur_items > 0, which disables the Delete icon button."
+  }
+}
