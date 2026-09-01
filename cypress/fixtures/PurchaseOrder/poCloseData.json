@@ -1,0 +1,76 @@
+{
+  "categories": {
+    "laptop": "Laptop Automation Cat",
+    "ram": "RAM Automation Cat"
+  },
+  "products": {
+    "ram": {
+      "brand": "Kingston",
+      "memoryGeneration": "DDR4",
+      "cost": "75.00",
+      "price": "120.00",
+      "supportContact": "help@brand.com",
+      "defaultQuantity": 5
+    },
+    "laptop": {
+      "modelNumber": "ThinkPad T14",
+      "brand": "Lenovo",
+      "cost": "1799.99",
+      "price": "2499.99",
+      "supportContact": "help@brand.com"
+    }
+  },
+  "seeding": {
+    "partialCheckIn": {
+      "expected": 5,
+      "received": 3,
+      "missing": 2
+    },
+    "fullCheckIn": {
+      "expected": 4,
+      "received": 4,
+      "missing": 0
+    },
+    "overCheckIn": {
+      "expected": 3,
+      "received": 5,
+      "extras": 2
+    },
+    "multiProduct": {
+      "product1Expected": 4,
+      "product1Received": 4,
+      "product1Damaged": 1,
+      "product2Expected": 6,
+      "product2Received": 5,
+      "product3Expected": 3,
+      "product3Received": 3
+    },
+    "statusIssues": {
+      "damaged": 1,
+      "disputed": 1
+    }
+  },
+  "verdicts": {
+    "perfectMatch": "Perfect Match",
+    "quantityMismatch": "Quantity Mismatch",
+    "costMismatch": "Cost Mismatch",
+    "costQtyMismatch": "Cost & Quantity Mismatch"
+  },
+  "closureReasons": [
+    "vendor-shortage",
+    "never-shipped",
+    "lost-in-transit",
+    "backorder-cancelled",
+    "partial-cancellation",
+    "expected-next-shipment",
+    "other"
+  ],
+  "toasts": {
+    "poClosedSuccess": "Purchase order closed."
+  },
+  "listPage": {
+    "tabLabel": "Purchase Orders",
+    "openStatus": "Open",
+    "closedStatus": "Closed"
+  }
+}
