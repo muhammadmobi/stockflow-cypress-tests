@@ -1,0 +1,7 @@
+{
+  "assignToLocation": {
+    "description": "Use Case — full lifecycle: create type + container + bin chain via API, assign container to Bin via UI, delete via UI, verify in Recycle Bin, restore, confirm location reset to Unassigned.",
+    "typeSuffix": "IntE2E",
+    "locationUnassignedLabel": "Unassigned"
+  }
+}
