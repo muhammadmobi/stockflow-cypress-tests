@@ -1,0 +1,153 @@
+{
+  "_comment": "Asset ID module test data, organised by ISTQB partition / boundary / decision-column (cypress/qa/SKILL.md §9). Nothing here is production data — every serial, PO and asset code the specs use is generated at runtime with a Date.now() suffix. Every key below is referenced by at least one spec: unused test data is dead weight that drifts out of step with the app, so keys that could not be reached (the 'Please select a PO/category/product' toasts, which the disabled action buttons make unreachable, and the 'no categories configured with allowItems' banner, which needs a bespoke environment) were removed rather than left as decoration. Route paths are NOT here either — a page object owns its own route.",
+  "labelQuantity": {
+    "_comment": "product-asset-id.service.ts guards: !Number.isInteger(q) || q <= 0 -> 400 'Quantity must be a positive integer'; q > 200 -> 400 'Label quantity must be 200 or less'. 3-value BVA on both ends.",
+    "bvaLowerInvalid": 0,
+    "bvaLowerValid": 1,
+    "bvaLowerValidPlusOne": 2,
+    "bvaUpperValid": 200,
+    "bvaUpperInvalid": 201,
+    "epNegative": -5,
+    "epFractional": 1.5,
+    "epTypical": 3,
+    "epContainerOverflow": 3
+  },
+  "categoryFilter": {
+    "_comment": "getProductsForAssetIdCategory + every create/preview path require Number.isInteger(categoryId) && categoryId > 0, then a categories row, then allowItems.",
+    "epZero": 0,
+    "epNegative": -1,
+    "epNonInteger": "notanumber",
+    "epUnknownId": 99999999
+  },
+  "productFilter": {
+    "epZero": 0,
+    "epUnknownId": 99999999
+  },
+  "poNumber": {
+    "_comment": "generateAssetIdsFromPo / previewAssetIdsFromPo reject the reserved buckets case-insensitively before touching the DB, and reject an empty PO before that.",
+    "epReservedDefault": "Default",
+    "epReservedManual": "Manual",
+    "epReservedDefaultLowercase": "default",
+    "epUnknown": "PO-AID-DOES-NOT-EXIST-000",
+    "epEmpty": ""
+  },
+  "serialNumber": {
+    "epUnknown": "SN-AID-DOES-NOT-EXIST-000",
+    "epEmpty": "   "
+  },
+  "assetCode": {
+    "epUnknown": "AID-CODE-DOES-NOT-EXIST-000",
+    "bvaMaxCodesInvalid": 201
+  },
+  "assetIdFormat": {
+    "_comment": "assetId = `${siteToken}-${parentToken}-${categoryToken}-${uniqueCode}` where uniqueCode = 'A' + a 6-digit zero-padded sequence (product-asset-id.service.ts). categoryToken normalises non-alphanumerics to '_', the site/parent tokens to '-'.",
+    "uniqueCodePattern": "^A\\d{6}$",
+    "categoryTokenLaptop": "LAPTOP_AUTOMATION_CAT"
+  },
+  "statuses": {
+    "_comment": "Backend/src/constant.ts InventoryStatus — only the values these flows read or write. `reserved` is written by work-orders/scan, not by any asset-id route, but the Search Life Cycle suite asserts it because reserving is one of the inventory operations the lifecycle has to report.",
+    "available": "Available",
+    "consumed": "Consumed",
+    "damaged": "Damaged",
+    "stockedOut": "StockedOut",
+    "reserved": "Reserved"
+  },
+  "lineage": {
+    "_comment": "items.lineage.flow identifies which screen minted an item; sourceType says what it was minted FROM.",
+    "flowGenerateFromPo": "GENERATE_ASSET_ID",
+    "flowDisassembly": "DISASSEMBLY",
+    "flowSingleGenerate": "SINGLE_GENERATE_ASSET_ID",
+    "sourceTypePo": "PO",
+    "sourceTypeItem": "ITEM"
+  },
+  "container": {
+    "_comment": "maxItemsTight is deliberately smaller than labelQuantity.epContainerOverflow so the capacity branch (assignmentWarning / partial assignment) is exercised.",
+    "maxItemsRoomy": 50,
+    "maxItemsTight": 1
+  },
+  "lifecycle": {
+    "_comment": "Search Life Cycle (GET /products/asset-id/lifecycle/:assetId). Unlike every other asset-id route this one does NOT use the `200 + success:false` envelope-failure convention — it throws, so the wire status IS the contract. See sub/search-lifecycle-plan.md §1.3 fact 8.",
+    "identifier": {
+      "_comment": "EP partitions of the single path parameter. `epBlank` is three spaces: the service trims before the empty check, so it is the lower boundary of the trimmed-length partition, not merely another invalid string.",
+      "epUnknown": "AID-LIFECYCLE-DOES-NOT-EXIST-000",
+      "epBlank": "   "
+    },
+    "sections": {
+      "_comment": "The ten top-level keys the response always carries (service :3175-3226). Asserted as a set by API-TC08 so a section that silently disappears is caught even when no test reads it yet.",
+      "all": [
+        "searchTerm",
+        "item",
+        "purchaseOrder",
+        "parentItem",
+        "warehouse",
+        "workOrders",
+        "reassembly",
+        "disassembledComponents",
+        "reassembledComponents",
+        "timeline"
+      ],
+      "alwaysArrays": [
+        "workOrders",
+        "disassembledComponents",
+        "reassembledComponents",
+        "timeline"
+      ]
+    },
+    "timelineTypes": {
+      "_comment": "The three sources the timeline unions (plan §1.2). `type` is set by the service, not by the DB, so these are exact.",
+      "audit": "AUDIT",
+      "warehouseAudit": "WAREHOUSE_AUDIT",
+      "movement": "MOVEMENT",
+      "all": [
+        "AUDIT",
+        "WAREHOUSE_AUDIT",
+        "MOVEMENT"
+      ]
+    },
+    "actions": {
+      "_comment": "Substrings matched against a timeline entry's `action`, all verified against live QA responses. Audit actions are built by interpolation (`MARKED AS DAMAGED`, `RESERVED FOR WORK ORDER WO-10`), so these are fragments rather than equalities. Two traps are baked in here. (1) `auditItemCreate` is the per-item action a batch generate writes — NOT `ASSET_ID_BATCH_GENERATE`, which is written with entityID = the PO NUMBER and therefore never reaches an item's timeline. (2) `movementStockOut` is the stock-out REASON, because product-stock-out.service.ts sets `movementType: reason`; the literal 'STOCKOUT' only ever appears on the AUDIT entry (plan §1.3 fact 7).",
+      "auditItemCreate": "ASSET_ID_ITEM_CREATE",
+      "auditDisassemblyCreate": "ASSET_ID_DISASSEMBLY_CREATE",
+      "auditReassemblyLink": "ASSET_ID_REASSEMBLY_LINK",
+      "auditStockOut": "STOCKOUT",
+      "auditRestock": "RESTOCK",
+      "auditMarkedDamaged": "MARKED AS DAMAGED",
+      "auditCascade": "CONSUMED_CASCADE_STOCKOUT",
+      "auditReservedForWo": "RESERVED FOR WORK ORDER",
+      "movementStockOut": "Sold",
+      "movementChangeStatus": "CHANGE_STATUS",
+      "movementRestock": "RESTOCK",
+      "warehouseAssign": "SCAN_ASSIGN_ITEM",
+      "workOrderTextMarker": "WORK ORDER"
+    },
+    "stockOutReason": {
+      "_comment": "REASONS enum, Backend/src/constant.ts. `Sold` is the only value that is safe on QA — the BTO reasons route through an external integration.",
+      "sold": "Sold"
+    },
+    "ui": {
+      "_comment": "Strings AssetIdSearch.tsx renders verbatim. The error toast text is the SERVER's message surfaced through `error?.response?.data?.error?.message`, so it quotes the searched term — matching on the term is what proves the server message reached the user rather than a generic client fallback.",
+      "flowLabelGenerate": "Generate Asset ID",
+      "flowLabelDisassembly": "Disassembly",
+      "timelineLabelStockOut": "Stock Out",
+      "zeroCost": "0.00",
+      "timelineLabelItemCreate": "Asset ID Created"
+    }
+  },
+  "ui": {
+    "toasts": {
+      "invalidQuantity": "Please enter a valid label quantity",
+      "quantityOverMax": "Label quantity must be 200 or less",
+      "enterSerial": "Please enter a serial number",
+      "scanAssetCode": "Please scan an asset code",
+      "duplicateAssetCode": "This asset code is already scanned",
+      "previewReady": "Preview ready",
+      "foundProduct": "Found product",
+      "_noItemsFoundComment": "There are TWO different 'no items found' strings and the difference matters. The backend 404s with `No items found for serial number \"<sn>\"` and the FE surfaces that server message verbatim; the FE's OWN `No items found for this serial number` fires only when the request SUCCEEDS with an empty foundItems array. An unknown serial produces the FIRST one, so asserting the second passes for the wrong reason. Specs match the shared prefix below.",
+      "noItemsFoundPrefix": "No items found for"
+    },
+    "alerts": {
+      "noAssetCodesScanned": "No asset codes scanned yet.",
+      "scanSerialFirst": "Scan a serial number first to enable asset code scanning."
+    }
+  }
+}
