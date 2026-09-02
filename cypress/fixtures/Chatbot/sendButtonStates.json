@@ -1,0 +1,22 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/05-SendButtonStates.cy.js. BVA on input length: empty (TC10), whitespace-only (TC11), and 5000-char paste (TC12). The 5000-char string is generated in the spec body via 'a'.repeat(5000) so we don't bloat the fixture.",
+
+  "input": {
+    "epWhitespace": "     "
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epHappyText": {
+      "response": "We have 42 SKUs available right now.",
+      "source": "template",
+      "messageId": "stub-msg-text-001"
+    }
+  }
+}
