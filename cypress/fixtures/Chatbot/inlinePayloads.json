@@ -1,0 +1,83 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/07-InlinePayloads.cy.js. Decision-table partitions: assistant payload with `data` (TC14 → ChatDataTable) and assistant payload with `chartConfig` (TC15 → ChatChart).",
+
+  "input": {
+    "epShortText": "What is in stock?"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epWithTable": {
+      "response": "Top 3 products by quantity:",
+      "data": [
+        { "product": "Widget A", "quantity": 120 },
+        { "product": "Widget B", "quantity": 95  },
+        { "product": "Widget C", "quantity": 60  }
+      ],
+      "source": "generated",
+      "messageId": "stub-msg-table-002"
+    },
+
+    "epWithChart": {
+      "response": "Stock distribution by category:",
+      "chartConfig": {
+        "type": "bar",
+        "xKey": "category",
+        "yKeys": ["count"],
+        "data": [
+          { "category": "Hardware", "count": 30 },
+          { "category": "Tools",    "count": 22 },
+          { "category": "Misc",     "count": 11 }
+        ]
+      },
+      "source": "generated",
+      "messageId": "stub-msg-chart-003"
+    },
+
+    "epStreamPrediction": {
+      "content": "Stockout risk forecast: 2 products need attention in the next 30 days.",
+      "response": "Stockout risk forecast: 2 products need attention in the next 30 days.",
+      "data": [
+        {
+          "Product": "HP EliteDesk 800 G5",
+          "Category": "Desktops",
+          "Risk Level": "Critical",
+          "Confidence": "High",
+          "Available": 5,
+          "Avg Daily Demand": 1.5,
+          "Days of Cover": 3.3,
+          "Predicted Stockout Date": "May 15, 2026"
+        },
+        {
+          "Product": "Lenovo ThinkPad T14",
+          "Category": "Laptops",
+          "Risk Level": "High",
+          "Confidence": "Medium",
+          "Available": 2,
+          "Avg Daily Demand": 0.2,
+          "Days of Cover": 10,
+          "Predicted Stockout Date": "May 22, 2026"
+        }
+      ],
+      "chartConfig": {
+        "type": "bar",
+        "xKey": "product",
+        "yKeys": ["daysOfCover"],
+        "title": "Days of Cover by Product",
+        "data": [
+          { "product": "HP EliteDesk 800 G5", "daysOfCover": 3.3 },
+          { "product": "Lenovo ThinkPad T14", "daysOfCover": 10 }
+        ]
+      },
+      "thinking": "Looking up inventory -> 2 records found",
+      "source": "template",
+      "messageId": "stub-msg-prediction-004"
+    }
+  }
+}
