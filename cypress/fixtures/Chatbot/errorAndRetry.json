@@ -1,0 +1,22 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/10-ErrorAndRetry.cy.js. TC19 covers the error-guessing path: a 5xx on /chatbot/message must surface the retry affordance; clicking retry must re-fire the request and recover.",
+
+  "input": {
+    "epShortText": "What is in stock?"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epRetrySuccess": {
+      "response": "Recovery succeeded — here's the latest stock summary.",
+      "source": "template",
+      "messageId": "stub-msg-retry-004"
+    }
+  }
+}
