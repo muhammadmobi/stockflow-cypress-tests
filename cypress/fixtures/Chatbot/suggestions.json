@@ -1,0 +1,18 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/03-Suggestions.cy.js. TC06 verifies the chip-render count for the empty-conversation partition; TC07 verifies that clicking a chip fires the send flow with the chip text as the message body.",
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epHappyText": {
+      "response": "We have 42 SKUs available right now.",
+      "source": "template",
+      "messageId": "stub-msg-text-001"
+    }
+  }
+}
