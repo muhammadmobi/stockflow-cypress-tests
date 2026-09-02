@@ -1,0 +1,22 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/06-LoadingState.cy.js. TC13 stubs /chatbot/message with a 1500ms delay so the thinking indicator is observable mid-flight.",
+
+  "input": {
+    "epShortText": "What is in stock?"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epHappyText": {
+      "response": "We have 42 SKUs available right now.",
+      "source": "template",
+      "messageId": "stub-msg-text-001"
+    }
+  }
+}
