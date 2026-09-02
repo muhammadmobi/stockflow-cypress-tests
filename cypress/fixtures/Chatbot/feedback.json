@@ -1,0 +1,22 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/08-Feedback.cy.js. Decision-table feedback × rating: thumbs-up posts rating:'up' with messageId (TC16); thumbs-down posts rating:'down' with messageId (TC17). The visual filled-icon swap is intentionally not asserted (see page object notes).",
+
+  "input": {
+    "epShortText": "What is in stock?"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epHappyText": {
+      "response": "We have 42 SKUs available right now.",
+      "source": "template",
+      "messageId": "stub-msg-text-001"
+    }
+  }
+}
