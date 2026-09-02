@@ -1,0 +1,22 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/04-SendFlow.cy.js. Stubbed assistant replies match the ChatResponse shape produced by Backend/src/modules/chatbot/chatbot.service.ts: { response, data?, chartConfig?, source, thinking?, messageId? }.",
+
+  "input": {
+    "epShortText": "What is in stock?"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epHappyText": {
+      "response": "We have 42 SKUs available right now.",
+      "source": "template",
+      "messageId": "stub-msg-text-001"
+    }
+  }
+}
