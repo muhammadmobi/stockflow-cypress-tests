@@ -1,0 +1,38 @@
+{
+  "searchScenarios": {
+    "noResults": {
+      "searchTerm": "ZZZZZ-NONEXISTENT-99999",
+      "description": "Guaranteed non-existent serial — EP invalid partition"
+    }
+  },
+  "statusFilters": [
+    "Available",
+    "Received",
+    "Incoming",
+    "Damaged",
+    "Missing"
+  ],
+  "longSearchTerm": {
+    "length": 500,
+    "character": "A",
+    "description": "500-char input — error-guessing for oversized search terms"
+  },
+  "seed": {
+    "itemCount": 8,
+    "availableCount": 3,
+    "damagedCount": 1,
+    "missingCount": 1,
+    "incomingCount": 3,
+    "poPrefix": "PO-ISE",
+    "serialPrefix": "ISE",
+    "damageReason": "Physical Damage",
+    "product": {
+      "category": "Laptop Automation Cat",
+      "modelNumberPrefix": "ISE ThinkPad",
+      "brand": "Lenovo",
+      "cost": "1500",
+      "price": "2500",
+      "supportContact": "support@lenovo.com"
+    }
+  }
+}
