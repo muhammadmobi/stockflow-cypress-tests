@@ -1,0 +1,28 @@
+{
+  "_doc": "Fixture for cypress/e2e/Chatbot/11-ErrorBoundary.cy.js. Error-guessing partition: backend payload contract drift — chartConfig.data arrives as a string instead of an array, ChatChart.tsx throws inside data.map (line 44), and ChatErrorBoundary.tsx's getDerivedStateFromError catches it. The other chartConfig fields are well-formed so the early-return guard at ChatChart.tsx:41 does not short-circuit before the throw point.",
+
+  "input": {
+    "epShortText": "Show me stock by category"
+  },
+
+  "suggestions": {
+    "twoChips": [
+      "What's low on stock?",
+      "Show me today's POs"
+    ]
+  },
+
+  "stub": {
+    "epMalformedChart": {
+      "response": "Here is the breakdown:",
+      "chartConfig": {
+        "type": "bar",
+        "xKey": "category",
+        "yKeys": ["count"],
+        "data": "data should be an array but the backend serialized it as a string"
+      },
+      "source": "generated",
+      "messageId": "stub-msg-malformed-chart-005"
+    }
+  }
+}
