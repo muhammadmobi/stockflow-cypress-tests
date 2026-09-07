@@ -1,0 +1,26 @@
+{
+  "_doc": "ISTQB-partitioned test data for the consolidated Smart Stock In screen (/MobileViewScreen/smart-stock-in). Keys grouped by technique per cypress/qa/SKILL.md §9. Replaces the retired stockInItems.json / addByProduct.json / stockInProducts fixtures when the 4 Stock-In destinations merged into Smart Stock In (2026-06).",
+
+  "serialPrefix": "SSI",
+
+  "quantity": {
+    "_doc": "EP/BVA partitions for the selected-product Quantity field. The input strips non-digits on change (Frontend/src/components/SmartStockIn/index.tsx:1615), so alpha is filtered client-side and 0/negative are rejected by submitQuantity().",
+    "epValid": 1,
+    "epAlphaStripped": { "typed": "ab12cd", "kept": "12" },
+    "bvaZero": 0,
+    "addQty": 1
+  },
+
+  "emptyScanError": "Scan or enter a serial number",
+
+  "containerLocation": {
+    "_doc": "Config-gated Container/Location Assignment (enableContainerLocationAssignment). Container capacities and stock-in quantities chosen for BVA around the capacity boundary and for exact accumulation checks. Containers/locations/POs are all API-seeded per run — no key here is an environment id.",
+    "qtyContainer": 3,
+    "qtyLocation": 2,
+    "capBoundary": 2,
+    "capOver": 3,
+    "accumFirst": 2,
+    "accumSecond": 1,
+    "openContainerCapacity": null
+  }
+}
