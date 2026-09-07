@@ -1,0 +1,39 @@
+{
+  "ram": {
+    "category": "RAM Automation Cat",
+    "attributeLabel": "Memory Generation",
+    "epValid": {
+      "memoryGeneration": "DDR4",
+      "quantity": "5",
+      "cost": "45",
+      "price": "65",
+      "supportContact": "support@yopmail.com"
+    },
+    "epUpdated": {
+      "memoryGeneration": "DDR5-Updated"
+    }
+  },
+  "laptop": {
+    "category": "Laptop Automation Cat",
+    "attributeLabel": "Model Number",
+    "epValid": {
+      "modelNumber": "ThinkPad-X1"
+    },
+    "epUpdated": {
+      "modelNumber": "ThinkPad-X1-Updated"
+    },
+    "item": {
+      "cost": "1200",
+      "price": "1500"
+    }
+  },
+  "bvaQty": {
+    "bvaLowerInvalid": "0",
+    "bvaLowerValid": "1",
+    "bvaUpperValid": "9999"
+  },
+  "messages": {
+    "productCreated": "Product created",
+    "itemCreated": "Item(s) created"
+  }
+}
