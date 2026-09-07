@@ -1,0 +1,177 @@
+{
+  "_doc": "ISTQB-organized test data for the Inventory Actions screen (/MobileViewScreen). Keys are partitioned by technique (EP/decision-table/state-transition) per cypress/qa/SKILL.md §9.",
+
+  "epRootTilesNonSales": [
+    "Stock In",
+    "Stock Out",
+    "Inventory Management",
+    "Product Operations",
+    "Work Orders",
+    "Warehouse Management",
+    "Asset",
+    "Inventory Audit"
+  ],
+
+  "epAuditScanTile": "Inventory Audit",
+
+  "_stockInChangeNote": "Dev consolidation (2026-06): the 4 Stock-In sub-tiles (Stock In Items / Stock In Products / Add By Product / Product Listing) were merged into a single Smart Stock In flow. The root 'Stock In' tile now opens the PO picker directly and lands on /MobileViewScreen/smart-stock-in. The deep-link sub-menu (?menuGroup=stockIn) now renders a single 'Start Stock In' button.",
+
+  "stockInSubTiles": [
+    "Start Stock In"
+  ],
+
+  "smartStockInTile": "Start Stock In",
+  "smartStockInUrlIncludes": "/MobileViewScreen/smart-stock-in?poId=",
+
+  "stockOutSubTiles": [
+    "Stock Out Items",
+    "Stock Out Products",
+    "Stock Out by Product Scanning"
+  ],
+
+  "inventoryManagementSubTiles": [
+    "Restock Products",
+    "Restock",
+    "Mark Damaged Products",
+    "Scan Damaged Items"
+  ],
+
+  "warehouseSubTiles": [
+    "Assignment",
+    "Unassignment",
+    "View Contents",
+    "Print Labels"
+  ],
+
+  "warehouseAssignmentSubTiles": [
+    "Assign Items",
+    "Assign Products",
+    "Assign Container",
+    "Bulk Contents Move"
+  ],
+
+  "warehouseUnassignmentSubTiles": [
+    "Unassign Items",
+    "Unassign Products",
+    "Unassign Container"
+  ],
+
+  "assetSubTiles": [
+    "Asset Generation",
+    "Assembly",
+    "Disassembly"
+  ],
+
+  "decisionTableStockOut": {
+    "_doc": "Decision table for Stock-Out tile disabled state. Component disables all 3 Stock-Out sub-tiles when requireWorkOrderForStockOut is true. enablePoForStockOut routes 'Stock Out Products' through the PO picker when true.",
+    "C1_woFalse_poFalse": { "requireWorkOrderForStockOut": false, "enablePoForStockOut": false, "subTilesDisabled": false, "stockOutProductsViaPoPicker": false },
+    "C2_woFalse_poTrue":  { "requireWorkOrderForStockOut": false, "enablePoForStockOut": true,  "subTilesDisabled": false, "stockOutProductsViaPoPicker": true  },
+    "C3_woTrue_poFalse":  { "requireWorkOrderForStockOut": true,  "enablePoForStockOut": false, "subTilesDisabled": true,  "stockOutProductsViaPoPicker": false },
+    "C4_woTrue_poTrue":   { "requireWorkOrderForStockOut": true,  "enablePoForStockOut": true,  "subTilesDisabled": true,  "stockOutProductsViaPoPicker": false }
+  },
+
+  "decisionTableMarkDamaged": {
+    "_doc": "Decision table for Mark Damaged Products. enablePoForDamaging=true routes through PO picker; false navigates direct to MARK_DAMAGED_PRODUCTS_ROUTE.",
+    "C1_poDamageFalse": { "enablePoForDamaging": false, "viaPoPicker": false, "directRouteIncludes": "/MobileViewScreen/mark-damaged-products" },
+    "C2_poDamageTrue":  { "enablePoForDamaging": true,  "viaPoPicker": true }
+  },
+
+  "stateTransitionsMenuGroup": {
+    "_doc": "State-transition graph for menuGroup / menuSub URL params. Each row is a (from, event, to) triple.",
+    "valid": [
+      { "from": "root",                            "event": "click Stock In",                      "to": "menuGroup=stockIn" },
+      { "from": "menuGroup=stockIn",               "event": "click ← Back to Menu",                "to": "root" },
+      { "from": "root",                            "event": "click Warehouse Management",          "to": "menuGroup=warehouse" },
+      { "from": "menuGroup=warehouse",             "event": "click Assignment",                    "to": "menuGroup=warehouse&menuSub=assignment" },
+      { "from": "menuGroup=warehouse&menuSub=assignment", "event": "click ← Back to Warehouse",   "to": "menuGroup=warehouse" },
+      { "from": "menuGroup=warehouse",             "event": "click ← Back to Menu",                "to": "root" }
+    ],
+    "invalid": [
+      { "from": "root", "event": "set menuGroup=invalidGroup via URL", "to": "fallback to root tile menu (component renders no group sub-menu)" }
+    ]
+  },
+
+  "deepLinks": {
+    "stockInGroup": "?menuGroup=stockIn",
+    "warehouseAssignment": "?menuGroup=warehouse&menuSub=assignment",
+    "invalidGroup": "?menuGroup=bogus_does_not_exist"
+  },
+
+  "navigationContracts": {
+    "_doc": "Per-group table of (tileLabel → expectedUrlIncludes) for every reachable button on the screen. Each row becomes one it() block citing Use Case (actor-driven navigation contract). Destination CRUD is out of scope — covered by 08/12-17/IncomingInventory/Configuration/api specs per cypress/qa/SKILL.md §3.",
+    "_stockInRetired": "The 4-row stockIn nav-contract table (Stock In Items / Stock In Products / Add By Product / Product Listing) was retired when the screen consolidated to Smart Stock In. The single replacement contract (root 'Stock In' tile -> PO picker -> /MobileViewScreen/smart-stock-in) is asserted by the explicit SW-IA-TC13 it() block using smartStockInUrlIncludes above.",
+    "stockOutDirect": [
+      { "tileLabel": "Stock Out Items",                   "expectedUrlIncludes": "/StockOutBySerialNumber" },
+      { "tileLabel": "Stock Out Products",                "expectedUrlIncludes": "/MobileViewScreen/stock-out-products" },
+      { "tileLabel": "Stock Out by Product Scanning",     "expectedUrlIncludes": "/MobileViewScreen/sku-stock-out" }
+    ],
+    "inventoryManagementDirect": [
+      { "tileLabel": "Restock Products",      "expectedUrlIncludes": "/MobileViewScreen/restock-products" },
+      { "tileLabel": "Restock",               "expectedUrlIncludes": "/restock" },
+      { "tileLabel": "Mark Damaged Products", "expectedUrlIncludes": "/MobileViewScreen/mark-damaged-products" },
+      { "tileLabel": "Scan Damaged Items",    "expectedUrlIncludes": "/scanDamaged" }
+    ],
+    "productOperations": [
+      { "tileLabel": "Check Item Status", "expectedUrlIncludes": "/MobileViewScreen/scan-item-status" }
+    ],
+    "warehouseRoot": [
+      { "tileLabel": "View Contents", "expectedUrlIncludes": "/MobileViewScreen/view-contents" },
+      { "tileLabel": "Print Labels",  "expectedUrlIncludes": "/MobileViewScreen/print-asset" }
+    ],
+    "warehouseAssignment": [
+      { "tileLabel": "Assign Items",       "expectedUrlIncludes": "/MobileViewScreen/assign-items" },
+      { "tileLabel": "Assign Products",    "expectedUrlIncludes": "/MobileViewScreen/assign-products" },
+      { "tileLabel": "Assign Container",   "expectedUrlIncludes": "/MobileViewScreen/container-location" },
+      { "tileLabel": "Bulk Contents Move", "expectedUrlIncludes": "/MobileViewScreen/bulk-contents-move" }
+    ],
+    "warehouseUnassignment": [
+      { "tileLabel": "Unassign Items",     "expectedUrlIncludes": "/MobileViewScreen/unassign-items" },
+      { "tileLabel": "Unassign Products",  "expectedUrlIncludes": "/MobileViewScreen/unassign-products" },
+      { "tileLabel": "Unassign Container", "expectedUrlIncludes": "/MobileViewScreen/container-location" }
+    ],
+    "asset": [
+      { "tileLabel": "Asset Generation", "expectedUrlIncludes": "/asset-id" },
+      { "tileLabel": "Assembly",         "expectedUrlIncludes": "/asset-id/assembly" },
+      { "tileLabel": "Disassembly",      "expectedUrlIncludes": "/asset-id/disassembly" }
+    ],
+    "rootDirect": [
+      { "tileLabel": "Work Orders", "expectedUrlIncludes": "/MobileViewScreen/work-order" }
+    ],
+    "auditScanConditional": [
+      { "tileLabel": "Inventory Audit", "expectedUrlIncludes": "/MobileViewScreen/abc/audits" }
+    ]
+  },
+
+  "stubPoNumber": "PO-NAV-TEST",
+
+  "interceptedConfigs": {
+    "_doc": "Body shapes used by cy.intercept stubs for /configs, /inventory-audits/active, and /excel/po-numbers. Match the API envelope { statusCode, success, error, data } used backend-wide.",
+    "noActiveAudit":   { "statusCode": 200, "success": true, "error": null, "data": null },
+    "withActiveAudit": { "statusCode": 200, "success": true, "error": null, "data": { "id": "audit-stub-1" } },
+    "poNumbers": { "statusCode": 200, "success": true, "error": null, "data": { "poList": ["PO-NAV-TEST"] } },
+    "poNumbersMulti": { "statusCode": 200, "success": true, "error": null, "data": { "poList": ["PO-ALPHA", "PO-BETA", "XYZ-100"] } },
+    "workerPoList": { "statusCode": 200, "success": true, "error": null, "data": ["default", "PO-WORKER-1"] },
+    "generalConfig": {
+      "allFlagsFalse": {
+        "statusCode": 200, "success": true, "error": null,
+        "data": { "list": [ { "configJson": { "data": { "enablePoForDamaging": false, "enablePoForStockOut": false, "requireWorkOrderForStockOut": false } } } ] }
+      },
+      "stockOutBlocked": {
+        "statusCode": 200, "success": true, "error": null,
+        "data": { "list": [ { "configJson": { "data": { "enablePoForDamaging": false, "enablePoForStockOut": false, "requireWorkOrderForStockOut": true } } } ] }
+      },
+      "poForDamagingOn": {
+        "statusCode": 200, "success": true, "error": null,
+        "data": { "list": [ { "configJson": { "data": { "enablePoForDamaging": true, "enablePoForStockOut": false, "requireWorkOrderForStockOut": false } } } ] }
+      },
+      "poForStockOutOn": {
+        "statusCode": 200, "success": true, "error": null,
+        "data": { "list": [ { "configJson": { "data": { "enablePoForDamaging": false, "enablePoForStockOut": true, "requireWorkOrderForStockOut": false } } } ] }
+      },
+      "stockOutBlockedAndPoOn": {
+        "statusCode": 200, "success": true, "error": null,
+        "data": { "list": [ { "configJson": { "data": { "enablePoForDamaging": false, "enablePoForStockOut": true, "requireWorkOrderForStockOut": true } } } ] }
+      }
+    }
+  }
+}
