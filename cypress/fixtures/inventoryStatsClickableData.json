@@ -1,0 +1,32 @@
+{
+  "categories": {
+    "laptop": { "name": "Laptop Automation Cat" }
+  },
+  "statuses": ["Available", "Incoming", "Damaged", "Missing", "Disputed", "Reserved", "StockedOut"],
+  "badgeLabels": {
+    "Available":  "Available",
+    "Incoming":   "Incoming",
+    "Reserved":   "Reserved",
+    "Damaged":    "Damaged",
+    "Disputed":   "Disputed",
+    "Missing":    "Missing",
+    "StockedOut": "Stocked out (others)"
+  },
+  "apiStatusMap": {
+    "Available":  "Available",
+    "Incoming":   "Incoming",
+    "Damaged":    "Damaged",
+    "Missing":    "Missing",
+    "Disputed":   "Disputed",
+    "Reserved":   "Reserved",
+    "StockedOut": "StockedOut"
+  },
+  "stockOutReason": "Sold",
+  "stockOutDesc": "Stats clickable automation seed",
+  "workOrderDefaults": {
+    "partNumber": "SC-PART-001",
+    "fallbackProductName": "SC-Laptop-Seed"
+  },
+  "sessionKey": "inventoryProductStatusTab",
+  "reportsEndpoint": "/incoming-items/reports"
+}
