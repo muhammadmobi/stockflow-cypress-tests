@@ -1,0 +1,6 @@
+{
+  "_doc": "Stock Out Items mobile screen test data. Reasons list (TC80) is probed live from /configs?type=general; description text (TC82) and reference number (TC83) are fixed sample values.",
+
+  "sampleDescription": "Item returned due to damage during transit",
+  "sampleReferenceNumber": "12345"
+}
