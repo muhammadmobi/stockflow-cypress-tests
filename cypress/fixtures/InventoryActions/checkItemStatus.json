@@ -1,0 +1,10 @@
+{
+  "_doc": "Check Item Status status-matrix data. Each row is one InventoryStatus partition we probe for live. The probe (cy.iaProbeSerialWithStatus) hits /incoming-items/defective-reports?status=<status> at runtime — we don't pin a specific serial number here because QA data churns. If the probe returns null for a status the test calls this.skip(). Tests are read-only — no state mutation.",
+  "statusMatrix": [
+    { "tcId": "SW-IA-TC101", "status": "Incoming" },
+    { "tcId": "SW-IA-TC103", "status": "Missing" },
+    { "tcId": "SW-IA-TC104", "status": "Damaged" },
+    { "tcId": "SW-IA-TC105", "status": "Disputed" },
+    { "tcId": "SW-IA-TC106", "status": "Reserved" }
+  ]
+}
