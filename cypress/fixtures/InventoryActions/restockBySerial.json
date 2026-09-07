@@ -1,0 +1,16 @@
+{
+  "_doc": "Restock-by-serial status-matrix data. Each row probes a live serial in the source status; the test asserts the documented outcome (success → status=Available, error → session list shows source status). Backend only rejects Incoming, Available, and Reserved; Missing and Damaged/Disputed/StockedOut are allowed to restock.",
+
+  "successPaths": [
+    { "tcId": "SW-IA-TC110", "sourceStatus": "Damaged",    "expectedSessionStatus": "Scanned" },
+    { "tcId": "SW-IA-TC111", "sourceStatus": "Disputed",   "expectedSessionStatus": "Scanned" },
+    { "tcId": "SW-IA-TC113", "sourceStatus": "StockedOut", "expectedSessionStatus": "Scanned" },
+    { "tcId": "SW-IA-TC109", "sourceStatus": "Missing",    "expectedSessionStatus": "Scanned" }
+  ],
+
+  "errorPaths": [
+    { "tcId": "SW-IA-TC107", "sourceStatus": "Incoming"  },
+    { "tcId": "SW-IA-TC108", "sourceStatus": "Available" },
+    { "tcId": "SW-IA-TC112", "sourceStatus": "Reserved"  }
+  ]
+}
