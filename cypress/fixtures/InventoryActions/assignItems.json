@@ -1,0 +1,69 @@
+{
+  "_doc": "Assign Items mobile screen test data. Component: Frontend/src/components/AssignItems/index.tsx. Route: /MobileViewScreen/assign-items. The screen has two steps (target → items). Live containers/locations/serials are probed per spec; this fixture only holds static rule data.",
+
+  "route": "/MobileViewScreen/assign-items",
+
+  "headings": {
+    "scanQrToggle": "Scan QR",
+    "selectContainerToggle": "Select Container",
+    "selectLocationToggle": "Select Location",
+    "sessionHistory": "Session History",
+    "noItemsAssigned": "No items assigned in this session.",
+    "scanButtonIdle": "Scan",
+    "scanButtonBusy": "Assigning..."
+  },
+
+  "placeholders": {
+    "targetQrInput": "Scan or enter container code / location path...",
+    "serialInput": "Scan or enter serial number...",
+    "selectContainerLabel": "Select Container from List",
+    "selectLocationLabel": "Search or select from list..."
+  },
+
+  "domIds": {
+    "targetQrInput": "target-qr-input",
+    "serialInput": "serial-number-input"
+  },
+
+  "errors": {
+    "noCode": "Please scan or enter a code",
+    "noSerial": "Please enter a serial number",
+    "duplicateInSession": "This item has already been assigned in this session",
+    "alreadyOnSelectedContainer": "Item is already assigned to selected container",
+    "alreadyOnSelectedLocation": "Item is already assigned to selected location",
+    "containerDamaged": "is damaged and cannot be used",
+    "containerAtCapacity": "is at maximum capacity",
+    "noMatchSuffix": "No container or location found for"
+  },
+
+  "specialCharSamples": ["abc!", "abc@", "abc#", "abc$", "abc%"],
+  "whitespaceSamples": ["  SN-001  ", "\tSN-001\t"],
+
+  "endpoints": {
+    "_doc": "URL fragments used in cy.intercept patterns. Match anywhere within the request URL.",
+    "universalScan": "/locations/universal-scan",
+    "containerProductLocations": "/container-items/product-locations",
+    "containerAssign": "/containers/*/items",
+    "locationAssignItems": "/locations/*/items"
+  },
+
+  "eqClasses": {
+    "_doc": "Equivalence partitions for the items-step serial input — used by EP test design.",
+    "blank": "",
+    "available": "PROBE_AVAILABLE",
+    "unknown": "ZZZ-NOT-A-REAL-SERIAL-9999",
+    "damaged": "PROBE_DAMAGED",
+    "alreadyAssignedElsewhere": "PROBE_ASSIGNED_ELSEWHERE"
+  },
+
+  "decisionTable": {
+    "_doc": "Decision table for items-step scanning behaviour. Each row maps (status, sameTarget) → expected outcome.",
+    "rows": [
+      { "status": "Available",       "sameTarget": false, "expected": "stages or moves with confirm dialog" },
+      { "status": "Available",       "sameTarget": true,  "expected": "rejects with alreadyOnSelectedContainer/Location" },
+      { "status": "Damaged",         "sameTarget": false, "expected": "rejects with damaged-not-eligible error" },
+      { "status": "Missing",         "sameTarget": false, "expected": "rejects with not-eligible error" },
+      { "status": "Unknown",         "sameTarget": false, "expected": "rejects with not-found error" }
+    ]
+  }
+}
