@@ -1,0 +1,6 @@
+{
+  "_doc": "Stock Out Products mobile screen test data. The reason is probed live (cy.iaProbeStockOutReasons); reference number is a fixed sample.",
+  "sampleReferenceNumber": "REF-CYPRESS-TC95",
+  "smallStockOutQty": 1,
+  "overflowStockOutQty": 999999
+}
