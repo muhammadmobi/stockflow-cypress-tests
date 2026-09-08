@@ -1,0 +1,5 @@
+{
+  "_doc": "Mark Damaged Products mobile screen test data. PO with eligible products and damage reasons are probed live (cy.iaProbePoWithPureProduct, cy.iaProbeDamageReasons).",
+  "fallbackDamageReason": "Other-test-reason",
+  "damageQty": 1
+}
