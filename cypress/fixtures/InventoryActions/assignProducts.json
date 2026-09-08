@@ -1,0 +1,60 @@
+{
+  "_doc": "Assign Products mobile screen test data. Component: Frontend/src/components/AssignProducts/index.tsx. Route: /MobileViewScreen/assign-products. Two steps (target → products). The qty input is a numeric inline input rendered next to the Assign button on each product row.",
+
+  "route": "/MobileViewScreen/assign-products",
+
+  "headings": {
+    "scanQrToggle": "Scan QR",
+    "selectContainerToggle": "Select Container",
+    "selectLocationToggle": "Select Location",
+    "selectContainerLabel": "Select Container from List",
+    "selectContainerListTitle": "Select Container for Product Assignment",
+    "searchProductLabel": "Search Product",
+    "searchProductPlaceholder": "Search Products"
+  },
+
+  "_doc_placeholders": "Values are placeholder TEXT (for assertion / docs), NOT CSS selectors. CSS selectors live in cypress/support/locators/InventoryActions/assignProductsLocators.js.",
+  "placeholders": {
+    "targetQrInput": "Scan Container/location label...",
+    "selectLocationLabel": "Search or select from list...",
+    "qtyInputText": "Qty"
+  },
+
+  "domIds": {
+    "targetQrInput": "target-qr-input"
+  },
+
+  "errors": {
+    "validQty": "Enter a valid quantity",
+    "selectTarget": "Please select a container or location first",
+    "exceedsAvailable": "Cannot assign",
+    "containerDamaged": "is damaged and cannot be used",
+    "containerAtCapacity": "is at maximum capacity"
+  },
+
+  "loadingTexts": {
+    "noResultsPrefix": "No products found for",
+    "noProductsAvailable": "No products with available quantity found.",
+    "searchingPrefix": "Searching for"
+  },
+
+  "endpoints": {
+    "universalScan": "/locations/universal-scan",
+    "products": "/products",
+    "productAssignments": "/containers/product-assignments/",
+    "containerAssignQuantity": "/containers/*/quantities",
+    "locationAssignQuantity": "/locations/*/quantities"
+  },
+
+  "eqClasses": {
+    "_doc": "Equivalence partitions and BVA points for the qty input.",
+    "blank": "",
+    "zero": "0",
+    "negative": "-5",
+    "nonNumeric": "abc",
+    "scientificNotation": "1e2",
+    "underAvailable": 1,
+    "atAvailable": "USE_PROBED_AVAILABLE",
+    "overAvailable": "AVAILABLE_PLUS_1"
+  }
+}
