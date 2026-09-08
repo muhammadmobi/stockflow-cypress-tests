@@ -1,0 +1,5 @@
+{
+  "_doc": "Restock Products mobile screen test data. The qty>stocked-out value uses an unreasonably large number to guarantee the boundary error.",
+  "smallRestockQty": 1,
+  "overflowRestockQty": 999999
+}
