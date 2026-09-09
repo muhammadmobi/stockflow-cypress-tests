@@ -1,0 +1,61 @@
+{
+  "_doc": "View Contents mobile screen test data. Component: Frontend/src/components/ViewContents/index.tsx. Route: /MobileViewScreen/view-contents. Inner-menu screen with three options: Search By Item / Search By Products / Search By Storage. Each option lands on its own sub-step. Read-only — no state mutation needed.",
+
+  "route": "/MobileViewScreen/view-contents",
+
+  "menu": {
+    "searchByItemTile": "Search By Item",
+    "searchByProductsTile": "Search By Products",
+    "searchByStorageTile": "Search By Storage"
+  },
+
+  "subSteps": {
+    "_doc": "Internal step keys read from the component's `step` state — observable indirectly via the visible header / focused input.",
+    "menu": "menu",
+    "wmsSelect": "wms-select",
+    "containerContents": "container-contents",
+    "locationContents": "location-contents",
+    "productSelect": "product-select",
+    "productAssignments": "product-assignments",
+    "itemSelect": "item-select"
+  },
+
+  "domIds": {
+    "wmsQrInput": "wms-qr-input",
+    "itemSerialInput": "item-serial-input"
+  },
+
+  "headings": {
+    "scanQrToggle": "Scan QR",
+    "selectContainerToggle": "Select Container",
+    "selectLocationToggle": "Select Location"
+  },
+
+  "_doc_placeholders": "Values are placeholder TEXT (for assertion / docs), NOT CSS selectors. CSS selectors live in cypress/support/locators/InventoryActions/viewContentsLocators.js — that file's `productSearchPlaceholder` key holds a CSS selector; this fixture's `productSearchText` holds the literal text.",
+  "placeholders": {
+    "wmsQrInput": "Scan or enter container code or location path",
+    "itemSerialInput": "Scan or enter serial number",
+    "productSearchText": "Search Products"
+  },
+
+  "errors": {
+    "noWmsCode": "Please scan or enter a container code or location path",
+    "noSerial": "Please enter a serial number",
+    "duplicateSerialInSession": "This serial number has already been scanned in this session",
+    "noWmsMatchPrefix": "No container or location found for",
+    "failedItemLookup": "Failed to look up serial number"
+  },
+
+  "endpoints": {
+    "universalScan": "/locations/universal-scan",
+    "containerItems": "/containers/*/items",
+    "containerQuantities": "/containers/*/quantities",
+    "locationItems": "/locations/*/items",
+    "locationQuantities": "/locations/*/quantities",
+    "locationContainers": "/locations/*/containers",
+    "products": "/products",
+    "containerProductAssignments": "/containers/product-assignments/*",
+    "locationProductAssignments": "/locations/product-assignments/*",
+    "contentsSearch": "/locations/dashboard/contents-search"
+  }
+}
