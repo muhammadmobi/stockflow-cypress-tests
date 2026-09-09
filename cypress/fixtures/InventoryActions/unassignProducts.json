@@ -1,0 +1,43 @@
+{
+  "_doc": "Unassign Products mobile screen test data. Component: Frontend/src/components/UnassignProducts/index.tsx. Route: /MobileViewScreen/unassign-products. Three steps (products list → assignment list → quantity).",
+
+  "route": "/MobileViewScreen/unassign-products",
+
+  "headings": {
+    "step1Title": "Select Product",
+    "step2Title": "Select Container / Location",
+    "step3Title": "Enter Quantity",
+    "unassignButton": "Unassign",
+    "endOfResults": "• End of results •"
+  },
+
+  "_doc_placeholders": "Values are placeholder TEXT (for assertion / docs), NOT CSS selectors. CSS selectors live in cypress/support/locators/InventoryActions/unassignProductsLocators.js — note the locator's `productSearchPlaceholder` key holds a CSS selector, this fixture's `productSearchText` holds the literal text. Naming was a footgun before the rename (run-002 failure).",
+  "placeholders": {
+    "productSearchText": "Search Products",
+    "scanInputText": "Scan or type container code / location path...",
+    "qtyLabelPrefix": "Max:"
+  },
+
+  "errors": {
+    "noProductAssignments": "No containers or locations have this product assigned",
+    "noAssignmentsFallback": "No containers or locations found for this product.",
+    "scanNoMatchPrefix": "not found or has no quantity assigned for this product",
+    "validQty": "Enter a valid quantity",
+    "exceedsAssigned": "Cannot exceed assigned quantity"
+  },
+
+  "endpoints": {
+    "products": "/products",
+    "productAssignments": "/containers/product-assignments/",
+    "containerQuantitiesPost": "/containers/*/quantities"
+  },
+
+  "eqClasses": {
+    "blank": "",
+    "zero": "0",
+    "negative": "-1",
+    "nonNumeric": "abc",
+    "atAssigned": "USE_PROBED_ASSIGNED",
+    "overAssigned": "ASSIGNED_PLUS_1"
+  }
+}
