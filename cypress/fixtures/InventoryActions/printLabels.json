@@ -1,0 +1,35 @@
+{
+  "_doc": "Print Labels (Print Asset) mobile screen test data. Component: Frontend/src/pages/PrintAsset/index.tsx → Frontend/src/components/PrintAsset/index.tsx. Route: /MobileViewScreen/print-asset. Two tabs (Containers / Locations). Containers tab uses GET /containers and filters client-side by code/type/location.path. Locations tab uses GET /locations/dashboard-summary with server-side search and infinite scroll. Tap a card → opens QrCodeDialog. Print button inside the dialog opens window.open then calls printWindow.print().",
+
+  "route": "/MobileViewScreen/print-asset",
+
+  "tabs": {
+    "containers": "Containers",
+    "locations": "Locations",
+    "pageHeading": "Print Labels"
+  },
+
+  "placeholders": {
+    "containersSearch": "Search by code, type, or location",
+    "locationsSearch": "Search by code or path"
+  },
+
+  "headings": {
+    "loading": "Loading…",
+    "endOfResults": "End of results",
+    "noContainersFound": "No containers found.",
+    "noLocationsFound": "No locations found.",
+    "printButton": "Print"
+  },
+
+  "endpoints": {
+    "containers": "/containers",
+    "locationsDashboardSummary": "/locations/dashboard-summary"
+  },
+
+  "debounceMs": 350,
+
+  "qrDialog": {
+    "_doc": "QrCodeDialog uses window.open('', '_blank') then printWindow.print() — Cypress can't follow the new window. The wmsHelpers cy.iaStubWindowOpen helper records calls so tests can assert print was triggered."
+  }
+}
