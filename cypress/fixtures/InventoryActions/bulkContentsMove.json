@@ -1,0 +1,63 @@
+{
+  "_doc": "Bulk Contents Move screen — three steps (source → target → preview). Component: Frontend/src/components/BulkContentsMove/index.tsx. Route: /MobileViewScreen/bulk-contents-move. Source and target can each be a container or a location, yielding 4 source/target pairings each routed to a different backend endpoint.",
+
+  "route": "/MobileViewScreen/bulk-contents-move",
+
+  "headings": {
+    "step1Label": "Step 1 of 3 — Select source",
+    "step2Label": "Step 2 of 3 — Select target",
+    "step3Label": "Step 3 of 3 — Review and confirm",
+    "scanQrToggle": "Scan QR",
+    "selectContainerToggle": "Select Container",
+    "selectLocationToggle": "Select Location",
+    "sourceSelectorTitle": "Select Source Container",
+    "targetSelectorTitle": "Select Target Container",
+    "selectContainerLabel": "Select Container from List",
+    "confirmButtonPrefix": "Confirm Move",
+    "emptySourceText": "Source is empty — nothing to move."
+  },
+
+  "_doc_placeholders": "Values are placeholder TEXT (for assertion / docs), NOT CSS selectors. CSS selectors live in cypress/support/locators/InventoryActions/bulkContentsMoveLocators.js.",
+  "placeholders": {
+    "qrInput": "Scan or enter container code / location path...",
+    "locationSelectorText": "Type to search Bin locations..."
+  },
+
+  "domIds": {
+    "sourceQrInput": "move-source-qr-input",
+    "targetQrInput": "move-target-qr-input"
+  },
+
+  "errors": {
+    "noCode": "Please scan or enter a code",
+    "noMatchPrefix": "No container or location found for",
+    "containerDamaged": "is damaged and cannot be used",
+    "sameContainer": "Source and target cannot be the same container",
+    "sameLocation": "Source and target cannot be the same location",
+    "locationMustHavePath": "Location must have a valid path"
+  },
+
+  "endpoints": {
+    "universalScan": "/locations/universal-scan",
+    "locationsScanPath": "/locations/scan-path",
+    "containers": "/containers",
+    "containerItems": "/containers/*/items",
+    "containerQuantities": "/containers/*/quantities",
+    "locationItems": "/locations/*/items",
+    "locationQuantities": "/locations/*/quantities",
+    "containerMoveContents": "/containers/*/move-contents",
+    "containerMoveToLocation": "/containers/*/move-to-location/*",
+    "containerMoveFromLocation": "/containers/*/move-from-location/*",
+    "locationMoveAllContents": "/locations/*/move-all-contents/*"
+  },
+
+  "decisionTable": {
+    "_doc": "Source × target combinations and the endpoint each one targets.",
+    "rows": [
+      { "source": "container", "target": "container", "endpoint": "containerMoveContents",     "expected": "POST /containers/:src/move-contents { targetContainerId, moveAll: true }" },
+      { "source": "container", "target": "location",  "endpoint": "containerMoveToLocation",   "expected": "POST /containers/:src/move-to-location/:tgt" },
+      { "source": "location",  "target": "container", "endpoint": "containerMoveFromLocation", "expected": "POST /containers/:tgt/move-from-location/:src" },
+      { "source": "location",  "target": "location",  "endpoint": "locationMoveAllContents",   "expected": "POST /locations/:src/move-all-contents/:tgt" }
+    ]
+  }
+}
