@@ -1,0 +1,54 @@
+{
+  "_doc": "Container Location screen — covers BOTH Assign Container, Change Location and Unassign Container. Component: Frontend/src/components/ContainerLocation/index.tsx. Route: /MobileViewScreen/container-location?mode=assign/change OR ?mode=unassign. Three steps: container → location → confirm.",
+
+  "route": "/MobileViewScreen/container-location",
+
+  "modes": {
+    "assignChange": "?mode=assign/change",
+    "unassign": "?mode=unassign"
+  },
+
+  "headings": {
+    "scanQrToggle": "Scan QR",
+    "selectFromListToggle": "Select From List",
+    "selectContainerListTitle": "Select Container",
+    "selectTargetLocation": "Select Target Location",
+    "assignContainerButton": "Assign Container",
+    "removeContainerButton": "Remove Container from Location"
+  },
+
+  "placeholders": {
+    "containerQrInput": "Scan or enter container code...",
+    "containerHelperText": "Scan container QR code or type code manually",
+    "locationQrInput": "Scan or enter location path...",
+    "locationSelectLabel": "Search or Select Location"
+  },
+
+  "domIds": {
+    "containerQrInput": "container-qr-input",
+    "locationQrInput": "location-qr-input"
+  },
+
+  "errors": {
+    "noContainerCode": "Please scan or enter a container code",
+    "noLocationPath": "Please scan or enter a location path",
+    "containerNotFound": "Container with code",
+    "locationNotFound": "Location with path",
+    "multipleLocations": "Please scan only one location at a time",
+    "damagedContainer": "Damaged containers cannot be assigned, moved, or removed.",
+    "alreadyAssigned": "Container already assigned to this location",
+    "alreadyUnassigned": "Container is currently unassigned"
+  },
+
+  "alerts": {
+    "unassignWarning": "This will unassign the container from its current location and leave it unassigned.",
+    "sameLocationInfoFragment": "is already assigned to location"
+  },
+
+  "endpoints": {
+    "containers": "/containers",
+    "locationsScanPath": "/locations/scan-path",
+    "containerUpdate": "/containers/*",
+    "containerMove": "/containers/*/move/*"
+  }
+}
