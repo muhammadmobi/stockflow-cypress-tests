@@ -1,0 +1,111 @@
+{
+  "_note": "Partial AuditListItemDto rows for 01-AuditsListTests. Each key is merged over auditRow() (support/InventoryAudit/auditHelpers.js), so only the fields under test appear here. Named <technique><Condition> after the test-design technique that needs them: dt = decision table, ep = equivalence partition, bva = boundary value, eg = error guessing, st = state transition.",
+
+  "actionGates": {
+    "_note": "One row per lifecycle status, for the row-action gating tests (TC29-TC32). Distinct ids so a stubbed list can hold all five at once.",
+    "stOpen": { "id": 5010, "name": "Gate - open", "status": "Open" },
+    "stInProgress": { "id": 5020, "name": "Gate - in progress", "status": "InProgress" },
+    "stPendingReview": { "id": 5030, "name": "Gate - pending review", "status": "PendingReview" },
+    "stCompleted": { "id": 5040, "name": "Gate - completed", "status": "Completed" },
+    "stCancelled": { "id": 5050, "name": "Gate - cancelled", "status": "Cancelled" }
+  },
+
+  "binsCell": {
+    "_note": "The Bins cell has three columns keyed on binsGeneratedAt + binCount (AuditsList.tsx: null generatedAt = 'Generating...', 0 bins = 'No tasks' chip, otherwise the localised number).",
+    "dtGenerating": { "id": 1010, "name": "Bins - generating", "binCount": 0, "binsGeneratedAt": null },
+    "dtGeneratedEmpty": { "id": 1020, "name": "Bins - generated empty", "binCount": 0, "binsGeneratedAt": "2026-08-01T10:00:30.000Z" },
+    "dtGeneratedPopulated": { "id": 1030, "name": "Bins - generated populated", "binCount": 1234, "binsGeneratedAt": "2026-08-01T10:00:30.000Z" }
+  },
+
+  "varianceCell": {
+    "_note": "Variance is null until counting produces results; discrepancyCount 0 reads 'No discrepancies', otherwise '<signed> net' plus the singular/plural discrepancy line. bvaOne/bvaTwo are the two sides of that plural boundary.",
+    "dtNotCounted": { "id": 2010, "name": "Variance - not counted", "variance": null },
+    "dtCleanCount": { "id": 2020, "name": "Variance - clean", "variance": { "netDifference": 0, "discrepancyCount": 0 } },
+    "bvaOneDiscrepancy": { "id": 2030, "name": "Variance - one discrepancy", "variance": { "netDifference": -3, "discrepancyCount": 1 } },
+    "bvaTwoDiscrepancies": { "id": 2040, "name": "Variance - two discrepancies", "variance": { "netDifference": 5, "discrepancyCount": 2 } }
+  },
+
+  "assignedWorkerCell": {
+    "_note": "Zero workers reads 'Unassigned'; one names them; three name the first and collapse the rest into a '+2' chip whose tooltip lists them. Names are also the haystack for the worker search (TC18) and the worker filter (TC24).",
+    "dtUnassigned": { "id": 3010, "name": "Workers - none", "workerCount": 0, "assignedWorkers": [] },
+    "dtSingleWorker": {
+      "id": 3020,
+      "name": "Workers - one",
+      "workerCount": 1,
+      "assignedWorkers": [{ "userId": "w-alice", "name": "Alice Anderson" }]
+    },
+    "dtThreeWorkers": {
+      "id": 3030,
+      "name": "Workers - three",
+      "workerCount": 3,
+      "assignedWorkers": [
+        { "userId": "w-alice", "name": "Alice Anderson" },
+        { "userId": "w-bob", "name": "Bob Brown" },
+        { "userId": "w-carol", "name": "Carol Clark" }
+      ]
+    }
+  },
+
+  "typeAndClassCell": {
+    "_note": "An Abc audit shows its class; a Location audit has none and renders the em-dash sentinel.",
+    "dtAbcWithClass": { "id": 4010, "name": "Type - abc with class", "auditType": "Abc", "abcClass": "A" },
+    "dtLocationNoClass": { "id": 4020, "name": "Type - location no class", "auditType": "Location", "abcClass": null }
+  },
+
+  "filterSet": {
+    "_note": "The general-purpose filter/search set. The three rows differ in EVERY filterable dimension (status, auditType, abcClass, scope location, worker) so one stubbed list drives the status, type, class, location and worker filters and their intersections. Alice is on the Open row and Bob on the Completed row, which is what makes the worker search and filter narrow to exactly one row.",
+    "epOpenAbcClassA": {
+      "id": 6010,
+      "name": "Filter - open abc class A",
+      "status": "Open",
+      "auditType": "Abc",
+      "abcClass": "A",
+      "scopeLocationId": 10,
+      "scopeLocationLabel": "Facility 02 (Facility)",
+      "scopeLocationCode": "F-02",
+      "workerCount": 1,
+      "assignedWorkers": [{ "userId": "w-alice", "name": "Alice Anderson" }],
+      "createdAt": "2026-08-01T10:00:00.000Z"
+    },
+    "epInProgressAbcClassC": {
+      "id": 6020,
+      "name": "Filter - in progress abc class C",
+      "status": "InProgress",
+      "auditType": "Abc",
+      "abcClass": "C",
+      "scopeLocationId": 10,
+      "scopeLocationLabel": "Facility 02 (Facility)",
+      "scopeLocationCode": "F-02",
+      "workerCount": 1,
+      "assignedWorkers": [{ "userId": "w-alice", "name": "Alice Anderson" }],
+      "createdAt": "2026-08-02T10:00:00.000Z"
+    },
+    "epCompletedLocation": {
+      "id": 6030,
+      "name": "Filter - completed location",
+      "status": "Completed",
+      "auditType": "Location",
+      "abcClass": null,
+      "scopeLocationId": 20,
+      "scopeLocationLabel": "Zone 09 (Zone)",
+      "scopeLocationCode": "Z-09",
+      "workerCount": 1,
+      "assignedWorkers": [{ "userId": "w-bob", "name": "Bob Brown" }],
+      "createdAt": "2026-08-03T10:00:00.000Z"
+    }
+  },
+
+  "sorting": {
+    "_note": "Bin counts 9 / 10 / 100 are the classic lexical-sort trap (a string sort gives 10, 100, 9). Names and createdAt are deliberately NOT in the same order as binCount, so a sort on one column cannot pass by accidentally agreeing with another.",
+    "egBinsNine": { "id": 7010, "name": "Charlie sort row", "binCount": 9, "createdAt": "2026-08-05T10:00:00.000Z" },
+    "egBinsTen": { "id": 7020, "name": "Alpha sort row", "binCount": 10, "createdAt": "2026-08-07T10:00:00.000Z" },
+    "egBinsOneHundred": { "id": 7030, "name": "Bravo sort row", "binCount": 100, "createdAt": "2026-08-06T10:00:00.000Z" }
+  },
+
+  "cancelResults": {
+    "_note": "The CancelAuditResultDto payload (audit-management.service.ts:756) the cancel toast reads, plus the refusal sentence for the already-adjusted guard.",
+    "stClosedAndKept": { "cancelledBins": 3, "preservedScanCount": 17, "interruptedBins": 1 },
+    "stNothingOpen": { "cancelledBins": 0, "preservedScanCount": 0, "interruptedBins": 0 },
+    "egRefusedApplied": "This audit has already applied an inventory adjustment and can no longer be cancelled."
+  }
+}
