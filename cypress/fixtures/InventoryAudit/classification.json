@@ -1,0 +1,114 @@
+{
+  "_note": "Stub data for 07-ClassificationByCategoryTests and 08-ClassificationByProductTests. Naming: dt = decision table, ep = equivalence partition, bva = boundary value, eg = error guessing, st = state transition.",
+
+  "summary": {
+    "_note": "AbcSummaryCards divides each bucket's onHandQuantity by totalOnHandQuantity. epBalanced is arithmetically consistent on purpose — TC05 asserts the fixture itself reconciles before trusting the shares. bvaSliverBand puts band B at 10/20000 = 0.05%, which rounds to 0% and must therefore render as '<1%'.",
+    "epBalanced": {
+      "totalOnHandQuantity": 10000,
+      "buckets": [
+        { "abcClass": "A", "productCount": 12, "onHandQuantity": 7000 },
+        { "abcClass": "B", "productCount": 34, "onHandQuantity": 2000 },
+        { "abcClass": "C", "productCount": 56, "onHandQuantity": 1000 }
+      ]
+    },
+    "bvaSliverBand": {
+      "totalOnHandQuantity": 20000,
+      "buckets": [
+        { "abcClass": "A", "productCount": 8, "onHandQuantity": 19000 },
+        { "abcClass": "B", "productCount": 2, "onHandQuantity": 10 },
+        { "abcClass": "C", "productCount": 5, "onHandQuantity": 990 }
+      ]
+    }
+  },
+
+  "categoryRows": {
+    "_note": "Category grid rows. The Overrides cell reads 'None' at zero and the count otherwise, with a tooltip saying those products 'will not follow this category' (ByCategoryTab.tsx:78-90). A category always carries a class — it is never null.",
+    "dtNoOverrides": {
+      "id": 9001,
+      "name": "Cypress category - no overrides",
+      "abcClass": "A",
+      "productCount": 40,
+      "overriddenCount": 0
+    },
+    "dtSomeOverrides": {
+      "id": 9002,
+      "name": "Cypress category - some overrides",
+      "abcClass": "B",
+      "productCount": 60,
+      "overriddenCount": 7
+    },
+    "epThirdCategory": {
+      "id": 9003,
+      "name": "Cypress category - third",
+      "abcClass": "C",
+      "productCount": 15,
+      "overriddenCount": 2
+    }
+  },
+
+  "productRows": {
+    "_note": "One row per rung of the resolution ladder. The arithmetic matters: dtOverridden's effectiveClass equals its abcClassOverride (the override wins over a DIFFERENT categoryClass, so the test can tell them apart), and dtInherited's equals its categoryClass with no override set. dtDefault is the bottom rung — no override, no category class.",
+    "dtOverridden": {
+      "id": 8101,
+      "name": "Cypress product - overridden",
+      "categoryId": 9002,
+      "categoryName": "Cypress category - some overrides",
+      "abcClassOverride": "A",
+      "categoryClass": "C",
+      "effectiveClass": "A",
+      "source": "Overridden",
+      "onHandQuantity": 120,
+      "isSerialized": false
+    },
+    "dtAuto": {
+      "id": 8102,
+      "name": "Cypress product - auto",
+      "categoryId": 9002,
+      "categoryName": "Cypress category - some overrides",
+      "abcClassOverride": null,
+      "categoryClass": "C",
+      "effectiveClass": "B",
+      "source": "Auto",
+      "onHandQuantity": 80,
+      "isSerialized": false
+    },
+    "dtInherited": {
+      "id": 8103,
+      "name": "Cypress product - inherited",
+      "categoryId": 9001,
+      "categoryName": "Cypress category - no overrides",
+      "abcClassOverride": null,
+      "categoryClass": "A",
+      "effectiveClass": "A",
+      "source": "Inherited",
+      "onHandQuantity": 45,
+      "isSerialized": false
+    },
+    "dtDefault": {
+      "id": 8104,
+      "name": "Cypress product - default",
+      "categoryId": null,
+      "categoryName": null,
+      "abcClassOverride": null,
+      "categoryClass": null,
+      "effectiveClass": "C",
+      "source": "Default",
+      "onHandQuantity": 5,
+      "isSerialized": false
+    }
+  },
+
+  "bulk": {
+    "_note": "BULK_ABC_MAX_PRODUCTS is 1000 (Backend abc-classification.schema.ts:16), so bvaOverCapRowCount is one past it. The result payloads are merged over stubBulk()'s echo of the request, so they only need to state what the toast reads.",
+    "epTwoSelected": 2,
+    "bvaOverCapRowCount": 1001,
+    "stAssignResult": { "updated": 2, "abcClass": "B" },
+    "stClearResult": { "updated": 2, "abcClass": null }
+  },
+
+  "errors": {
+    "_note": "Server messages the screens must surface unaltered. egClassChangeRefused is sliced to its first 30 characters by TC30, so the opening must be distinctive.",
+    "egCategoryLoadFailed": "Could not load categories for classification.",
+    "egClassChangeRefused": "Category class is locked while a live audit counts this class."
+  }
+}
