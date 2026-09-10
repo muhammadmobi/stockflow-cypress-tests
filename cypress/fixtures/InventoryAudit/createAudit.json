@@ -1,0 +1,90 @@
+{
+  "_note": "Stub data for 02-CreateAuditTests. Naming: bva = boundary value, ep = equivalence partition, dt = decision table, eg = error guessing. Preview partials are merged over stubPreview()'s defaults (support/InventoryAudit/auditHelpers.js), so each key below states only the numbers its own test reads.",
+
+  "name": {
+    "_note": "MAX_NAME is 150 (Joi, audit-management schema). The input deliberately accepts one character over so the error is observable rather than silently truncated.",
+    "bvaUpperValid": 150,
+    "bvaUpperInvalid": 151,
+    "epWhitespaceOnly": "   ",
+    "egScriptTag": "<script>alert('xss')</script>"
+  },
+
+  "abcClass": {
+    "epClassA": "A"
+  },
+
+  "workers": {
+    "_note": "The assignable-worker roster. CreateAudit renders each option as 'name (email)', so epEmailFragment matches Bob's e-mail and NOT Alice's — that is what makes the filter test narrow to exactly one option.",
+    "epTwoWorkers": [
+      { "userId": "w-alice", "name": "Alice Anderson", "email": "alice.anderson@example.com" },
+      { "userId": "w-bob", "name": "Bob Brown", "email": "bob.brown@warehouse.example.com" }
+    ],
+    "epEmailFragment": "warehouse.example"
+  },
+
+  "locations": {
+    "_note": "The scope tree the picker walks, keyed by parentId ('root' for the top call). Labels render as '<name> (<code>) - <type>'. Bin A1 carries childCount 0, which is what ends the drill-down and raises the leaf-bin note.",
+    "root": [
+      { "id": 10, "name": "Facility 02", "code": "F-02", "type": "Facility", "path": "F-02", "childCount": 1, "isDeleted": false }
+    ],
+    "10": [
+      { "id": 20, "name": "Zone 01", "code": "Z-01", "type": "Zone", "path": "F-02.Z-01", "childCount": 1, "isDeleted": false }
+    ],
+    "20": [
+      { "id": 30, "name": "Bin A1", "code": "BN-A1", "type": "Bin", "path": "F-02.Z-01.BN-A1", "childCount": 0, "isDeleted": false }
+    ],
+    "30": []
+  },
+
+  "preview": {
+    "_note": "Four preview states. An ABC audit reports binCount ('Bins'); a Location audit reports scopeBinCount ('Bins to walk') because it generates a task for every in-scope bin, empty ones included (CreateAudit.tsx:356). The two numbers differ in dtLocationBinsToWalk on purpose — TC57 asserts that they must.",
+    "dtAbcPopulated": {
+      "binCount": 5,
+      "lineCount": 9,
+      "serializedUnits": 4,
+      "nonSerialUnits": 6,
+      "totalExpectedUnits": 10,
+      "scopeBinCount": 8
+    },
+    "dtAbcEmpty": {
+      "binCount": 0,
+      "lineCount": 0,
+      "serializedUnits": 0,
+      "nonSerialUnits": 0,
+      "totalExpectedUnits": 0,
+      "scopeBinCount": 0
+    },
+    "dtLocationBinsToWalk": {
+      "binCount": 3,
+      "lineCount": 7,
+      "serializedUnits": 4,
+      "nonSerialUnits": 5,
+      "totalExpectedUnits": 9,
+      "scopeBinCount": 12
+    },
+    "dtLocationUnmapped": {
+      "binCount": 0,
+      "lineCount": 0,
+      "serializedUnits": 0,
+      "nonSerialUnits": 0,
+      "totalExpectedUnits": 0,
+      "scopeBinCount": 6
+    }
+  },
+
+  "conflicts": {
+    "_note": "The two 409 bodies the create screen must surface verbatim. The scope-overlap one names the audit already holding the scope, which is the part the user needs in order to act.",
+    "egDuplicateName": {
+      "field": "name",
+      "message": "An active audit named \"cy-dup\" already exists."
+    },
+    "egScopeOverlap": {
+      "field": "scopeLocationId",
+      "code": "AUDIT_SCOPE_OVERLAP",
+      "message": "Zone 01 (Zone) overlaps the live audit \"Existing overlapping audit\" (InProgress, scope Zone 01 (Zone)), which counts the same units. A bin can only be counted by one audit at a time - close or cancel that audit first, pick a scope that does not overlap it, or count a different ABC class there (this one is class A).",
+      "auditId": 8080,
+      "auditName": "Existing overlapping audit",
+      "auditStatus": "InProgress"
+    }
+  }
+}
