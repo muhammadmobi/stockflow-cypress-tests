@@ -1,0 +1,161 @@
+{
+  "_doc": "Stub data for the Low-Stock Notifications Bell UI spec. Keys are organized by ISTQB partition / boundary / decision-column per cypress/qa/SKILL.md §9. The 'bvaBadgeCounts' object stores raw counts; the spec builds the corresponding 99/100/101-entry arrays from 'template' to keep the fixture compact.",
+
+  "expectedCopy": {
+    "bellTooltip": "Notifications",
+    "popoverTitle": "Notifications",
+    "emptyUnread": "No unread notifications",
+    "emptyAll": "No notifications",
+    "markAllLabel": "Mark all read",
+    "markAllInFlight": "Clearing",
+    "markItemLabel": "Mark as read",
+    "unreadOnlyLabel": "Unread only"
+  },
+
+  "stub": {
+    "epEmpty": [],
+
+    "epOneUnread": [
+      {
+        "id": 1,
+        "productId": 101,
+        "productName": "Widget A",
+        "categoryName": "Hardware",
+        "currentStock": 2,
+        "threshold": 10,
+        "isRead": false,
+        "createdAt": "2026-05-01T10:00:00Z"
+      }
+    ],
+
+    "epMixed": [
+      {
+        "id": 11,
+        "productId": 201,
+        "productName": "Widget B",
+        "categoryName": "Hardware",
+        "currentStock": 1,
+        "threshold": 5,
+        "isRead": false,
+        "createdAt": "2026-05-01T09:00:00Z"
+      },
+      {
+        "id": 12,
+        "productId": 202,
+        "productName": "Widget C",
+        "categoryName": "Hardware",
+        "currentStock": 0,
+        "threshold": 8,
+        "isRead": false,
+        "createdAt": "2026-05-01T08:30:00Z"
+      },
+      {
+        "id": 13,
+        "productId": 203,
+        "productName": "Widget D",
+        "categoryName": "Tools",
+        "currentStock": 3,
+        "threshold": 12,
+        "isRead": false,
+        "createdAt": "2026-05-01T08:00:00Z"
+      },
+      {
+        "id": 14,
+        "productId": 204,
+        "productName": "Widget E",
+        "categoryName": "Tools",
+        "currentStock": 4,
+        "threshold": 6,
+        "isRead": true,
+        "createdAt": "2026-04-30T17:00:00Z"
+      },
+      {
+        "id": 15,
+        "productId": 205,
+        "productName": "Widget F",
+        "categoryName": null,
+        "currentStock": 2,
+        "threshold": 7,
+        "isRead": true,
+        "createdAt": "2026-04-30T16:00:00Z"
+      }
+    ],
+
+    "epAllRead": [
+      {
+        "id": 21,
+        "productId": 301,
+        "productName": "Widget G",
+        "categoryName": "Hardware",
+        "currentStock": 5,
+        "threshold": 10,
+        "isRead": true,
+        "createdAt": "2026-04-30T14:00:00Z"
+      },
+      {
+        "id": 22,
+        "productId": 302,
+        "productName": "Widget H",
+        "categoryName": "Tools",
+        "currentStock": 8,
+        "threshold": 15,
+        "isRead": true,
+        "createdAt": "2026-04-30T13:00:00Z"
+      }
+    ],
+
+    "epNullCategory": [
+      {
+        "id": 31,
+        "productId": 401,
+        "productName": "Uncategorized Widget",
+        "categoryName": null,
+        "currentStock": 1,
+        "threshold": 5,
+        "isRead": false,
+        "createdAt": "2026-05-01T11:00:00Z"
+      }
+    ],
+
+    "epOneUnreadOneRead": [
+      {
+        "id": 41,
+        "productId": 501,
+        "productName": "Toggle Test Unread",
+        "categoryName": "Hardware",
+        "currentStock": 1,
+        "threshold": 5,
+        "isRead": false,
+        "createdAt": "2026-05-01T12:00:00Z"
+      },
+      {
+        "id": 42,
+        "productId": 502,
+        "productName": "Toggle Test Read",
+        "categoryName": "Hardware",
+        "currentStock": 2,
+        "threshold": 6,
+        "isRead": true,
+        "createdAt": "2026-05-01T11:30:00Z"
+      }
+    ]
+  },
+
+  "bvaBadgeCounts": {
+    "lowerInvalid": 0,
+    "epMid": 5,
+    "upperJustBelow": 99,
+    "upperBoundary": 100,
+    "upperJustAbove": 101
+  },
+
+  "bvaTemplate": {
+    "productId": 999,
+    "productName": "Bulk Test Widget",
+    "categoryName": "Hardware",
+    "currentStock": 1,
+    "threshold": 10,
+    "isRead": false,
+    "createdAt": "2026-05-01T00:00:00Z"
+  }
+}
