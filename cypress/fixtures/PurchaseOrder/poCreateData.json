@@ -1,0 +1,13 @@
+{
+  "category": "RAM Automation Cat",
+  "ram": {
+    "brand": "Kingston",
+    "memoryGeneration": "DDR4",
+    "cost": "75.00",
+    "price": "120.00",
+    "supportContact": "help@brand.com",
+    "quantity": 5
+  },
+  "existingFileWarningText": "This PO already has an import file",
+  "createLabelPrefix": "Create \""
+}
