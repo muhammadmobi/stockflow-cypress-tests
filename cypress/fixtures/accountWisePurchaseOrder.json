@@ -1,0 +1,51 @@
+{
+  "_comment": "Shape-satisfying constants for AccountWise's POST /v1/purchaseOrder. Everything environment-specific or per-run (vendor_id, vendor_name, order_id, purchase_order_date) is injected at runtime by cypress/support/helpers/accountWisePurchaseOrders.js — never hard-code a vendor UUID here, they are per-tenant. The address and phone are deliberately OBVIOUSLY SYNTHETIC (SKILL.md §8.6) — AccountWise stores them verbatim on a real document, so a plausible-looking street address or phone number would read as somebody's actual details in that tenant.",
+  "_requiredFields": "Derived from the live Joi rejection of an empty body on QA: vendor_id, vendor_name, tax_type, tax, discount_type, discount, mailing_address_1, mailing_city, mailing_zip_code, from_address_1, from_phone, term, items.",
+  "_orderIdTrap": "order_id is ALSO required but is NOT in that list — the server's Joi schema does not declare it, so a body without it passes validation and then dies in the service with a bare 500 and no detail. The helper always stamps a unique one. See the comment in createAccountWisePo().",
+  "template": {
+    "tax_type": "Exclusive",
+    "tax": 0,
+    "discount_type": "Percentage",
+    "discount": 0,
+    "term": "NET 7",
+    "mailing_address_1": "1 Cypress Test Way",
+    "mailing_address_2": "",
+    "mailing_city": "Testville",
+    "mailing_state": "Testshire",
+    "mailing_zip_code": "55555",
+    "mailing_country": "United States",
+    "from_address_1": "1 Cypress Test Way",
+    "from_address_2": "",
+    "from_city": "Testville",
+    "from_state": "Testshire",
+    "from_zip_code": "55555",
+    "from_phone": "+1 555-555-0100",
+    "items": [
+      {
+        "item": "Cypress Integration Line Item",
+        "description": "Seed line item created by the StockWise AccountWise-PO integration suite",
+        "quantity": 1,
+        "price": 10
+      }
+    ]
+  },
+  "lineItem": {
+    "epSingleUnit": {
+      "quantity": 1,
+      "price": 10
+    }
+  },
+  "status": {
+    "epPending": "Pending",
+    "epDraft": "Draft"
+  },
+  "_metadataNote": "metadata partitions for the close=false lane's stockWiseStatus filter. epAbsent (no metadata at all) is what a real buyer's purchase order looks like and is the condition SW-AWPO-API-TC01/TC09 exist to exercise; every other TC uses epExplicitOpen so that defect D1 cannot mask its own subject. See the seed-isolation note at the top of the specs.",
+  "metadata": {
+    "epExplicitOpen": {
+      "stockWiseStatus": "open"
+    },
+    "epExplicitClosed": {
+      "stockWiseStatus": "close"
+    }
+  }
+}
