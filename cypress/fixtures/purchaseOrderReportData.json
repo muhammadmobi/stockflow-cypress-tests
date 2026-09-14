@@ -1,0 +1,81 @@
+{
+  "endpoints": {
+    "tabCounts": "/incoming-items/reports?poNumber=allPO",
+    "poList": "/excel/po-numbers?close=true",
+    "tableItems": "/incoming-items/defective-reports?page=1&page_size=75&poNumber=allPO&status=Expected"
+  },
+  "apis": {
+    "poList": "/excel/po-numbers*",
+    "tabCounts": "/incoming-items/reports*",
+    "tableItems": "/incoming-items/defective-reports*",
+    "columnConfig": "/configs*type=reportCustomizeColumn*",
+    "itemDetail": "\/incoming-items\/[^\/]+\/\\d+",
+    "itemList": "/incoming-items/*/*/items*",
+    "detailConfig": "/configs*type=general*"
+  },
+  "aliases": {
+    "poList": "poListApi",
+    "tabCounts": "tabCountsApi",
+    "tableItems": "tableItemsApi",
+    "columnConfig": "columnConfigApi",
+    "itemDetail": "itemDetailApi",
+    "itemList": "itemListApi",
+    "detailConfig": "detailConfigApi"
+  },
+  "tabs": [
+    {
+      "label": "Expected",
+      "summaryKey": "Expected"
+    },
+    {
+      "label": "Incoming",
+      "summaryKey": "Incoming"
+    },
+    {
+      "label": "Available",
+      "summaryKey": "Available"
+    },
+    {
+      "label": "Received",
+      "summaryKey": "Received"
+    },
+    {
+      "label": "Missing",
+      "summaryKey": "Missing"
+    },
+    {
+      "label": "Damaged",
+      "summaryKey": "Damaged"
+    },
+    {
+      "label": "Disputed",
+      "summaryKey": "Disputed"
+    },
+    {
+      "label": "Sold",
+      "summaryKey": "Sold"
+    },
+    {
+      "label": "Reserved",
+      "summaryKey": "Reserved"
+    },
+    {
+      "label": "Stocked out (Others)",
+      "summaryKey": "StockedOut"
+    }
+  ],
+  "defaultTab": "Expected",
+  "pagination": {
+    "defaultPage": 1,
+    "defaultPageSize": 25,
+    "pageSizeOptions": [
+      25,
+      50,
+      75,
+      100,
+      150
+    ],
+    "defaultPoNumber": "allPO",
+    "defaultPoLabel": "All POs"
+  }
+}
