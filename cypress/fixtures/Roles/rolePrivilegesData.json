@@ -1,0 +1,126 @@
+{
+  "postLoginUrls": {
+    "epAdminPartition": "/dashboard",
+    "epUserPartition": "/MobileViewScreen",
+    "epSalesPartition": "/dashboard"
+  },
+  "profileRoles": {
+    "admin": "Org Admin",
+    "user": "User",
+    "sales": "sales"
+  },
+  "salesRoutesNotInRouter": [
+    "/MobileViewScreen",
+    "/work-order",
+    "/incoming-inventory/scan-items",
+    "/asset-id",
+    "/duplicate-products"
+  ],
+  "salesAdminAuthGuardRoutes": [
+    "/configurations/attributes",
+    "/warehouse-management/locations"
+  ],
+  "salesBaseDashboardRoutesAccessible": [
+    "/dashboard",
+    "/inventory",
+    "/incoming-inventory",
+    "/purchase-orders",
+    "/reports"
+  ],
+  "userRoutesNotInRouter": [
+    "/dashboard",
+    "/inventory",
+    "/purchase-orders",
+    "/incoming-inventory",
+    "/reports",
+    "/scan-report",
+    "/printers",
+    "/purchase-orders/import"
+  ],
+  "userRoutesAdminAuthGuard": [
+    "/work-order/create"
+  ],
+  "routes": {
+    "costReport": "/reports/cost-report",
+    "assetId": "/asset-id",
+    "duplicateProducts": "/duplicate-products",
+    "createWorkOrder": "/work-order/create",
+    "configurations": "/configurations/attributes",
+    "warehouseManagement": "/warehouse-management/locations",
+    "scanItems": "/incoming-inventory/scan-items",
+    "dashboard": "/dashboard",
+    "inventory": "/inventory",
+    "incomingInventory": "/incoming-inventory",
+    "purchaseOrders": "/purchase-orders",
+    "reports": "/reports",
+    "scanReport": "/scan-report",
+    "printers": "/printers",
+    "purchaseOrdersImport": "/purchase-orders/import",
+    "workOrder": "/work-order",
+    "mobileViewScreen": "/MobileViewScreen",
+    "smartStockIn": "/MobileViewScreen/smart-stock-in"
+  },
+  "salesNavAbsent": [
+    "Work Orders",
+    "Asset Id",
+    "Inventory Actions"
+  ],
+  "salesNavSectionAbsent": [
+    "Configuration"
+  ],
+  "salesNavPresent": [
+    "Dashboard",
+    "Incoming Inventory",
+    "Purchase Orders",
+    "Reports"
+  ],
+  "adminNavPresent": [
+    "Work Orders",
+    "Asset Id"
+  ],
+  "adminReportSubLinks": [
+    "Cost Report",
+    "Inventory Report",
+    "Asset Lifecycle Report"
+  ],
+  "salesReportSubLinksAbsent": [
+    "Cost Report",
+    "Inventory Report",
+    "Asset Lifecycle Report"
+  ],
+  "salesReportSubLinksPresent": [
+    "Purchase Order Report",
+    "Sales Report"
+  ],
+  "costFieldDecisionTable": {
+    "camelCase": [
+      "cost",
+      "costPrice",
+      "unitCost",
+      "totalCost",
+      "purchasePrice",
+      "unitPrice",
+      "totalPrice",
+      "salePrice",
+      "sellingPrice"
+    ],
+    "snakeCase": [
+      "cost_price",
+      "unit_cost",
+      "total_cost",
+      "purchase_price",
+      "unit_price",
+      "total_price",
+      "sale_price",
+      "selling_price"
+    ],
+    "salesExpectedValue": 0
+  },
+  "mobileViewTiles": [
+    "Stock In",
+    "Scan Damaged",
+    "Restock"
+  ],
+  "storageKey": "stock-wise",
+  "localStorageAuthKey": "stock-wise"
+}
