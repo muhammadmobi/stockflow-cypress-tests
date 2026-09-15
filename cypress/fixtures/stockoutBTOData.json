@@ -1,0 +1,19 @@
+{
+  "endpoint": "/products/stockout-by-serial-number",
+  "productsEndpoint": "/products",
+  "reasons": {
+    "sold": "Sold",
+    "stockoutFromBTO": "stockout from bto",
+    "invalid": "invalid-reason"
+  },
+  "statuses": {
+    "incoming":   "Incoming",
+    "available":  "Available",
+    "damaged":    "Damaged",
+    "disputed":   "Disputed",
+    "missing":    "Missing",
+    "stockedOut": "StockedOut"
+  },
+  "placeholderSerialNumber": "PLACEHOLDER-SERIAL-0000",
+  "malformedToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDAwMDF9.invalidsignature"
+}
