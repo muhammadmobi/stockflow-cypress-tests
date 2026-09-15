@@ -1,0 +1,39 @@
+{
+  "colorScheme": {
+    "epLight": "light",
+    "epDark": "dark"
+  },
+  "fontFamily": {
+    "epPublicSans":  { "buttonText": "Public Sans",  "storageValue": "Public Sans Variable" },
+    "epInter":       { "buttonText": "Inter",         "storageValue": "Inter Variable" },
+    "epDmSans":      { "buttonText": "DM Sans",       "storageValue": "DM Sans Variable" },
+    "epNunitoSans":  { "buttonText": "Nunito Sans",   "storageValue": "Nunito Sans Variable" }
+  },
+  "fontSize": {
+    "bvaLowerBoundary":  12,
+    "bvaJustAboveLower": 14,
+    "bvaDefault":        16,
+    "bvaJustBelowUpper": 18,
+    "bvaUpperBoundary":  20
+  },
+  "navLayout": {
+    "epVertical":    { "index": 0, "value": "vertical" },
+    "epHorizontal":  { "index": 1, "value": "horizontal" },
+    "epMini":        { "index": 2, "value": "mini" }
+  },
+  "navColor": {
+    "epIntegrate": { "buttonText": "Integrate", "value": "integrate" },
+    "epApparent":  { "buttonText": "Apparent",  "value": "apparent" }
+  },
+  "storageKey": "app-settings",
+  "defaults": {
+    "colorScheme":   "light",
+    "direction":     "ltr",
+    "contrast":      "default",
+    "navLayout":     "vertical",
+    "navColor":      "integrate",
+    "compactLayout": true,
+    "fontSize":      16,
+    "fontFamily":    "Public Sans Variable"
+  }
+}
