@@ -1,0 +1,51 @@
+{
+  "stockInEndpoint": "/incoming-items/hardware-stock-in",
+  "stockOutEndpoint": "/incoming-items/hardware-stock-out",
+  "stockOutBySerialEndpoint": "/products/stockout-by-serial-number",
+  "productsEndpoint": "/products",
+  "apiTokensEndpoint": "/api-tokens",
+  "markStatusEndpoint": "/products/mark-status",
+  "hardwareInventoryEndpoint": "/incoming-items/hardware-inventory",
+  "workOrdersEndpoint": "/work-orders",
+  "purchaseOrdersEndpoint": "/purchase-orders",
+  "categoriesEndpoint": "/categories",
+  "stockInTestSerialPrefix": "BB-API-SI-TEST-",
+  "stockOutTestSerialPrefix": "BB-API-SO-TEST-",
+  "malformedToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDAwMDF9.invalidsignature",
+  "expiredToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDAwMDF9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5cfgfgjfRNXF4HMbQ6jGm",
+  "brainboxConfigType": "brainboxConfig",
+  "brainboxConfigName": "brainboxConfig",
+  "brainboxConfigUserId": "global",
+  "serialPayloadKey": "serial",
+  "stockoutFromBrainboxReason": "stockout from brainbox",
+  "apiTokenNamePrefix": "cy-bbso-throwaway-",
+  "scopeHardwareStockOut": "hardware:stock-out",
+  "scopeInventoryRead": "inventory:read",
+  "importSeedFilePrefix": "bb-so-incoming-seed-",
+  "importSeedCost": 1500,
+  "incomingPoPrefix": "BB-SO-INC-",
+  "auditTrailsEndpoint": "/audit-trails",
+  "brainboxReplaceAction": "BRAINBOX_REPLACE",
+  "productColumnNames": {
+    "brand": "Brand",
+    "model": "Model",
+    "formFactor": "Form Factor",
+    "ram": "Ram"
+  },
+  "importRequiredItemColumns": {
+    "Asset Security Code": "BB-SO-SEC-001"
+  },
+  "matchingProductValues": {
+    "brand": "Dell",
+    "model": "BB-SO-MATCH",
+    "formFactor": "SFF",
+    "ram": "8"
+  },
+  "driftProductValues": {
+    "brand": "HP",
+    "model": "BB-SO-DRIFT",
+    "formFactor": "MT",
+    "ram": "16"
+  },
+  "stockoutActionType": "STOCKOUT"
+}
