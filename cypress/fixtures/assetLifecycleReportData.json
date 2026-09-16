@@ -1,0 +1,101 @@
+{
+  "apis": {
+    "tableItems": "/reports/asset-lifecycle-report?*",
+    "export": "/reports/asset-lifecycle-report/export*",
+    "columnConfig": "/configs*assetLifecycleReportCustomizeColumn*",
+    "poList": "/excel/po-numbers*"
+  },
+  "aliases": {
+    "tableItems": "assetLifecycleTableItemsApi",
+    "export": "assetLifecycleExportApi",
+    "columnConfig": "assetLifecycleColumnConfigApi",
+    "poList": "assetLifecyclePoListApi"
+  },
+  "columns": {
+    "assetId": "Asset ID",
+    "product": "Product",
+    "category": "Category",
+    "parentSerial": "Parent Serial",
+    "status": "Status",
+    "cost": "Cost",
+    "location": "Location",
+    "flow": "Flow",
+    "po": "PO #",
+    "lifecycle": "Lifecycle"
+  },
+  "statuses": [
+    {
+      "label": "Available",
+      "value": "Available"
+    },
+    {
+      "label": "Stocked Out",
+      "value": "StockedOut"
+    },
+    {
+      "label": "Sold",
+      "value": "Sold"
+    },
+    {
+      "label": "Incoming",
+      "value": "Incoming"
+    },
+    {
+      "label": "Damaged",
+      "value": "Damaged"
+    },
+    {
+      "label": "Missing",
+      "value": "Missing"
+    },
+    {
+      "label": "Disputed",
+      "value": "Disputed"
+    },
+    {
+      "label": "Reserved",
+      "value": "Reserved"
+    },
+    {
+      "label": "Consumed",
+      "value": "Consumed"
+    }
+  ],
+  "flowLabels": {
+    "GENERATE_ASSET_ID": "Generate Asset ID",
+    "DISASSEMBLY": "Disassembly",
+    "BAREBONE_CONVERSION": "Barebone Conversion",
+    "SINGLE_GENERATE_ASSET_ID": "Single Asset ID Update"
+  },
+  "pagination": {
+    "defaultPage": 1,
+    "defaultPageSize": 25,
+    "bvaPageFloorInvalid": 0,
+    "bvaPageFirstValid": 1,
+    "epPageSizeTypical": 25,
+    "bvaPageSizeNoUpperBound": 99999
+  },
+  "sorting": {
+    "epSortByValid": "cost",
+    "epSortByUnknown": "maliciousUnknownField123",
+    "epSortOrderValidDesc": "DESC",
+    "epSortOrderValidAsc": "ASC",
+    "epSortOrderGarbage": "notASortOrder",
+    "defaultSortBy": "assetId",
+    "defaultSortOrder": "ASC"
+  },
+  "categoryFilter": {
+    "epNonInteger": "notanumber"
+  },
+  "statusFilter": {
+    "epSold": "sold",
+    "epStockedOut": "stockedout"
+  },
+  "reasons": {
+    "sold": "Sold",
+    "lost": "Lost"
+  },
+  "messages": {
+    "exportQueued": "Preparing your export"
+  }
+}
