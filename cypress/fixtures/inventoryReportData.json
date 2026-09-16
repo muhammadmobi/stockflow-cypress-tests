@@ -1,0 +1,47 @@
+{
+  "apis": {
+    "tableItems": "/reports/ending-inventory-report?*",
+    "groupedTableItems": "/reports/ending-inventory-report/grouped?*",
+    "columnConfig": "/configs*inventoryValueReportCustomizeColumn*",
+    "poList": "/excel/po-numbers*"
+  },
+  "aliases": {
+    "tableItems": "inventoryReportTableItemsApi",
+    "groupedTableItems": "inventoryReportGroupedTableItemsApi",
+    "columnConfig": "inventoryReportColumnConfigApi",
+    "poList": "inventoryReportPoListApi"
+  },
+  "pagination": {
+    "defaultPage": 1,
+    "defaultPageSize": 25,
+    "pageSizeOptions": [25, 50, 75, 100, 150]
+  },
+  "filters": {
+    "asOfPresets": [
+      { "label": "Today", "value": "current" },
+      { "label": "Yesterday", "value": "yesterday" },
+      { "label": "1 Week Ago", "value": "1week" },
+      { "label": "1 Month Ago", "value": "1month" },
+      { "label": "Custom", "value": "custom" }
+    ],
+    "defaultAsOfPreset": "Today",
+    "defaultPo": "All POs",
+    "statuses": [
+      { "label": "Default (Available)", "value": "default" },
+      { "label": "Damaged", "value": "Damaged" },
+      { "label": "Disputed", "value": "Disputed" },
+      { "label": "Missing", "value": "Missing" },
+      { "label": "Sold", "value": "Sold" },
+      { "label": "Stocked Out", "value": "StockedOut" }
+    ],
+    "defaultStatus": "default",
+    "backendOnlyStatus": "Consumed"
+  },
+  "statCard": {
+    "title": "Total Ending Inventory Cost"
+  },
+  "columns": {
+    "available": ["Product Name", "Category", "Total Inventory Cost", "Avg Cost", "PO Cost"],
+    "defaultVisible": ["Product Name", "Category", "Total Inventory Cost", "Avg Cost"]
+  }
+}
