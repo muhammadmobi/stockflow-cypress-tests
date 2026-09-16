@@ -1,0 +1,67 @@
+{
+  "route": "/reports/custom-reports",
+  "templateId": "custom-report",
+  "templateName": "Custom Report",
+  "fields": {
+    "product": {
+      "productName": { "label": "Product Name", "type": "string", "defaultSelected": true },
+      "categoryName": { "label": "Category", "type": "string", "defaultSelected": true },
+      "productCreatedAt": { "label": "Product Created Date", "type": "date", "defaultSelected": false },
+      "isSerializedProduct": { "label": "Is Serialized (Has Items)", "type": "enum", "defaultSelected": false }
+    },
+    "item": {
+      "assetId": { "label": "Asset ID", "type": "string", "defaultSelected": false },
+      "serialNumber": { "label": "Serial Number", "type": "string", "defaultSelected": false },
+      "itemStatus": {
+        "label": "Item Status",
+        "type": "enum",
+        "defaultSelected": true,
+        "enumValues": ["Available", "Incoming", "Reserved", "Damaged", "Missing", "Disputed", "StockedOut", "Consumed", "Sold", "Found", "NotFound", "Manual", "NotScanned", "Received"]
+      }
+    },
+    "container": {
+      "containerCode": { "label": "Container Code", "type": "string", "defaultSelected": true },
+      "containerType": { "label": "Container Type", "type": "string", "defaultSelected": false }
+    },
+    "location": {
+      "locationPath": { "label": "Location Path", "type": "string", "defaultSelected": true },
+      "locationType": {
+        "label": "Location Type",
+        "type": "enum",
+        "defaultSelected": false,
+        "enumValues": ["Facility", "Zone", "Area", "Row", "Bay", "Level", "Bin"]
+      },
+      "locationCurItems": { "label": "Location Current Items", "type": "number", "defaultSelected": false }
+    },
+    "quantities": {
+      "totalQty": { "label": "Total Quantity", "type": "number", "defaultSelected": false },
+      "availableQty": { "label": "Available Quantity", "type": "number", "defaultSelected": false },
+      "totalCost": { "label": "Total Cost", "type": "number", "defaultSelected": false },
+      "unitCost": { "label": "Unit Cost", "type": "number", "defaultSelected": false },
+      "damagedQty": { "label": "Damaged Quantity", "type": "number", "defaultSelected": false },
+      "receivedQty": { "label": "Received Quantity", "type": "number", "defaultSelected": false },
+      "unreceivedQty": { "label": "Incoming Quantity", "type": "number", "defaultSelected": false }
+    },
+    "purchaseOrder": {
+      "poNumber": { "label": "PO Number", "type": "string", "defaultSelected": false },
+      "poStatus": { "label": "PO Status", "type": "enum", "defaultSelected": false, "enumValues": ["Open", "Closed"] },
+      "poImportDate": { "label": "PO Import Date", "type": "date", "defaultSelected": false }
+    },
+    "workOrder": {
+      "workOrderNumber": { "label": "Work Order No.", "type": "string", "defaultSelected": false },
+      "workOrderStatus": { "label": "Work Order Status", "type": "enum", "defaultSelected": false, "enumValues": ["Open", "Ready", "Draft", "Closed", "Cancelled"] }
+    }
+  },
+  "operatorsByType": {
+    "enum": ["Equals", "Is Empty"],
+    "numberOrDate": ["Equals", "Greater Than", "Less Than", "Between", "Is Empty"],
+    "numberOrDateExcluded": ["Contains", "Starts With"],
+    "string": ["Equals", "Contains", "Starts With", "Greater Than", "Less Than", "Between", "Is Empty"]
+  },
+  "savedReportNamePrefix": "CustRpt-QA",
+  "duplicateSuffix": " (Copy)",
+  "emptyStateMessage": "No saved reports yet. Go to the New Report tab to create one.",
+  "epDamagedStatus": "Damaged",
+  "epAvailableStatus": "Available",
+  "epLocationTypeBin": "Bin"
+}
