@@ -1,0 +1,38 @@
+{
+  "apis": {
+    "tableItems": "/reports/inventory-aging-report?*",
+    "categories": "/categories?*",
+    "export": "**/inventory-aging-report/export*"
+  },
+  "aliases": {
+    "tableItems": "inventoryAgingTableItemsApi",
+    "categories": "inventoryAgingCategoriesApi",
+    "export": "inventoryAgingExportApi"
+  },
+  "kpiTiles": {
+    "totalInventoryCost": "Total Inventory Cost",
+    "totalQuantity": "Total Quantity",
+    "atRiskCost": "At-Risk Cost (91+ days)",
+    "staleCost": "Stale Cost (181+ days)"
+  },
+  "charts": {
+    "donutTitle": "Cost by Aging Bucket",
+    "barTitle": "Quantity by Aging Bucket"
+  },
+  "pagination": {
+    "defaultPageSize": 25
+  },
+  "_exportButtonLabels": "index.tsx:383 — {isDownloading ? 'Exporting…' : isCompleted ? 'Done' : 'Export'}. NOTE the ellipsis is a single U+2026 character, not three dots.",
+  "export": {
+    "filenamePattern": "inventory-aging-report.xlsx",
+    "buttonLabels": {
+      "idle": "Export",
+      "busy": "Exporting…",
+      "done": "Done"
+    },
+    "_observeBusyDelayMs": "Delay applied to the REAL export response (res.setDelay) so the transient 'Exporting…' label is observable. Not a stub — the response body and headers are the server's own.",
+    "observeBusyDelayMs": 1500
+  },
+  "_nonSortableColumnHeader": "Every bucket column sets enableSorting:false in index.tsx. Note the EN DASH (–), not a hyphen — the table headers use '0–30 Days' while the Excel export headers use '0-30 Days'.",
+  "nonSortableColumnHeader": "0–30 Days"
+}
