@@ -1,0 +1,34 @@
+{
+  "aliases": {
+    "list": "wlrList",
+    "productItems": "wlrItems",
+    "export": "wlrExport"
+  },
+  "filters": {
+    "productType": {
+      "all": "all",
+      "serialized": "serialized",
+      "assetSerialized": "asset-serialized",
+      "nonSerialized": "non-serialized"
+    },
+    "assignment": {
+      "all": "all"
+    }
+  },
+  "labels": {
+    "statCards": [
+      "Total Products",
+      "Serialized",
+      "Non-Serialized",
+      "Assigned Items",
+      "Unassigned Items"
+    ],
+    "serializedChip": "Serialized",
+    "nonSerializedChip": "Non-Serialized"
+  },
+  "seed": {
+    "ramQty": 5,
+    "nsLocationDelta": 3
+  },
+  "noMatchSearch": "ZZWLRNOSUCHPRODUCT000000"
+}
