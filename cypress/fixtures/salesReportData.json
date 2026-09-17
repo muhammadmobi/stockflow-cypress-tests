@@ -1,0 +1,34 @@
+{
+  "apis": {
+    "tableItems": "/reports/sales-report?*",
+    "exportReport": "/reports/sales-report/export*",
+    "poList": "/excel/po-numbers*",
+    "categories": "/categories?*",
+    "generalConfig": "/configs?type=general&name=general*"
+  },
+  "aliases": {
+    "tableItems": "salesReportTableItemsApi",
+    "exportReport": "salesReportExportApi",
+    "poList": "salesReportPoListApi",
+    "categories": "salesReportCategoriesApi",
+    "generalConfig": "salesReportGeneralConfigApi"
+  },
+  "pagination": {
+    "defaultPage": 1,
+    "defaultPageSize": 25,
+    "pageSizeOptions": [25, 50, 75, 100, 150]
+  },
+  "filters": {
+    "defaultDatePreset": "Today",
+    "defaultPo": "All POs",
+    "defaultCategory": "All Categories",
+    "defaultReason": "All Reasons",
+    "fallbackConfiguredReasons": ["Sold"],
+    "genericStockedOutOption": { "label": "Stocked Out", "value": "StockedOut" }
+  },
+  "statCards": {
+    "totalSaleValue": "Total Sale Value",
+    "totalQtySold": "Total Qty Sold"
+  },
+  "columns": ["Product Name", "Category", "Quantity", "Avg Cost", "Total Sale Value", "Reason", "Serial Numbers"]
+}
