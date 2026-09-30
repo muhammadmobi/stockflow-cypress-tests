@@ -587,7 +587,77 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
 
   // ── Unauthenticated access guard (error guessing) ─────────────────────────
 
-  
+  describe("Unauthenticated access", { tags: ['@regression'] }, () => {
+    // Error guessing — no valid session: visiting a protected route redirects to the sign-in page.
+    // cy.clearSessionStorage does not exist in Cypress — use cy.window() to clear sessionStorage.
+    it("SW-NAV-TC79: Verify unauthenticated access to protected route redirects to sign-in", () => {
+      navigationPage.clearAuthSessionAndVisit(urls.inventory);
+      navigationPage.verifySignInRedirect();
+    });
+  });
+
   // ── Sales role navigation (decision table) ───────────────────────────────
 
+  describe("Sales role navigation", { tags: ['@regression'] }, () => {
+    beforeEach(function () {
+      navigationPage = new NavigationPage();
+      cy.on('uncaught:exception', (err) => {
+        if (err?.message?.includes('Request failed with status code')) return false;
+        return true;
+      });
+      requireRoleOrSkip(this, 'sales', 'Sales role navigation');
+      cy.authSession('sales');
+      cy.visit(urls.dashboard);
+    });
+
+    // Use case — happy path: Sales has no dashboard, so /dashboard redirects to
+    // Inventory (the only page the role mounts).
+    it("SW-NAV-TC80: Verify Sales role lands on Inventory after login", { tags: ['@smoke'] }, () => {
+      navigationPage.verifyNavigation(urls.inventory, navigationPageData.headings.inventory);
+    });
+
+    // Use case — Sales nav: Inventory link present and navigable
+    it("SW-NAV-TC81: Verify Inventory nav link is present and navigable for Sales role", () => {
+      navigationPage.clickInventory();
+      navigationPage.verifyNavigation(urls.inventory, navigationPageData.headings.inventory);
+    });
+
+    // TC82–TC87 and TC90 retired: they asserted Sales access to Incoming
+    // Inventory, Purchase Orders and the Reports accordion, which the
+    // Inventory-only Sales role no longer grants. Slots stay vacant; the
+    // replacement conditions are TC91 (nav is Inventory-only) and TC92 (a
+    // restricted deep link does not render).
+
+    // Decision table — isSales() gate: Work Orders, Asset Id, Inventory Actions absent
+    it("SW-NAV-TC88: Verify isSales-gated nav items are absent for Sales role", () => {
+      navigationPage.verifyNavLinkAbsent(navigationLocators.workOrders);
+      navigationPage.verifyNavSectionAbsent(navigationLocators.assetId);
+      navigationPage.verifyNavLinkAbsent(navigationLocators.inventoryActions);
+    });
+
+    // Decision table — admin-only gate: Inventory Audit, Printers, Warehouse Management, Configuration absent
+    it("SW-NAV-TC89: Verify admin-only nav items are absent for Sales role", () => {
+      navigationPage.verifyNavLinkAbsent(navigationLocators.inventoryAudit);
+      navigationPage.verifyNavLinkAbsent(navigationLocators.printers);
+      navigationPage.verifyNavSectionAbsent(navigationLocators.warehouseManagement);
+      navigationPage.verifyNavSectionAbsent(navigationLocators.configuration);
+    });
+
+    // Decision table — isSales() nav gate: Inventory is the only item; every
+    // other top-level entry the role used to see is absent
+    it("SW-NAV-TC91: Verify Sales nav shows Inventory only", { tags: ['@smoke'] }, () => {
+      navigationPage.verifySubItemVisible(navigationLocators.inventory);
+      navigationPage.verifyNavLinkAbsent(navigationLocators.dashboard);
+      navigationPage.verifyNavLinkAbsent(navigationLocators.incomingInventory);
+      navigationPage.verifyNavLinkAbsent(navigationLocators.purchaseOrders);
+      navigationPage.verifyNavSectionAbsent(navigationLocators.reports);
+    });
+
+    // Error guessing — hiding a nav link is not access control: a Sales user who
+    // types a restricted URL must not get the page (the route is not mounted)
+    it("SW-NAV-TC92: Verify a restricted deep link does not render for Sales role", () => {
+      cy.visit(urls.purchaseOrders);
+      navigationPage.verifyPageHeading(navigationPageData.headings.pageNotFound);
+    });
   });
+});
