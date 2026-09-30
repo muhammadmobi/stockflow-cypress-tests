@@ -118,16 +118,96 @@ describe('Login Page (Keycloak / IAM)', () => {
     })
 
     // Use Case — the session carries a well-formed JWT the app can use
-    
+    it('SW-AUTH-TC06: Verify the access token is mirrored into sessionStorage', { tags: ['@regression'] }, () => {
+      cy.login()
+      cy.getAuthToken().then((token) => {
+        expect(token, 'Keycloak access token').to.be.a('string')
+        expect(token.split('.'), 'token is a JWT').to.have.length(3)
+      })
+    })
+
     // Decision Table — role claim drives the profile-panel role label
-    
+    it('SW-AUTH-TC07: Verify admin profile panel shows Admin role', { tags: ['@regression'] }, () => {
+      cy.login()
+      cy.url().should('include', loginData.routes.dashboard)
+      loginPage.clickProfileIcon()
+      loginPage.verifyProfileRole(loginData.profile.adminRole)
+    })
+
     // State Transition — Authenticated to Unauthenticated via logout
-    
+    it('SW-AUTH-TC08: Verify logout ends the session', { tags: ['@regression'] }, () => {
+      cy.login()
+      cy.url().should('include', loginData.routes.dashboard)
+      loginPage.clickProfileIcon()
+      loginPage.clickLogout()
+      // Logout lands on the sign-in route, which hands off to the realm on its
+      // own — assert "signed out" rather than racing that redirect.
+      cy.expectSignedOut()
+    })
+
     // Worker-role cases require a provisioned IAM worker account in users.json.
     // EP — User/worker role partition lands on the mobile view
-    
+    it('SW-AUTH-TC09: Verify successful user login', { tags: ['@smoke'] }, () => {
+      // No pre-visit: loginPage.login() visits the app itself, and landing on
+      // the sign-in route first would only start a hand-off this test abandons.
+      loginPage.login(worker.username, worker.password)
+      cy.url().should('include', loginData.routes.userview)
+      cy.contains(loginData.landingPage.heading).should('be.visible')
+    })
+
     // Decision Table — role claim drives the profile-panel role label (User)
-    
+    it('SW-AUTH-TC10: Verify user profile panel shows User role', { tags: ['@regression'] }, () => {
+      // Uses the cached worker session, NOT a second `fresh` form login. TC09
+      // leaves a live IAM SSO session behind, and with one active the IdP
+      // redirects straight through without ever rendering the realm form — so a
+      // fresh login here died on "cy.filter() failed because it requires a DOM
+      // element" while passing when run alone. TC09 already owns the form flow;
+      // this TC only needs an authenticated worker, and cy.session clears
+      // session state before its setup so it establishes one deterministically.
+      cy.authSession('user')
+      cy.visit('/')
+      cy.url().should('include', loginData.routes.userview)
+      loginPage.clickProfileIcon()
+      loginPage.verifyProfileRole(loginData.profile.userRole)
+    })
+
     // State Transition — Authenticated to Unauthenticated when the SSO session dies
-      })
+    it('SW-AUTH-TC11: Verify a dead SSO session redirects a protected route to sign-in', { tags: ['@regression'] }, () => {
+      // Precondition must be a clean, LIVE admin session. The preceding worker
+      // cases (TC09 fresh-form login, TC10 authSession('user')) leave a worker
+      // SSO session at the realm that afterEach's plain cy.clearCookies() does
+      // NOT reach (only clearAllCookies touches the IdP superdomain). Restoring
+      // the cached admin cy.session over that polluted cookie jar left the app
+      // unauthenticated, so the setup below bounced to sign-in. Wipe everything
+      // (incl. the IdP cookie + saved sessions) and drive a guaranteed-fresh
+      // admin sign-in so this case tests the dead-SSO redirect, not the fallout
+      // of cross-test session bleed.
+      cy.clearAllCookies()
+      cy.clearAllSessionStorage()
+      cy.clearAllLocalStorage()
+      Cypress.session.clearAllSavedSessions()
+      cy.login(undefined, undefined, { fresh: true })
+      cy.url().should('include', loginData.routes.dashboard)
+
+      // Clearing the ACCESS TOKEN alone proves nothing — the app boots keycloak-js
+      // with onLoad:'check-sso' and silently mints a new one from the realm SSO
+      // cookie (that renewal is the app's job and is specified in plan.md §6, not
+      // asserted here). Only killing the SSO session too drops the app back to
+      // Unauthenticated. clearAllCookies reaches the IdP's superdomain, which the
+      // plain cy.clearCookies() in afterEach does not.
+      cy.clearAllCookies()
+      cy.clearAllSessionStorage()
+      cy.clearAllLocalStorage()
+
+      cy.visit(loginData.routes.dashboard)
+      // check-sso runs a silent iframe round-trip to the IdP before AuthGuard can
+      // decide, so allow for it rather than asserting on the first paint. The
+      // sign-in route then hands off to the realm, so either URL means "no session".
+      cy.expectSignedOut()
+
+      // The server-side SSO session was never logged out — only the browser's
+      // cookie jar was emptied — so the cached admin-session stays restorable and
+      // later specs are unaffected.
+    })
+  })
 })
