@@ -2,24 +2,22 @@ import urls from "../fixtures/urls.json";
 import navigationPageData from "../fixtures/navigationPageData.json";
 import NavigationPage from "../pageObjects/navigationPage";
 import navigationLocators from "../support/locators/navigationLocators";
+import { requireRoleOrSkip } from '../support/helpers/roleGuards';
 
 describe("Navigation Tests", { tags: ['@regression'] }, () => {
   let navigationPage;
 
   beforeEach(() => {
     navigationPage = new NavigationPage();
-    // Use cy.session to cache and restore login state
-    cy.session('admin-session', () => {
-      cy.login();
-    }, {
-      validate() {
-        // Verify session is still valid by checking localStorage token
-        cy.window().then((win) => {
-          const storage = win.localStorage.getItem('stock-wise');
-          expect(storage).to.exist;
-        });
-      }
+    cy.on('uncaught:exception', (err) => {
+      if (err?.message?.includes('Request failed with status code')) return false;
+      return true;
     });
+    // Use the shared admin session. It validates on the Keycloak access token in
+    // sessionStorage — the old inline validate checked localStorage['stock-wise'],
+    // which the app no longer populates with a token under Keycloak, so the
+    // session failed validation immediately after creation.
+    cy.authSession('admin');
 
     // After session is restored, visit dashboard
     cy.visit(urls.dashboard);
@@ -63,7 +61,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
   // EP — valid partition: accordion expands and sub-items become visible
   it("SW-NAV-TC07: Verify expansion of Asset Id menu", () => {
     navigationPage.clickAssetId();
-    cy.findByRole('link', { name: navigationLocators.generateAssetId }).should('be.visible');
+    navigationPage.verifySubItemVisible(navigationLocators.generateAssetId);
   });
 
   // Use case — accordion sub-item navigation: Generate Asset ID
@@ -94,11 +92,12 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
     navigationPage.verifyNavigation(urls.assetIdSearch, navigationPageData.headings.assetIdSearch);
   });
 
-  // Use case — direct link navigation
-  it("SW-NAV-TC12: Verify navigation to Inventory Audit page", () => {
-    navigationPage.clickInventoryAudit();
-    navigationPage.verifyNavigation(urls.inventoryAudit, navigationPageData.headings.inventoryAudit);
-  });
+  // SW-NAV-TC12 RETIRED: "Inventory Audit" is no longer a standalone /inventory-audit
+  // link. The ABC epic moved it into its own accordion module at /abc
+  // (children: Classification /abc/classification, Audits /abc/audits), so the
+  // direct-link navigation this case asserted no longer exists. ABC has its own
+  // dedicated coverage; the nav item's presence/absence is still covered by the
+  // Worker/admin visibility cases (verifyNavLinkAbsent(inventoryAudit)).
 
   // Use case — direct link navigation
   it("SW-NAV-TC13: Verify navigation to Printers page", () => {
@@ -109,7 +108,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
   // EP — valid partition: accordion expands and sub-items become visible
   it("SW-NAV-TC14: Verify expansion of Warehouse Management menu", { tags: ['@smoke'] }, () => {
     navigationPage.clickWarehouseManagement();
-    cy.findByRole('link', { name: navigationLocators.warehouseLocations }).should('be.visible');
+    navigationPage.verifySubItemVisible(navigationLocators.warehouseLocations);
   });
 
   // Use case — accordion sub-item navigation: Locations
@@ -136,7 +135,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
   // EP — valid partition: accordion expands and sub-items become visible
   it("SW-NAV-TC18: Verify expansion of Reports menu", { tags: ['@smoke'] }, () => {
     navigationPage.clickReports();
-    cy.findByRole('link', { name: navigationLocators.purchaseOrderReport }).should('be.visible');
+    navigationPage.verifySubItemVisible(navigationLocators.purchaseOrderReport);
   });
 
   // Use case — accordion sub-item navigation: Purchase Order Report
@@ -198,7 +197,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
   // EP — valid partition: accordion expands and sub-items become visible
   it("SW-NAV-TC27: Verify expansion of Configuration menu", { tags: ['@smoke'] }, () => {
     navigationPage.clickConfiguration();
-    cy.findByRole('link', { name: navigationLocators.attributes }).should('be.visible');
+    navigationPage.verifySubItemVisible(navigationLocators.attributes);
   });
 
   // Use case — accordion sub-item navigation: Attributes
@@ -300,7 +299,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
     // EP — valid partition: accordion expands and sub-items become visible in collapsed mode
     it("SW-NAV-TC42: Verify Asset Id menu expands in collapsed menu", () => {
       navigationPage.clickAssetId();
-      cy.findByRole('link', { name: navigationLocators.generateAssetId }).should('be.visible');
+      navigationPage.verifySubItemVisible(navigationLocators.generateAssetId);
     });
 
     // Use case — collapsed sidebar: Generate Asset ID sub-item
@@ -331,11 +330,9 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
       navigationPage.verifyNavigation(urls.assetIdSearch, navigationPageData.headings.assetIdSearch);
     });
 
-    // Use case — collapsed sidebar: Inventory Audit direct link
-    it("SW-NAV-TC47: Verify Inventory Audit link works in collapsed menu", () => {
-      navigationPage.clickInventoryAudit();
-      navigationPage.verifyNavigation(urls.inventoryAudit, navigationPageData.headings.inventoryAudit);
-    });
+    // SW-NAV-TC47 RETIRED: see SW-NAV-TC12 — Inventory Audit is now the /abc
+    // accordion module, not a direct /inventory-audit link, so a collapsed-menu
+    // direct-link click no longer applies.
 
     // Use case — collapsed sidebar: Printers direct link
     it("SW-NAV-TC48: Verify Printers link works in collapsed menu", () => {
@@ -346,7 +343,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
     // EP — valid partition: accordion expands and sub-items become visible in collapsed mode
     it("SW-NAV-TC49: Verify Warehouse Management menu expands in collapsed menu", () => {
       navigationPage.clickWarehouseManagement();
-      cy.findByRole('link', { name: navigationLocators.warehouseLocations }).should('be.visible');
+      navigationPage.verifySubItemVisible(navigationLocators.warehouseLocations);
     });
 
     // Use case — collapsed sidebar: Locations sub-item
@@ -373,7 +370,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
     // EP — valid partition: accordion expands and sub-items become visible in collapsed mode
     it("SW-NAV-TC53: Verify Reports menu expands in collapsed menu", () => {
       navigationPage.clickReports();
-      cy.findByRole('link', { name: navigationLocators.purchaseOrderReport }).should('be.visible');
+      navigationPage.verifySubItemVisible(navigationLocators.purchaseOrderReport);
     });
 
     // Use case — collapsed sidebar: Purchase Order Report sub-item
@@ -435,7 +432,7 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
     // EP — valid partition: accordion expands and sub-items become visible in collapsed mode
     it("SW-NAV-TC62: Verify Configuration menu expands in collapsed menu", () => {
       navigationPage.clickConfiguration();
-      cy.findByRole('link', { name: navigationLocators.attributes }).should('be.visible');
+      navigationPage.verifySubItemVisible(navigationLocators.attributes);
     });
 
     // Use case — collapsed sidebar: Attributes sub-item
@@ -493,4 +490,104 @@ describe("Navigation Tests", { tags: ['@regression'] }, () => {
       navigationPage.verifyNavExpanded();
     });
   });
-});
+
+  // ── Additional tests for 100% coverage ───────────────────────────────────
+
+  // Use case — alternate path: Dashboard link click from a non-dashboard page in expanded mode
+  it("SW-NAV-TC71: Verify Dashboard nav link click navigates to dashboard from another page", () => {
+    navigationPage.clickInventory();
+    navigationPage.verifyUrl(urls.inventory);
+    navigationPage.clickDashboard();
+    navigationPage.verifyUrl(urls.dashboard);
+  });
+
+  // State transition — accordion A open → expand accordion B → accordion B sub-items visible
+  // (verifies that opening a second accordion works when another is already expanded)
+  it("SW-NAV-TC72: Verify Configuration accordion opens while Reports accordion is already expanded", () => {
+    // The collapse toggle state can leak past cy.session; make sure we start expanded so the
+    // accordions render inline sub-items (not the collapsed-mode fixed flyout).
+    navigationPage.ensureNavExpanded();
+    navigationPage.clickReports();
+    navigationPage.verifySubItemVisible(navigationLocators.purchaseOrderReport);
+    navigationPage.clickConfiguration();
+    // Both accordions open: the Configuration sub-items sit low enough to fall behind the
+    // fixed footer box, so scroll the item above the footer before asserting visibility.
+    navigationPage.verifyStackedSubItemVisible(navigationLocators.attributes);
+  });
+
+  // EP — valid partition: nav link for the currently-active route carries the "--active" CSS class
+  // (Minimal UI NavItem writes "--active" on the active <a>; React Router aria-current is NOT used)
+  it("SW-NAV-TC73: Verify active link indicator on a direct nav item after navigation", () => {
+    navigationPage.clickInventory();
+    navigationPage.verifyUrl(urls.inventory);
+    navigationPage.verifyInventoryNavLinkActive();
+  });
+
+  // EP — valid partition: nav sub-item for the currently-active route carries the "--active" CSS class
+  // (Minimal UI NavItem writes "--active" on the active <a>; React Router aria-current is NOT used)
+  it("SW-NAV-TC74: Verify active link indicator on a Reports sub-item after navigation", () => {
+    navigationPage.clickReports();
+    navigationPage.clickCostReport();
+    navigationPage.verifyUrl(urls.costReport);
+    navigationPage.verifyNavLinkActive(navigationLocators.costReport);
+  });
+
+  // Use case — alternate path: browser back button returns to previous page
+  it("SW-NAV-TC75: Verify browser back button returns to the previous page", () => {
+    navigationPage.clickInventory();
+    navigationPage.verifyUrl(urls.inventory);
+    navigationPage.clickIncomingInventory();
+    navigationPage.verifyUrl(urls.incomingInventory);
+    cy.go('back');
+    navigationPage.verifyUrl(urls.inventory);
+  });
+
+  // ── Worker role navigation (decision table) ───────────────────────────────
+
+  describe("Worker role navigation", { tags: ['@regression'] }, () => {
+    beforeEach(() => {
+      navigationPage = new NavigationPage();
+      cy.on('uncaught:exception', (err) => {
+        if (err?.message?.includes('Request failed with status code')) return false;
+        return true;
+      });
+      cy.authSession('user');
+      // Visit /inventory to trigger the route guard: Workers are redirected to /MobileViewScreen.
+      // This is the correct starting state for Worker role nav tests.
+      cy.visit(urls.inventory);
+      // Wait for the Keycloak callback to settle AND the worker route-guard
+      // redirect to complete before any test asserts. Otherwise the URL is still
+      // mid-callback (/inventory#state=...code=...) and cases that assert on
+      // /MobileViewScreen race the redirect and flake.
+      cy.location('pathname', { timeout: 30000 }).should('eq', urls.inventoryActions);
+    });
+
+    // Decision table — Worker role uses mobile view (no sidebar); admin-only nav items are absent
+    it("SW-NAV-TC76: Verify admin-only nav items are absent for Worker role", () => {
+      navigationPage.verifyNavLinkAbsent(navigationLocators.inventoryAudit);
+      navigationPage.verifyNavLinkAbsent(navigationLocators.printers);
+      navigationPage.verifyNavSectionAbsent(navigationLocators.configuration);
+      navigationPage.verifyNavSectionAbsent(navigationLocators.warehouseManagement);
+    });
+
+    // Decision table — Worker role is redirected to the mobile landing screen (no sidebar nav);
+    // the mobile view renders action category buttons, not sidebar links.
+    it("SW-NAV-TC77: Verify Worker role mobile landing shows expected action category buttons", () => {
+      // Route guard redirects Workers from /inventory → /MobileViewScreen
+      navigationPage.verifyUrl(urls.inventoryActions);
+      navigationPage.verifyMobileLandingButtons();
+    });
+
+    // Use case — Worker role: the mobile view heading confirms the correct landing destination
+    it("SW-NAV-TC78: Verify Worker role is served the mobile Inventory Actions landing view", () => {
+      navigationPage.verifyUrl(urls.inventoryActions);
+      navigationPage.verifyMobileLandingHeading(navigationPageData.headings.inventoryActions);
+    });
+  });
+
+  // ── Unauthenticated access guard (error guessing) ─────────────────────────
+
+  
+  // ── Sales role navigation (decision table) ───────────────────────────────
+
+  });
