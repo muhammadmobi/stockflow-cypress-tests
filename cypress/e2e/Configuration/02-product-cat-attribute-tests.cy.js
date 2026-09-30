@@ -3,10 +3,7 @@ import CategoryPage from "../../pageObjects/CategoryPage";
 
 
 const loginSession = () => {
-    cy.session("user-session", () => {
-        cy.visit("/");
-        cy.login();
-    });
+    cy.authSession('admin');
     cy.visit("/");
 };
 
@@ -31,13 +28,7 @@ describe("Create Product-Only Category Setup - RAM Automation Cat SW_CAT_03 - SW
 
 
     it("SW_CAT_03 - Create Product-Only Category 'RAM Automation Cat'", { tags: ["@smoke", "@regression"] }, () => {
-        categoryPage.navigateToCategories();
-        categoryPage.clickAddnewCat();
-        categoryPage.typeCatName(catName);
-        categoryPage.clickSaveBt();
-        categoryPage.assertCategoryCreatedToast();
-        categoryPage.assertCreatedCatagory(catName);
-
+        categoryPage.ensureCategoryExists(catName);
     });
 
 });
@@ -72,10 +63,13 @@ describe("Product-Only Category - Text Attribute (SW_ATR_241 – SW_ATR_245)", (
     });
 
     it("SW_ATR_242 - Update Text Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -141,10 +135,13 @@ describe("Product-Only Category - Multi Line Text Attribute (SW_ATR_246 – SW_A
     });
 
     it("SW_ATR_247 - Update Multi Line Text Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -210,10 +207,13 @@ describe("Product-Only Category - Number Attribute (SW_ATR_251 – SW_ATR_255)",
     });
 
     it("SW_ATR_252 - Update Number Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -279,10 +279,13 @@ describe("Product-Only Category - Email Attribute (SW_ATR_256 – SW_ATR_260)", 
     });
 
     it("SW_ATR_257 - Update Email Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -348,10 +351,13 @@ describe("Product-Only Category - URL Attribute (SW_ATR_261 – SW_ATR_265)", ()
     });
 
     it("SW_ATR_262 - Update URL Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -417,10 +423,13 @@ describe("Product-Only Category - Decimal Attribute (SW_ATR_266 – SW_ATR_270)"
     });
 
     it("SW_ATR_267 - Update Decimal Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -486,10 +495,13 @@ describe("Product-Only Category - Amount Attribute (SW_ATR_271 – SW_ATR_275)",
     });
 
     it("SW_ATR_272 - Update Amount Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -555,10 +567,13 @@ describe("Product-Only Category - Percent Attribute (SW_ATR_276 – SW_ATR_280)"
     });
 
     it("SW_ATR_277 - Update Percent Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -626,10 +641,13 @@ describe("Product-Only Category - List Attribute (SW_ATR_281 – SW_ATR_288)", (
     });
 
     it("SW_ATR_282 - Update List Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
@@ -722,10 +740,13 @@ describe("Product-Only Category - Boolean Attribute (SW_ATR_289 – SW_ATR_293)"
     });
 
     it("SW_ATR_290 - Update Boolean Attribute Name for Product-Only Category", { tags: ["@regression"] }, () => {
+        cy.intercept("PATCH", "**/attributes").as("updateAttr");
         attribPage.navigateToCategoryAttributes(catName);
         attribPage.editAttribute(td.name);
+        attribPage.assertAttributeNameLoaded(td.name);
         attribPage.editItemName(td.updatedName);
         attribPage.clickUpdateBt();
+        cy.wait("@updateAttr");
         attribPage.assertToast("Attribute updated.");
         attribPage.assertAttributeInList(td.updatedName);
     });
