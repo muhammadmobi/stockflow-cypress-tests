@@ -75,8 +75,7 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
     () => {
       const stamp = suite.ts();
       const po = `PO-ScanAll-064-${stamp}`;
-      const ramFile = `ScanAll-064-ram-${stamp}.xlsx`;
-      const laptopFile = `ScanAll-064-laptop-${stamp}.xlsx`;
+      const combinedFile = `ScanAll-064-${stamp}.xlsx`;
 
       suite.createdPOs.push(po);
       const sns = Array.from(
@@ -84,16 +83,14 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
         (_, i) => `SA064-${String(i + 1).padStart(2, "0")}-${stamp}`,
       );
 
-      suite.createExcelFile(ramFile, [suite.ramRow()]);
-      suite.importExcel(ramFile, po);
-      suite.createExcelFile(
-        laptopFile,
-        sns.map((sn) => suite.laptopRow(sn)),
-      );
-      suite.importExcel(laptopFile, po);
+      suite.createExcelFile(combinedFile, [
+        suite.ramRow(),
+        ...sns.map((sn) => suite.laptopRow(sn)),
+      ]);
+      suite.importExcel(combinedFile, po);
 
       suite.incomingInvPage.selectPoNumber(po);
-      suite.stockInProduct(suite.scanAllData.searchTerms.ram, 2);
+      suite.stockInProduct(suite.scanAllData.searchTerms.ram, 2, po);
 
       suite.selectPO(po);
       suite.clickScanAll();
@@ -111,8 +108,7 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
     () => {
       const stamp = suite.ts();
       const po = `PO-ScanAll-065-${stamp}`;
-      const ramFile = `ScanAll-065-ram-${stamp}.xlsx`;
-      const laptopFile = `ScanAll-065-laptop-${stamp}.xlsx`;
+      const combinedFile = `ScanAll-065-${stamp}.xlsx`;
 
       suite.createdPOs.push(po);
       const sns = Array.from(
@@ -120,13 +116,11 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
         (_, i) => `SA065-${String(i + 1).padStart(2, "0")}-${stamp}`,
       );
 
-      suite.createExcelFile(ramFile, [suite.ramRow()]);
-      suite.importExcel(ramFile, po);
-      suite.createExcelFile(
-        laptopFile,
-        sns.map((sn) => suite.laptopRow(sn)),
-      );
-      suite.importExcel(laptopFile, po);
+      suite.createExcelFile(combinedFile, [
+        suite.ramRow(),
+        ...sns.map((sn) => suite.laptopRow(sn)),
+      ]);
+      suite.importExcel(combinedFile, po);
 
       suite.incomingInvPage.selectPoNumber(po);
       suite.scanSerialNumbers(po, [sns[0]]);
@@ -147,8 +141,7 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
     () => {
       const stamp = suite.ts();
       const po = `PO-ScanAll-069-${stamp}`;
-      const ramFile = `ScanAll-069-ram-${stamp}.xlsx`;
-      const laptopFile = `ScanAll-069-laptop-${stamp}.xlsx`;
+      const combinedFile = `ScanAll-069-${stamp}.xlsx`;
 
       suite.createdPOs.push(po);
       const sns = Array.from(
@@ -156,16 +149,14 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
         (_, i) => `SA069-${String(i + 1).padStart(2, "0")}-${stamp}`,
       );
 
-      suite.createExcelFile(ramFile, [suite.ramRow()]);
-      suite.importExcel(ramFile, po);
-      suite.createExcelFile(
-        laptopFile,
-        sns.map((sn) => suite.laptopRow(sn)),
-      );
-      suite.importExcel(laptopFile, po);
+      suite.createExcelFile(combinedFile, [
+        suite.ramRow(),
+        ...sns.map((sn) => suite.laptopRow(sn)),
+      ]);
+      suite.importExcel(combinedFile, po);
 
       suite.incomingInvPage.selectPoNumber(po);
-      suite.stockInProduct(suite.scanAllData.searchTerms.ram, 2);
+      suite.stockInProduct(suite.scanAllData.searchTerms.ram, 2, po);
 
       suite.selectPO(po);
       suite.scanSerialNumbers(po, [sns[0]]);
@@ -185,11 +176,15 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
   it(
     "SW_INC_023 - Scan All error on mixed PO when all items fully stocked/scanned",
     { tags: ["@regression"] },
+    // The setup below fully receives BOTH lines of the mixed PO — the RAM
+    // product-only line (qty 5, all stocked in) and all 3 laptop serials (all
+    // scanned) — so expected-received is 0 for every row and scanAllItems()
+    // raises "All items in this purchase order have already been scanned."
+    // (incoming-item.service.ts:7592), exactly as in SW_INC_019.
     () => {
       const stamp = suite.ts();
       const po = `PO-ScanAll-070-${stamp}`;
-      const ramFile = `ScanAll-070-ram-${stamp}.xlsx`;
-      const laptopFile = `ScanAll-070-laptop-${stamp}.xlsx`;
+      const combinedFile = `ScanAll-070-${stamp}.xlsx`;
 
       suite.createdPOs.push(po);
       const sns = Array.from(
@@ -197,16 +192,14 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
         (_, i) => `SA070-${String(i + 1).padStart(2, "0")}-${stamp}`,
       );
 
-      suite.createExcelFile(ramFile, [suite.ramRow()]);
-      suite.importExcel(ramFile, po);
-      suite.createExcelFile(
-        laptopFile,
-        sns.map((sn) => suite.laptopRow(sn)),
-      );
-      suite.importExcel(laptopFile, po);
+      suite.createExcelFile(combinedFile, [
+        suite.ramRow(),
+        ...sns.map((sn) => suite.laptopRow(sn)),
+      ]);
+      suite.importExcel(combinedFile, po);
 
       suite.incomingInvPage.selectPoNumber(po);
-      suite.stockInProduct(suite.scanAllData.searchTerms.ram, 5);
+      suite.stockInProduct(suite.scanAllData.searchTerms.ram, 5, po);
 
       suite.selectPO(po);
       suite.scanSerialNumbers(po, sns);
@@ -260,19 +253,6 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
     "SW_INC_029 - Scan All with Reserved item precondition",
     { tags: ["@regression"] },
     () => {
-      Cypress.once("uncaught:exception", (err) => {
-        const isKnownMinifiedFunctionError =
-          err?.message === "e is not a function" &&
-          typeof err?.stack === "string" &&
-          /(?:\/assets\/.*\.js|bundle\.js|chunk[-\w]*\.js)/.test(err.stack);
-
-        // Only suppress the known bundled frontend error
-        if (isKnownMinifiedFunctionError) {
-          return false;
-        }
-        return true;
-      });
-
       const tc = suite.getCase("SW_INC_029");
       const stamp = suite.ts();
       const po = `${tc.po}-${stamp}`;
@@ -297,7 +277,7 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
 
       suite.incomingInvPage.selectPoNumber(po);
       suite.scanSerialNumbers(po, [sns[0]]);
-      suite.reserveViaWorkOrderUI(laptopSearchTerm, 1, `${stamp}-82`, sns[0]);
+      suite.apiReserveViaWorkOrder(po, laptopSearchTerm, 1, sns[0]);
 
       suite.incomingInvPage.selectPoNumber(po);
       suite.clickScanAll();
@@ -310,6 +290,16 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
   it(
     "SW_INC_030 - Scan All with mixed item statuses",
     { tags: ["@regression"] },
+    // Badge semantics differ between the two product shapes, which is what made
+    // this test look broken:
+    //   • item-based (this test)  — badges count ITEM STATUSES. Scan All promotes
+    //     every remaining Incoming item to Available; the Missing item sits in
+    //     Missing status, not Incoming. So Incoming settles at 0, and Received
+    //     tops out at 9 because the Missing item is never received.
+    //   • product-only (SW_INC_037) — badges are quantity-derived, so the
+    //     unreceived remainder still reads as Incoming 1.
+    // The fixture had copied the product-only expectation (Incoming 1) onto this
+    // item-based case; Incoming 0 is the correct value here.
     () => {
       const tc = suite.getCase("SW_INC_030");
       const stamp = suite.ts();
@@ -322,26 +312,33 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
         (_, i) => `SA082-${String(i + 1).padStart(2, "0")}-${stamp}`,
       );
 
+      // Give this test its OWN laptop product (same trick SW_INC_029 uses). With the
+      // shared, unstamped model the work-order reserve does not bind to THIS PO's
+      // product, so sns[5] never leaves Available and the badge reads Available 5
+      // instead of 4 (and Reserved 0).
+      const laptopModelNumber = `${suite.scanAllData.products.laptop.modelNumber}-${stamp}`;
+      const laptopSearchTerm = `${suite.scanAllData.products.laptop.brand} ${laptopModelNumber}`;
+
       suite.createExcelFile(
         fileName,
-        sns.map((sn) => suite.laptopRow(sn)),
+        sns.map((sn) => suite.laptopRow(sn, { "Model Number": laptopModelNumber })),
       );
       suite.importExcel(fileName, po);
 
-      suite.openChangeStatusDialog(po, suite.scanAllData.searchTerms.laptop);
+      suite.openChangeStatusDialog(po, laptopSearchTerm);
       suite.applyStatusViaDialog({
         status: suite.scanAllData.status.missing,
         serialNumber: sns[0],
       });
 
-      suite.openChangeStatusDialog(po, suite.scanAllData.searchTerms.laptop);
+      suite.openChangeStatusDialog(po, laptopSearchTerm);
       suite.applyStatusViaDialog({
         status: suite.scanAllData.status.damaged,
         serialNumber: sns[1],
         damageReason: suite.scanAllData.defaults.damageReason,
       });
 
-      suite.openChangeStatusDialog(po, suite.scanAllData.searchTerms.laptop);
+      suite.openChangeStatusDialog(po, laptopSearchTerm);
       suite.applyStatusViaDialog({
         status: suite.scanAllData.status.disputed,
         serialNumber: sns[2],
@@ -360,12 +357,7 @@ describe("Scan All Item Tests (SW_INC_017 - SW_INC_030)", () => {
         suite.scanAllData.status.otherStockOutReason,
         `${stamp}-83-2`,
       );
-      suite.reserveViaWorkOrderUI(
-        suite.scanAllData.searchTerms.laptop,
-        1,
-        `${stamp}-83`,
-        sns[5],
-      );
+      suite.apiReserveViaWorkOrder(po, laptopSearchTerm, 1, sns[5]);
 
       suite.incomingInvPage.selectPoNumber(po);
       suite.clickScanAll();
