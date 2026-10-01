@@ -494,17 +494,104 @@ describe("SETUP - Import Prerequisite Inventory Data", () => {
         importExcelFile(LAPTOP_PO, fileName);
     });
 
+    it("SW_CAT_SETUP_02 - Import RAM CRUD Cat inventory data (product-only with quantity)", { tags: ["@regression"] }, () => {
+        const timestamp = Date.now();
+        const fileName = `RamCatTestFile-${timestamp}.xlsx`;
+        const filePath = `cypress/fixtures/${fileName}`;
+
+        const excelData = [
+            {
+                Category: "RAM CRUD Cat",
+              "Brand": "GSkill",
+              "Memory Generation": "DDR4",
+                Cost: "30",
+                Price: "60",
+                Quantity: "5"
+            }
+        ];
+
+        createExcelFile(filePath, excelData);
+        importExcelFile(RAM_PO, fileName);
     });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // UPDATE – Allow Items Toggle Restriction with Data
 // ─────────────────────────────────────────────────────────────────────────────
 
+describe("UPDATE - Allow Items Toggle Restriction with Data (SW_CAT_18, SW_CAT_26, SW_CAT_27)", () => {
+    let categoryPage;
+    let td;
+
+    before(() => {
+        cy.fixture("Configuration/categoryTestData").then((data) => {
+            td = data;
+        });
+    });
+
+    beforeEach(() => {
+        loginSession();
+        categoryPage = new CategoryPage();
+        categoryPage.navigateToCategories();
+    });
+
+    it("SW_CAT_18 - Verify Allow Items toggle CANNOT be turned OFF when items exist for Laptop CRUD Cat", { tags: ["@regression"] }, () => {
+        categoryPage.clickEditButton(td.laptopCatName);
+        // Allow Items toggle should be disabled (cannot be turned off) when items exist
+        categoryPage.assertAllowItemsToggle("checked");
+        categoryPage.assertAllowItemsToggle("disabled");
+        categoryPage.clickCancel();
+    });
+
+    it("SW_CAT_26 - Verify Allow Items toggle is disabled for RAM CRUD Cat (has associated products)", { tags: ["@regression"] }, () => {
+        categoryPage.clickEditButton(td.ramCatName);
+        // Toggle should be disabled / unclickable when data exists
+        categoryPage.assertAllowItemsToggle("disabled");
+        categoryPage.clickCancel();
+    });
+
+    it("SW_CAT_27 - Verify Allow Items toggle is disabled for Laptop CRUD Cat (has associated products/items)", { tags: ["@regression"] }, () => {
+        categoryPage.clickEditButton(td.laptopCatName);
+        categoryPage.assertAllowItemsToggle("disabled");
+        categoryPage.clickCancel();
+    });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DELETE – Cancel Category Deletion
 // ─────────────────────────────────────────────────────────────────────────────
 
+describe("DELETE - Cancel Category Deletion (SW_CAT_11, SW_CAT_28, SW_CAT_29)", () => {
+    let categoryPage;
+    let td;
+
+    before(() => {
+        cy.fixture("Configuration/categoryTestData").then((data) => {
+            td = data;
+        });
+    });
+
+    beforeEach(() => {
+        loginSession();
+        categoryPage = new CategoryPage();
+        categoryPage.navigateToCategories();
+    });
+
+    it("SW_CAT_11 - Verify 'No' Button on Category Deletion Pop Up – Laptop CRUD Cat remains in list", { tags: ["@regression"] }, () => {
+        categoryPage.cancelDeletion(td.laptopCatName);
+        categoryPage.assertCatEdit(td.laptopCatName);
+    });
+
+    it("SW_CAT_28 - Verify cancellation of product-only category deletion (RAM CRUD Cat)", { tags: ["@smoke"] }, () => {
+        categoryPage.cancelDeletion(td.ramCatName);
+        categoryPage.assertCatEdit(td.ramCatName);
+    });
+
+    it("SW_CAT_29 - Verify cancellation of product-item category deletion (Laptop CRUD Cat)", { tags: ["@regression"] }, () => {
+        categoryPage.cancelDeletion(td.laptopCatName);
+        categoryPage.assertCatEdit(td.laptopCatName);
+    });
+});
 
 // // ─────────────────────────────────────────────────────────────────────────────
 // // DELETE – Delete Confirmation UI
@@ -548,6 +635,34 @@ describe("DELETE - Delete Confirmation UI (SW_CAT_15, SW_CAT_16)", () => {
 // // DELETE – Cannot Delete Category with Associated Data
 // // ─────────────────────────────────────────────────────────────────────────────
 
+describe("DELETE - Cannot Delete Category with Associated Data (SW_CAT_30, SW_CAT_31)", () => {
+    let categoryPage;
+    let td;
+
+    before(() => {
+        cy.fixture("Configuration/categoryTestData").then((data) => {
+            td = data;
+        });
+    });
+
+    beforeEach(() => {
+        loginSession();
+        categoryPage = new CategoryPage();
+        categoryPage.navigateToCategories();
+    });
+
+    it("SW_CAT_30 - Verify product-only category (RAM CRUD Cat) cannot be deleted when associated data exists", { tags: ["@regression"] }, () => {
+        categoryPage.tryDeleteAndExpectError(td.ramCatName);
+        // Category should still be in the list
+        categoryPage.assertCatEdit(td.ramCatName);
+    });
+
+    it("SW_CAT_31 - Verify product-item category (Laptop CRUD Cat) cannot be deleted when associated data exists", { tags: ["@regression"] }, () => {
+        categoryPage.tryDeleteAndExpectError(td.laptopCatName);
+        // Category should still be in the list
+        categoryPage.assertCatEdit(td.laptopCatName);
+    });
+});
 
 
 
@@ -555,11 +670,66 @@ describe("DELETE - Delete Confirmation UI (SW_CAT_15, SW_CAT_16)", () => {
 // CLEANUP – Delete Import POs
 // ─────────────────────────────────────────────────────────────────────────────
 
+describe("CLEANUP - Delete Import POs (SW_CAT_CLEANUP_01, SW_CAT_CLEANUP_02)", () => {
+    let td;
+
+    before(() => {
+        cy.fixture("Configuration/categoryTestData").then((data) => {
+            td = data;
+        });
+    });
+
+    beforeEach(() => {
+        loginSession();
+    });
+
+    it("SW_CAT_CLEANUP_01 - Delete Laptop CRUD Cat Import PO", { tags: ["@regression"] }, () => {
+        const invPage = new IncomingInvPage();
+        const purchaseOrderPage = new PurchaseOrderPage();
+        invPage.navigateToPOTab();
+        purchaseOrderPage.deletePurchaseOrder(LAPTOP_PO);
+    });
+
+    it("SW_CAT_CLEANUP_02 - Delete RAM CRUD Cat Import PO", { tags: ["@regression"] }, () => {
+        const invPage = new IncomingInvPage();
+        const purchaseOrderPage = new PurchaseOrderPage();
+        invPage.navigateToPOTab();
+        purchaseOrderPage.deletePurchaseOrder(RAM_PO);
+    });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CLEANUP/DELETE – Delete Test Categories
 // ─────────────────────────────────────────────────────────────────────────────
 
+describe("CLEANUP/DELETE - Delete Test Categories (SW_CAT_32, SW_CAT_33)", () => {
+    let categoryPage;
+    let td;
+
+    before(() => {
+        cy.fixture("Configuration/categoryTestData").then((data) => {
+            td = data;
+        });
+    });
+
+    beforeEach(() => {
+        loginSession();
+        categoryPage = new CategoryPage();
+        categoryPage.navigateToCategories();
+    });
+
+    it("SW_CAT_32 - Verify product-only category (RAM CRUD Cat) deletion succeeds when no associated data", { tags: ["@smoke"] }, () => {
+        categoryPage.clickDelCat(td.ramCatName);
+        cy.contains(/deleted|Category deleted/i, { timeout: 10000 }).should("be.visible");
+        categoryPage.assertCatDelete(td.ramCatName);
+    });
+
+    it("SW_CAT_33 - Verify product-item category (Laptop CRUD Cat) deletion succeeds when no associated data", { tags: ["@regression"] }, () => {
+        categoryPage.clickDelCat(td.laptopCatName);
+        cy.contains(/deleted|Category deleted/i, { timeout: 10000 }).should("be.visible");
+        categoryPage.assertCatDelete(td.laptopCatName);
+    });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRODUCT NAME tests have been moved to:
