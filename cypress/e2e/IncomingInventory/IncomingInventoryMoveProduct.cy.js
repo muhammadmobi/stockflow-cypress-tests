@@ -1,7 +1,7 @@
 import IncomingInvPage from "../../pageObjects/IncomingInvPage";
 import InvViewPage from "../../pageObjects/InvViewPage";
 import "cypress-file-upload";
-import { importAttributesAndCategories } from "../../support/helpers/attributeHelpers";
+import { importAttributesAndCategories, ensureCommonAttributesOptional } from "../../support/helpers/attributeHelpers";
 import {
   makeRamRow,
   makeLaptopRowWithSerial,
@@ -62,7 +62,7 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
       td = data;
       const runId = ts();
 
-      cy.adminSession();
+      cy.authSession('admin');
       cy.visit("/");
 
       // Ensure shared categories exist
@@ -93,6 +93,7 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
       });
 
       importAttributesAndCategories();
+      ensureCommonAttributesOptional();
 
       incomingInvPage = new IncomingInvPage();
       invViewPage = new InvViewPage();
@@ -127,11 +128,27 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
       importExcel(lapSourceFileName, laptopSourcePO);
 
       // ── Target PO for Laptop With Items — TC02 ──
+      // The target PO MUST use its own serial numbers. serialNumber is the
+      // primary key of the items table, so re-importing the source PO's serials
+      // here silently imports zero rows (the upload still reports success:true),
+      // leaving the target PO with no quantities. PoList only offers POs that
+      // have incoming quantity, so the target then never appeared in the "Target
+      // Purchase Order Number" dropdown and TC02 could not select it.
+      //
+      // The Model Number is unchanged, so both POs still resolve to the SAME
+      // product — which is what TC02 needs, since the Move Items payload moves
+      // items into a destination product (newProductId) in the target PO.
       const lapTargetStamp = ts();
       laptopTargetPO = `PO-Move-Lap-Tgt-${lapTargetStamp}`;
       createdPOs.push(laptopTargetPO);
       const lapTargetFileName = `MoveLapTarget-${lapTargetStamp}.xlsx`;
-      createExcelFile(lapTargetFileName, laptopSerials.map(makeLaptopRowWithSerial(td)));
+      const laptopTargetSerials = td.laptop.sharedSerials.map(
+        (s) => `${s}-TGT-${runId}`,
+      );
+      createExcelFile(
+        lapTargetFileName,
+        laptopTargetSerials.map(makeLaptopRowWithSerial(td)),
+      );
       importExcel(lapTargetFileName, laptopTargetPO);
 
       log(`Setup complete. POs: ${JSON.stringify(createdPOs)}`);
@@ -140,7 +157,7 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
 
   // ─── beforeEach() ─────────────────────────────────────────────────────────
   beforeEach(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit("/");
     incomingInvPage = new IncomingInvPage();
     invViewPage = new InvViewPage();
@@ -175,12 +192,49 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
       }
     );
 
-    // SW-IIM-TC02 — SKIPPED: Move Items requires matching product in target PO
-    // The Move Items flow is complex and requires specific product matching in target PO.
-    // Skipping for now; re-enable if Move Items becomes a critical path feature.
-    it.skip(
-      "SW-IIM-TC02 — Product with Items: Move Laptop items from Source PO to Target PO (skipped — requires matching product in target)",
-      () => {}
+    // SW-IIM-TC02 — Previously skipped as a "UI-driver gap": the Move Items
+    // ('ITEM') payload requires a destination product (newProductId —
+    // MoveProductModel.tsx:135-142) picked from <ProductTableSelector>, and a
+    // freshly-imported laptop does not appear on the first page of that list.
+    // The list is react-window virtualized, so the product is not merely
+    // off-screen — it is absent from the DOM, which is why clicking blindly was
+    // unreliable. The selector does expose a stable hook after all: its search
+    // box is server-side (re-queries with params.search), so searching the model
+    // number pulls the product into the list deterministically. laptopTargetPO is
+    // already seeded with a matching laptop in before(), so the destination
+    // exists. Now runs.
+    it(
+      "SW-IIM-TC02 — Product with Items: Move Laptop items from Source PO to Target PO",
+      { tags: ['@regression'] },
+      () => {
+        // Technique: Use Case — the serialized-product move path
+        log(`SW-IIM-TC02: laptopSourcePO=${laptopSourcePO}, laptopTargetPO=${laptopTargetPO}`);
+        searchProduct(laptopSourcePO, td.laptop.displayName);
+
+        cy.intercept("POST", "**/products/product-shift").as("moveItems");
+        incomingInvPage.openMoveItemsDialog();
+        incomingInvPage.verifyMoveDialogOpen();
+        incomingInvPage.selectTargetPO(laptopTargetPO);
+
+        // Destination product inside the target PO.
+        incomingInvPage.searchProductInSelector(td.laptop.modelNumber);
+        incomingInvPage.selectFirstProductInSelector();
+
+        incomingInvPage.clickMoveButton();
+        incomingInvPage.verifyMoveConfirmDialogOpen();
+        incomingInvPage.clickMoveConfirm();
+
+        cy.wait("@moveItems", { timeout: 20000 }).then(({ request, response }) => {
+          // The ITEM branch must carry a destination product, unlike the
+          // product-only branch which sends newPO/productId/oldPO alone.
+          expect(request?.body?.newPO, "newPO").to.eq(laptopTargetPO);
+          expect(request?.body?.oldPO, "oldPO").to.eq(laptopSourcePO);
+          expect(request?.body?.newProductId, "newProductId").to.exist;
+          expect(response?.statusCode, "product-shift status").to.be.oneOf([200, 201]);
+        });
+
+        log("SW-IIM-TC02: PASS");
+      }
     );
 
     // SW-IIM-TC03 — EP (Cancel partition)
@@ -223,7 +277,7 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
     let negativeTestPO;
 
     before(() => {
-      cy.adminSession();
+      cy.authSession('admin');
       cy.visit("/");
       cy.fixture("incomingInventoryMoveData").then((data) => {
         const negStamp = ts();
@@ -237,17 +291,73 @@ describe("Incoming Inventory Move Product Tests (SW-IIM-TC01 – SW-IIM-TC10)", 
       });
     });
 
-    // SW-IIM-TC04 — SKIPPED: Validation behavior varies by implementation
-    // The system may disable the Move button or show errors differently
-    it.skip(
-      "SW-IIM-TC04 — Empty Target PO: Attempt move without selecting target PO (skipped — validation behavior varies)",
-      () => {}
+    // SW-IIM-TC04 — Re-scoped from "empty target PO rejected" to the guarantee
+    // that actually holds. An empty target is not reachable by normal
+    // interaction: resetForm() pre-fills the target with the SOURCE PO
+    // (setSelectedPo(po || '') — MoveProductModel.tsx:100), and the
+    // `if (!selectedPo)` → "Please select a purchase order" guard (line 119)
+    // only fires if the react-select is first cleared, which the UI offers no
+    // stable affordance for. Rather than skip, assert the invariant that makes
+    // the empty state impossible: the dialog always opens with a target
+    // selected, defaulted to the source PO. If a future change ships an empty
+    // default (re-exposing the guard), this test fails and says so.
+    it(
+      "SW-IIM-TC04 — Move dialog always opens with a target PO selected (defaults to source PO), so the empty-target state is unreachable",
+      { tags: ['@regression'] },
+      () => {
+        // Technique: EP — the "no target selected" invalid partition is empty by construction
+        log(`SW-IIM-TC04: negativeTestPO=${negativeTestPO}`);
+        searchProduct(negativeTestPO, td.ramKingston.displayName);
+
+        incomingInvPage.openMoveProductDialog();
+        incomingInvPage.verifyMoveDialogOpen();
+        incomingInvPage.assertTargetPODefaultsTo(negativeTestPO);
+
+        incomingInvPage.clickMoveCancel();
+        incomingInvPage.verifyMoveDialogClosed();
+        log("SW-IIM-TC04: PASS");
+      }
     );
 
-    // SW-IIM-TC05 — SKIPPED: Same PO move behavior varies by business rules
-    it.skip(
-      "SW-IIM-TC05 — Same Source/Target PO: Attempt to move to same PO (skipped — business rule dependent)",
-      () => {}
+    // SW-IIM-TC05 — Re-scoped. Same-source-PO is not a special affordance, it is
+    // the DEFAULT dialog state (resetForm sets selectedPo = source PO), and the
+    // FE applies no client-side same-PO rejection — it posts newPO === oldPO to
+    // /products/product-shift. Rather than guess whether the backend accepts or
+    // rejects that, assert the invariant that must hold either way: a move to
+    // the PO the product already belongs to is a no-op, so the product is still
+    // there afterwards. This is true under both semantics (rejected → unchanged;
+    // accepted → moved to itself), and it fails loudly if a same-PO move ever
+    // starts DROPPING the product — the outcome that would actually hurt.
+    it(
+      "SW-IIM-TC05 — Same Source/Target PO: moving a product to its own PO leaves it in that PO (no-op)",
+      { tags: ['@regression'] },
+      () => {
+        // Technique: Error Guessing — degenerate same-PO move must not lose the row
+        log(`SW-IIM-TC05: negativeTestPO=${negativeTestPO} (target defaults to source)`);
+        searchProduct(negativeTestPO, td.ramKingston.displayName);
+
+        cy.intercept("POST", "**/products/product-shift").as("sameePoShift");
+
+        incomingInvPage.openMoveProductDialog();
+        incomingInvPage.verifyMoveDialogOpen();
+        // Leave the target as-is: it is already the source PO.
+        incomingInvPage.assertTargetPODefaultsTo(negativeTestPO);
+        incomingInvPage.clickMoveButton();
+        incomingInvPage.verifyMoveConfirmDialogOpen();
+        incomingInvPage.clickMoveConfirm();
+
+        // The FE sends the degenerate payload rather than blocking it locally.
+        cy.wait("@sameePoShift", { timeout: 20000 }).then(({ request }) => {
+          expect(request?.body?.newPO, "newPO").to.eq(negativeTestPO);
+          expect(request?.body?.oldPO, "oldPO").to.eq(negativeTestPO);
+        });
+
+        // Invariant: whatever the backend decides, the product must still be in
+        // its PO — a same-PO move may not make the row disappear.
+        searchProduct(negativeTestPO, td.ramKingston.displayName);
+        incomingInvPage.verifyTableHasRows(1);
+        log("SW-IIM-TC05: PASS");
+      }
     );
   });
 
