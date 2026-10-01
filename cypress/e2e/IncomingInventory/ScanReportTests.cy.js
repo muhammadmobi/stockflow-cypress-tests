@@ -21,7 +21,7 @@
 import IncomingInvPage from '../../pageObjects/IncomingInvPage';
 import ScanReportPage from '../../pageObjects/ScanReportPage';
 import { importExcel, createExcelFile } from '../../support/helpers/incomingInventoryHelpers';
-import { importAttributesAndCategories } from '../../support/helpers/attributeHelpers';
+import { importAttributesAndCategories, ensureCommonAttributesOptional } from '../../support/helpers/attributeHelpers';
 import 'cypress-file-upload';
 
 describe('Scan Report Tests (SW_INC_SR_001 – SW_INC_SR_011)', { tags: ['@regression'] }, () => {
@@ -99,7 +99,7 @@ describe('Scan Report Tests (SW_INC_SR_001 – SW_INC_SR_011)', { tags: ['@regre
     cy.fixture('scanReportData').then((data) => {
       td = data;
     });
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit('/');
 
     // Pre-create the two categories the suite uses. Idempotent — safe on re-run.
@@ -109,6 +109,7 @@ describe('Scan Report Tests (SW_INC_SR_001 – SW_INC_SR_011)', { tags: ['@regre
     });
 
     importAttributesAndCategories();
+    ensureCommonAttributesOptional();
   });
 
   beforeEach(() => {
@@ -118,12 +119,12 @@ describe('Scan Report Tests (SW_INC_SR_001 – SW_INC_SR_011)', { tags: ['@regre
       // reports query is racing with re-renders — never block the test on those.
       if (err.message.includes('is not a function')) return false;
     });
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit('/');
   });
 
   after(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit('/');
     // API-only cleanup — every UI dialog click skipped.
     createdPOs.forEach((po) => {
