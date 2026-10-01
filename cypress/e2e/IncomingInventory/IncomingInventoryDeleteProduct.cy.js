@@ -1,7 +1,11 @@
 import IncomingInvPage from "../../pageObjects/IncomingInvPage";
 import InvViewPage from "../../pageObjects/InvViewPage";
 import "cypress-file-upload";
-import { importAttributesAndCategories } from "../../support/helpers/attributeHelpers";
+import {
+  importAttributesAndCategories,
+  ensureCommonAttributesOptional,
+  ensureProductNameConfig,
+} from "../../support/helpers/attributeHelpers";
 import {
   makeRamRow,
   makeLaptopRowWithSerial,
@@ -67,7 +71,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       const laptopRowWithSerial = makeLaptopRowWithSerial(td);
       const runId = ts();
 
-      cy.adminSession();
+      cy.authSession('admin');
       cy.visit("/");
 
       cy.getAuthToken().then((token) => {
@@ -100,6 +104,88 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       });
 
       importAttributesAndCategories();
+      ensureCommonAttributesOptional();
+
+      // ── Give the Delete categories the attributes their import rows use ──────
+      // RAMbrand / Memory Generation / Model Number are scoped to the *Automation*
+      // categories, not to the "… Delete Test Cat" categories this spec creates. So
+      // those columns were dropped on import: the products landed with no attribute
+      // values and no name, and every searchProduct() for "DDR4" / the laptop model
+      // returned an empty grid — which is why 7 tests failed hunting for a row
+      // (`button#long-button` / `[role="menu"]` never found).
+      //
+      // Clone the definitions onto the Delete categories (a same-named attribute must
+      // share its type + validation across categories, so cloning is the only safe way
+      // to add it), then configure each category's product-name template so the rows
+      // render a real name instead of "Product name not defined".
+      cy.getAuthToken().then((token) => {
+        const apiBase = Cypress.env("API_BASE_URL");
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        cy.request({
+          method: "GET",
+          url: `${apiBase}/attributes`,
+          qs: { all: true, page_size: 1000 },
+          headers,
+          failOnStatusCode: false,
+        }).then((attrRes) => {
+          const rawAttrs = attrRes.body?.data?.list ?? attrRes.body?.data ?? [];
+          const allAttrs = Array.isArray(rawAttrs) ? rawAttrs : [];
+
+          cy.request({
+            method: "GET",
+            url: `${apiBase}/categories`,
+            qs: { page: 1, page_size: 200 },
+            headers,
+            failOnStatusCode: false,
+          }).then((catRes) => {
+            const rawCats = catRes.body?.data?.list ?? catRes.body?.data ?? [];
+            const allCats = Array.isArray(rawCats) ? rawCats : [];
+            const catId = (name) =>
+              allCats.find((c) => (c.name || "").toLowerCase() === name.toLowerCase())?.id;
+
+            const cloneAttrInto = (attrName, categoryName) => {
+              const categoryId = catId(categoryName);
+              if (!categoryId) return;
+              if (allAttrs.some((a) => a.name === attrName && a.categoryId === categoryId)) return;
+              const source = allAttrs.find((a) => a.name === attrName && a.categoryId != null);
+              if (!source) {
+                cy.log(`cloneAttrInto: no source definition for '${attrName}'`);
+                return;
+              }
+              cy.request({
+                method: "POST",
+                url: `${apiBase}/attributes`,
+                headers,
+                failOnStatusCode: false,
+                body: {
+                  name: source.name,
+                  fieldName: source.fieldName,
+                  type: source.type,
+                  entityType: source.entityType,
+                  required: false,
+                  unique: source.unique,
+                  editable: source.editable,
+                  locked: false,
+                  otherInfo: source.otherInfo,
+                  categoryId,
+                },
+              }).then((r) => cy.log(`clone '${attrName}' → ${categoryName}: ${r.status}`));
+            };
+
+            cloneAttrInto("RAMbrand", td.categories.ram.name);
+            cloneAttrInto("Memory Generation", td.categories.ram.name);
+            cloneAttrInto("Model Number", td.categories.laptop.name);
+            cloneAttrInto("RAMbrand", td.categories.clothing.name);
+          });
+        });
+      });
+
+      ensureProductNameConfig(td.categories.ram.name, ["RAMbrand", "Memory Generation"]);
+      ensureProductNameConfig(td.categories.laptop.name, ["Brand", "Model Number"]);
 
       incomingInvPage = new IncomingInvPage();
       invViewPage = new InvViewPage();
@@ -141,7 +227,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
 
   // ─── beforeEach() ─────────────────────────────────────────────────────────
   beforeEach(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit("/");
     incomingInvPage = new IncomingInvPage();
     invViewPage = new InvViewPage();
@@ -168,6 +254,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC01 — Product Only: Delete product with PO context, verify success toast",
       { tags: ["@smoke", "@regression"] },
       () => {
+        // Technique: EP
         log(`SW-IID-TC01: poNumber=${ramProductOnlyPO}, product=${td.testProducts.productOnly.displayName}`);
         searchProduct(ramProductOnlyPO, td.testProducts.productOnly.brand);
 
@@ -197,6 +284,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC02 — Product with Items: Delete product that has serial items, verify cascade",
       { tags: ["@regression"] },
       () => {
+        // Technique: EP
         log(`SW-IID-TC02: poNumber=${laptopWithItemsPO}, product=${td.testProducts.withItems.displayName}`);
         searchProduct(laptopWithItemsPO, td.testProducts.withItems.brand);
 
@@ -225,6 +313,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC03 — Product with Variants: Delete product with variants, verify deletion",
       { tags: ["@regression"] },
       () => {
+        // Technique: EP
         log(`SW-IID-TC03: poNumber=${clothingWithVariantsPO}, product=VARIANT-TEST`);
         searchProduct(clothingWithVariantsPO, td.testProducts.withVariants.brand);
 
@@ -253,6 +342,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC04 — Cancel delete: Open dialog, click cancel, verify product still exists",
       { tags: ["@regression"] },
       () => {
+        // Technique: Error Guessing
         // Create a new PO for this test since TC01 may have deleted the product
         const cancelStamp = ts();
         const cancelPO = `PO-Delete-Cancel-${cancelStamp}`;
@@ -284,6 +374,10 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
     let negativeTestPO;
 
     before(() => {
+      // Establish an active session so cy.getAuthToken() returns a token for
+      // the importExcel seeding call (importExcel calls getAuthToken internally).
+      cy.authSession('admin');
+      cy.visit("/");
       const negStamp = ts();
       negativeTestPO = `PO-Delete-Neg-${negStamp}`;
       const negFileName = `DeleteNeg-${negStamp}.xlsx`;
@@ -306,6 +400,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC05 — Wrong confirmation text: Type 'delete' (lowercase), verify disabled confirm",
       { tags: ["@regression"] },
       () => {
+        // Technique: Error Guessing
         log(`SW-IID-TC05: poNumber=${negativeTestPO}`);
         searchProduct(negativeTestPO, td.testProducts.productOnly.brand);
 
@@ -331,6 +426,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC06 — Empty confirmation: Leave field empty, verify disabled confirm",
       { tags: ["@regression"] },
       () => {
+        // Technique: BVA
         log(`SW-IID-TC06: poNumber=${negativeTestPO}`);
         searchProduct(negativeTestPO, td.testProducts.productOnly.brand);
 
@@ -356,6 +452,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC07 — Partial text: Type 'DEL', verify disabled confirm",
       { tags: ["@regression"] },
       () => {
+        // Technique: BVA
         log(`SW-IID-TC07: poNumber=${negativeTestPO}`);
         searchProduct(negativeTestPO, td.testProducts.productOnly.brand);
 
@@ -387,6 +484,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC08 — 'All POs' view: Verify delete menu is hidden when no PO selected",
       { tags: ["@regression"] },
       () => {
+        // Technique: State Transition
         log("SW-IID-TC08: Testing All POs view");
         incomingInvPage.clickIncomingInventoryNav();
 
@@ -431,6 +529,7 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC09 — Inventory page: Verify delete available from /inventory route too",
       { tags: ["@regression"] },
       () => {
+        // Technique: Use Case
         log("SW-IID-TC09: Testing Inventory page");
 
         // Navigate to Inventory
@@ -472,11 +571,15 @@ describe("Incoming Inventory Delete Product Tests (SW-IID-TC001 – SW-IID-TC010
       "SW-IID-TC10 — Verify removal: Delete product, immediately verify removal from table",
       { tags: ["@regression"] },
       () => {
-        // Create fresh PO for this test
+        // Technique: EP
+        // Create fresh PO for this test.
+        // Use a valid RAMbrand list value ("GSkill") — dynamic names like
+        // "RemovalBrand<stamp>" are not in the backend enum and the import
+        // silently drops the row, leaving an empty table.
         const removalStamp = ts();
         const removalPO = `PO-Delete-Removal-${removalStamp}`;
         const removalFileName = `DeleteRemoval-${removalStamp}.xlsx`;
-        const testBrand = `RemovalBrand${removalStamp}`;
+        const testBrand = "GSkill";
         createExcelFile(removalFileName, [
           makeRamRow(td)(testBrand, td.testProducts.productOnly.memoryGeneration, 1),
         ]);
