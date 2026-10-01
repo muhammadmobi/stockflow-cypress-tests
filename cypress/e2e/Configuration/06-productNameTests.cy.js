@@ -1,5 +1,12 @@
 import "cypress-file-upload";
 import CategoryPage from "../../pageObjects/CategoryPage";
+import {
+  apiEnsureBaseline,
+  apiResetProductNameConfig,
+  apiSnapshotProductNameConfigs,
+  apiRestoreProductNameConfigs,
+  apiEnsureAttributeCategory,
+} from "../../support/Configuration/apiCleanup.js";
 
 // ─── Session Helper ────────────────────────────────────────────────────────────
 
@@ -10,6 +17,52 @@ const loginSession = () => {
   });
   cy.visit("/");
 };
+
+// ─── Rebuild a CLEAN baseline (purge + rebuild) ─────────────────────────────────
+// This suite drives the per-category "Manage Product Name" modal, which lists a
+// category's attributes. On a shared/polluted env other specs leave category
+// attributes behind (e.g. spec 09's CPU/HDD/Make on Laptop) and pre-existing
+// attributes can be mis-associated, so a plain build-missing leaves the dropdown
+// showing the wrong options. apiEnsureBaseline PURGES the baseline categories +
+// attributes (which removes that pollution by dropping & recreating the category)
+// then rebuilds the canonical baseline — verified to restore Brand/Model Number/
+// RAMbrand as the correct per-category options. Final teardown: 11-zz.
+before(() => {
+  loginSession();
+  cy.getAuthToken().then((token) => {
+    if (!token) return;
+    apiEnsureBaseline(token);
+    // "MSRP" is defined for both Laptop and RAM with the same fieldName "msrp";
+    // the backend allows only one, so the rebuild can leave it on RAM. PN_01
+    // expects it in the Laptop dropdown — pin it to Laptop.
+    apiEnsureAttributeCategory(token, "MSRP", "Laptop Automation Cat");
+    // Capture the REAL product-name configuration before deleting it. These are
+    // application configuration rows that drive the background product-name
+    // worker, not test fixtures — a suite that removes them must put them back
+    // (restored in the after() below).
+    apiSnapshotProductNameConfigs(token);
+
+    // The product-name config (a per-category `configs` row) persists across runs
+    // even after the baseline rebuild, leaving stale chips that break the dropdown
+    // (PN_01/02) and the remove/validation specs (PN_05/12/07). Delete it so every
+    // run starts from an empty product-name configuration.
+    apiResetProductNameConfig(token);
+  });
+});
+
+// Put the product-name configuration back. The suite deletes it in the before()
+// above to start from an empty naming config; leaving it deleted would silently
+// reconfigure the product-name worker for every other suite and for QA users.
+//
+// Rows whose category no longer exists are skipped, not blindly re-created:
+// apiEnsureBaseline recreates the baseline categories with NEW ids, and a config
+// keyed to a dead category id is an orphan the UI cannot reach.
+after(() => {
+  cy.getAuthToken().then((token) => {
+    if (!token) return;
+    apiRestoreProductNameConfigs(token);
+  });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRODUCT NAME – Attribute List Verification (SW_CAT_PN_01)
@@ -88,8 +141,10 @@ describe("PRODUCT NAME – Create Configuration (SW_CAT_PN_02, SW_CAT_PN_09)", (
       // Save the configuration
       categoryPage.saveProductNameConfig();
 
-      // Assert success toast
-      categoryPage.assertToast(td.toastProductNameUpdateSuccess);
+      // Assert success toast. The global before() DELETES the product-name config,
+      // so this first save is a CREATE ("Product name created.") not an update.
+      // Accept either so the test is robust if a prior config happened to survive.
+      categoryPage.assertToast(/Product name (created|update successfully)\./i);
 
       // Assert modal closed and user is back on categories list
       categoryPage.assertProductNameModalClosed();
@@ -113,8 +168,9 @@ describe("PRODUCT NAME – Create Configuration (SW_CAT_PN_02, SW_CAT_PN_09)", (
 
       categoryPage.saveProductNameConfig();
 
-      // Assert success toast
-      categoryPage.assertToast(td.toastProductNameUpdateSuccess);
+      // Assert success toast. First save after the before() config-delete is a
+      // CREATE ("Product name created."); accept update too for robustness.
+      categoryPage.assertToast(/Product name (created|update successfully)\./i);
 
       // // Assert modal closed and user is back on categories list
       // categoryPage.assertProductNameModalClosed();
@@ -280,18 +336,15 @@ describe("PRODUCT NAME – Remove Configuration (SW_CAT_PN_05, SW_CAT_PN_12)", (
       // Open Product Name modal
       categoryPage.clickManageProductName(td.laptopCatName);
 
-      // Remove ALL selected attribute tags
+      // Remove ALL selected attribute tags, then attempt to save an empty config.
       categoryPage.clearAllProductNameTags();
-
-      // Save the empty configuration
       categoryPage.saveProductNameConfig();
-      categoryPage.assertToast(td.toastProductNameUpdateSuccess);
-      categoryPage.assertProductNameModalClosed();
 
-      // Reopen and verify the field is now empty
-      categoryPage.clickManageProductName(td.laptopCatName);
-
-      categoryPage.assertProductNameFieldEmpty();
+      // The product name requires at least one attribute: the app REJECTS an empty
+      // configuration with an inline validation error and keeps the modal open —
+      // the config cannot be reduced to empty (intended guard, ProductNameForm.tsx).
+      categoryPage.assertToast(td.emptyProductNameError);
+      categoryPage.assertProductNameModalOpen();
       categoryPage.clickCancel();
     },
   );
@@ -303,17 +356,14 @@ describe("PRODUCT NAME – Remove Configuration (SW_CAT_PN_05, SW_CAT_PN_12)", (
       // Open Product Name modal
       categoryPage.clickManageProductName(td.ramCatName);
 
-      // Remove ALL selected attribute tags
+      // Remove ALL selected attribute tags, then attempt to save an empty config.
       categoryPage.clearAllProductNameTags();
-
-      // Save the empty configuration
       categoryPage.saveProductNameConfig();
-      categoryPage.assertToast(td.toastProductNameUpdateSuccess);
-      categoryPage.assertProductNameModalClosed();
 
-      // Reopen and verify the field is now empty
-      categoryPage.clickManageProductName(td.ramCatName);
-      categoryPage.assertProductNameFieldEmpty();
+      // Empty configuration is rejected with the required-attribute validation
+      // error and the modal stays open (config cannot be emptied).
+      categoryPage.assertToast(td.emptyProductNameError);
+      categoryPage.assertProductNameModalOpen();
       categoryPage.clickCancel();
     },
   );
@@ -445,17 +495,18 @@ describe("PRODUCT NAME – Validation (SW_CAT_PN_07)", () => {
     "SW_CAT_PN_07 – Verify Validation for Empty Product Name Configuration - Laptop Automation Cat",
     { tags: ["@smoke", "@regression"] },
     () => {
-      // Open Product Name modal with no attributes selected
+      // Open Product Name modal and clear all attributes so the config is empty.
       categoryPage.clickManageProductName(td.laptopCatName);
+      categoryPage.clearAllProductNameTags();
 
-      // Ensure the field is empty (no chips selected)
-      categoryPage.assertProductNameFieldEmpty();
-
-      // Click Save with empty configuration
+      // Click Save with an empty configuration — the app must REJECT it with the
+      // "at least one attribute is required" validation error and keep the modal
+      // open (no save occurs). This is the intended empty-config validation.
       categoryPage.saveProductNameConfig();
 
-      categoryPage.assertToast(td.toastProductNameUpdateSuccess);
-      categoryPage.assertProductNameModalClosed();
+      categoryPage.assertToast(td.emptyProductNameError);
+      categoryPage.assertProductNameModalOpen();
+      categoryPage.clickCancel();
     },
   );
 });
