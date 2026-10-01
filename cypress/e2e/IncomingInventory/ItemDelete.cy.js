@@ -1,6 +1,7 @@
 import ItemViewPage from "../../pageObjects/ItemViewPage";
 import PurchaseOrderPage from "../../pageObjects/PurchaseOrderPage";
 import { makeLaptopRowWithSerial, createExcelFile } from "../../support/helpers/incomingInventoryHelpers";
+import { ensureStandardProductNameConfigs, ensureCommonAttributesOptional } from "../../support/helpers/attributeHelpers";
 
 /**
  * Item Delete Tests — SW-IVID-TC01 – SW-IVID-TC11
@@ -69,7 +70,7 @@ describe("Item Delete Tests (SW-IVID-TC01 – SW-IVID-TC11)", { tags: ["@regress
   before(() => {
     cy.fixture("itemDeleteData").then((data) => {
       td = data;
-      cy.adminSession();
+      cy.authSession('admin');
       cy.visit("/");
     }).then(() => {
       return cy.iaAuthToken().then((token) => {
@@ -100,6 +101,12 @@ describe("Item Delete Tests (SW-IVID-TC01 – SW-IVID-TC11)", { tags: ["@regress
           }
         });
       });
+    }).then(() => {
+      // Configure product-name templates (idempotent). Also make all attributes
+      // optional so imported rows aren't rejected by required-attr guards left
+      // behind by other specs (e.g. ImportTests leaves attrs required=true).
+      ensureStandardProductNameConfigs();
+      ensureCommonAttributesOptional();
     }).then(() => {
       // TC01 — item stays Incoming after Excel import
       return createItemInPo("incoming", makePoName("Incoming")).then((serial) => {
@@ -176,7 +183,7 @@ describe("Item Delete Tests (SW-IVID-TC01 – SW-IVID-TC11)", { tags: ["@regress
   });
 
   beforeEach(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit("/");
   });
 
