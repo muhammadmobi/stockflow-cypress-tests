@@ -1,4 +1,5 @@
 import GeneralConfigPage from "../../pageObjects/GeneralConfigPage";
+import { apiEnsureBaseline } from "../../support/Configuration/apiCleanup.js";
 
 const loginSession = () => {
   cy.session("user-session", () => {
@@ -38,6 +39,13 @@ describe("General Config – Product Name Configuration (SW_GEN_CONF_03 – SW_G
         td = data;
       },
     );
+    // The product-name config dropdown lists product attributes; ensure the
+    // baseline attributes exist (build-missing, no purge) so the dropdown is
+    // populated even on a clean env / standalone run.
+    loginSession();
+    cy.getAuthToken().then((token) => {
+      if (token) apiEnsureBaseline(token);
+    });
   });
 
   beforeEach(() => {
