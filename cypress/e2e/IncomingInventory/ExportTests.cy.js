@@ -373,7 +373,29 @@ describe('Incoming Inventory Export (SW-EXP-TC01 – SW-EXP-TC21)', { tags: ['@r
   });
 
   // ── TC11 — EP: status=Sold (Item View) ──────────────────────────────────────
-  
+  it('SW-EXP-TC11 — Status filter "Sold" exports only rows where Reason = Sold', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC11');
+    const sLost = `EXP11L-${stamp}`;
+    const sSold = `EXP11S-${stamp}`;
+    seedProductItemPO({ td, poNumber: po, stamp, serials: [sLost, sSold] });
+    apiScanSerial(po, sLost);
+    apiScanSerial(po, sSold);
+    apiStockOutSerial({ serialNumber: sLost, reason: 'Lost' });
+    apiStockOutSerial({ serialNumber: sSold, reason: 'Sold' });
+
+    navigateToPO(po);
+    invPage.clickStatTile(td.tileLabels.sold);
+    invPage.waitForSearchReady();
+
+    exportItemFiltered(po, { status: td.statusEnums.sold }).then(({ rows }) => {
+      expect(rows.length, '≥1 Sold row').to.be.greaterThan(0);
+      rows.forEach((r) => {
+        expect(String(r['Stockout Reason'] || '').trim(), 'row reason is Sold').to.eq('Sold');
+      });
+      expect(rows.map((r) => r['Serial Number']), 'Lost serial excluded').to.not.include(sLost);
+    });
+  });
+
   // ── TC12 — EP: status=Received excludes Incoming/Missing (Item View) ────────
   it('SW-EXP-TC12 — Status filter "Received" excludes Incoming and Missing items', { tags: ['@regression'] }, () => {
     const { po, stamp } = poName('TC12');
@@ -400,11 +422,89 @@ describe('Incoming Inventory Export (SW-EXP-TC01 – SW-EXP-TC21)', { tags: ['@r
   });
 
   // ── TC13 — EP: search filter prunes Product-View rows ───────────────────────
-  
+  it('SW-EXP-TC13 — Search filter prunes the Product-View CSV to the matched product only', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC13');
+    seedMixedPO({
+      td,
+      poNumber: po,
+      stamp,
+      ramQty: 3,
+      serials: [`EXP13L-${stamp}`],
+    });
+    const laptopSearchTerm = `${td.products.laptop.modelNumber}-${stamp}`;
+
+    navigateToPO(po);
+    invPage.searchProduct(laptopSearchTerm);
+    invPage.clickSubmitSearch();
+    invPage.waitForSearchReady();
+
+    exportProductFiltered(po, { search: laptopSearchTerm }).then(({ rows }) => {
+      // The mixed PO has 2 products (RAM + Laptop); a laptop-specific search must
+      // prune the export to the laptop alone. Product View appends a "Total"
+      // summary row, so 1 matched product = 1 data row + 1 total row.
+      expect(rows.length, 'search prunes export to 1 product (1 data + 1 total)').to.be.lessThan(3);
+      expect(rows.length, 'search still exports the matched product').to.be.greaterThan(0);
+    });
+  });
+
   // ── TC14 — Decision Table: search × status=Available (Item View) ────────────
-  
+  it('SW-EXP-TC14 — search=<Laptop> + status=Available yields only Available Laptop item rows', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC14');
+    const sAvail = `EXP14A-${stamp}`;
+    const sDamaged = `EXP14D-${stamp}`;
+    seedMixedPO({ td, poNumber: po, stamp, ramQty: 3, serials: [sAvail, sDamaged] });
+    apiScanSerial(po, sAvail);
+    apiMarkItemStatus({ poNumber: po, serialNumber: sDamaged, status: td.statusEnums.damaged });
+
+    const laptopSearchTerm = `${td.products.laptop.modelNumber}-${stamp}`;
+    navigateToPO(po);
+    invPage.searchProduct(laptopSearchTerm);
+    invPage.clickSubmitSearch();
+    invPage.waitForSearchReady();
+    invPage.clickStatTile(td.tileLabels.available);
+    invPage.waitForSearchReady();
+
+    exportItemFiltered(po, {
+      search: laptopSearchTerm,
+      status: td.statusEnums.available,
+    }).then(({ rows }) => {
+      expect(rows.length, '≥1 Available row').to.be.greaterThan(0);
+      rows.forEach((r) => {
+        expect(normStatus(r['Status']), 'row is Available').to.eq(normStatus(td.statusEnums.available));
+      });
+      expect(rows.map((r) => r['Serial Number']), 'Damaged serial excluded').to.not.include(sDamaged);
+    });
+  });
+
   // ── TC15 — Decision Table: search × status=Damaged (Item View) ──────────────
-  
+  it('SW-EXP-TC15 — search=<Laptop> + status=Damaged yields only Damaged Laptop item rows', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC15');
+    const sAvail = `EXP15A-${stamp}`;
+    const sDamaged = `EXP15D-${stamp}`;
+    seedMixedPO({ td, poNumber: po, stamp, ramQty: 3, serials: [sAvail, sDamaged] });
+    apiScanSerial(po, sAvail);
+    apiMarkItemStatus({ poNumber: po, serialNumber: sDamaged, status: td.statusEnums.damaged });
+
+    const laptopSearchTerm = `${td.products.laptop.modelNumber}-${stamp}`;
+    navigateToPO(po);
+    invPage.searchProduct(laptopSearchTerm);
+    invPage.clickSubmitSearch();
+    invPage.waitForSearchReady();
+    invPage.clickStatTile(td.tileLabels.damaged);
+    invPage.waitForSearchReady();
+
+    exportItemFiltered(po, {
+      search: laptopSearchTerm,
+      status: td.statusEnums.damaged,
+    }).then(({ rows }) => {
+      expect(rows.length, '≥1 Damaged row').to.be.greaterThan(0);
+      rows.forEach((r) => {
+        expect(normStatus(r['Status']), 'row is Damaged').to.eq(normStatus(td.statusEnums.damaged));
+      });
+      expect(rows.map((r) => r['Serial Number']), 'Available serial excluded').to.not.include(sAvail);
+    });
+  });
+
   // ── TC16 — Error Guessing: status filter matching nothing → empty export ────
   //
   // These two tests asserted a toast reading "No rows to export". That string
@@ -418,13 +518,105 @@ describe('Incoming Inventory Export (SW-EXP-TC01 – SW-EXP-TC21)', { tags: ['@r
   // still produces a valid export, and that export contains zero DATA rows —
   // which is what "no rows to export" was trying to express, and it fails loudly
   // if a non-matching row ever leaks into the file.
-  
+  it('SW-EXP-TC16 — Status filter "Missing" with no Missing rows exports zero data rows', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC16');
+    const s = `EXP16-${stamp}`;
+    seedProductItemPO({ td, poNumber: po, stamp, serials: [s] });
+    apiScanSerial(po, s); // Available, not Missing
+
+    navigateToPO(po);
+    invPage.clickStatTile(td.tileLabels.missing);
+    invPage.waitForSearchReady();
+
+    exportItemFiltered(po, { status: td.statusEnums.missing }).then(({ rows }) => {
+      expect(rows.length, 'no Missing rows exist → export has no data rows').to.eq(0);
+    });
+  });
+
   // ── TC17 — Error Guessing: search matching nothing → empty export ───────────
-  
+  it('SW-EXP-TC17 — Search term that matches no product exports zero data rows', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC17');
+    seedProductItemPO({ td, poNumber: po, stamp, serials: [`EXP17-${stamp}`] });
+
+    const unmatched = `ZZZ-NO-MATCH-${stamp}`;
+    navigateToPO(po);
+    invPage.searchProduct(unmatched);
+    invPage.clickSubmitSearch();
+    invPage.waitForSearchReady();
+
+    exportItemFiltered(po, { search: unmatched }).then(({ rows }) => {
+      expect(rows.length, 'search matches nothing → export has no data rows').to.eq(0);
+    });
+  });
+
   // ── TC18 — EP: Product-View quantity correctness vs listing API ─────────────
-  
+  it('SW-EXP-TC18 — Product-only Expected/Received match the listing API (single source of truth)', { tags: ['@regression'] }, () => {
+    const { po, stamp } = poName('TC18');
+    seedProductOnlyPO({ td, poNumber: po, stamp, quantity: td.mixedQtyStatusSeed.expected }).then(
+      (productId) => {
+        apiCheckInProductOnly({
+          poNumber: po,
+          productId,
+          quantity: td.mixedQtyStatusSeed.received,
+        });
+
+        navigateToPO(po);
+        exportProduct(po).then((csv) => {
+          expect(csv.rows.length, '≥1 row').to.be.greaterThan(0);
+          const row = csv.rows[0];
+          apiGetPoListing(po).then((products) => {
+            const apiRow = products.find((p) => Number(p.id) === Number(productId));
+            expect(apiRow, 'productId returned by listing API').to.exist;
+            // Seed guard: confirm the API reflects the seeded values.
+            expect(Number(apiRow.expectedQuantity), 'seed guard: expected qty').to.eq(
+              td.mixedQtyStatusSeed.expected
+            );
+            expect(Number(apiRow.receivedQuantity), 'seed guard: received qty').to.eq(
+              td.mixedQtyStatusSeed.received
+            );
+            expect(Number(row['Expected']), 'CSV Expected == listing API').to.eq(
+              Number(apiRow.expectedQuantity)
+            );
+            expect(Number(row['Received']), 'CSV Received == listing API').to.eq(
+              Number(apiRow.receivedQuantity)
+            );
+          });
+        });
+      }
+    );
+  });
+
   // ── TC19 — EP: product-only stockouts leave Product-View row intact ─────────
-  
+  it('SW-EXP-TC19 — Product-only PO with stockouts still exports a Product-View row with correct Expected', { tags: ['@regression'] }, () => {
+    // NEW CONTRACT: per-(status,reason) stockout grouping rows are an Item-View
+    // concept and product-only POs have no serialized items, so the Product-View
+    // CSV keeps a single summary row. We verify that row survives partial
+    // stockouts with the original Expected quantity.
+    const { po, stamp } = poName('TC19');
+    seedProductOnlyPO({ td, poNumber: po, stamp, quantity: 5 }).then((productId) => {
+      apiCheckInProductOnly({ poNumber: po, productId, quantity: 4 });
+      apiMarkProductOnlyStatus({
+        poNumber: po,
+        productId,
+        quantity: 1,
+        status: td.statusEnums.damaged,
+        damageReason: 'Physical Damage',
+      });
+      apiMarkProductOnlyStatus({
+        poNumber: po,
+        productId,
+        quantity: 1,
+        status: td.statusEnums.disputed,
+      });
+
+      navigateToPO(po);
+      exportProduct(po).then((csv) => {
+        expect(csv.rows.length, 'single product summary row').to.be.greaterThan(0);
+        expect(Number(csv.rows[0]['Expected']), 'Expected stays 5').to.eq(5);
+      });
+    });
+  });
+
   // ── TC20 — EP: status=Missing positive case (Item View) ─────────────────────
   it('SW-EXP-TC20 — Status filter "Missing" exports only rows in Missing status', { tags: ['@regression'] }, () => {
     const { po, stamp } = poName('TC20');
