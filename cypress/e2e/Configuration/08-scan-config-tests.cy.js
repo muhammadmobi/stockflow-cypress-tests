@@ -1,7 +1,5 @@
 import ScanConfigPage from "../../pageObjects/ScanConfigPage.js";
-import IncomingInvPage from "../../pageObjects/IncomingInvPage.js";
-import PurchaseOrderPage from "../../pageObjects/PurchaseOrderPage.js";
-import CategoryPage from "../../pageObjects/CategoryPage.js";
+import { apiEnsureBaseline } from "../../support/Configuration/apiCleanup.js";
 
 
 const loginSession = () => {
@@ -21,6 +19,12 @@ describe("Scan Config – Scan Configuration Tests (SCAN_CFG_001-SCAN_CFG_006)",
       td = data;
     });
     loginSession();
+    // Scan-config selects baseline item attributes ("Asset Security Code",
+    // "Asset Tag ID"); ensure the baseline exists (build-missing, no purge) so this
+    // suite works standalone and in-order even if an earlier spec removed them.
+    cy.getAuthToken().then((token) => {
+      if (token) apiEnsureBaseline(token);
+    });
     scanConfigPage = new ScanConfigPage();
     scanConfigPage.navigateToScanConfig();
     scanConfigPage.uncheckAllCheckboxes();
@@ -42,7 +46,7 @@ describe("Scan Config – Scan Configuration Tests (SCAN_CFG_001-SCAN_CFG_006)",
       // ✅ Verify the checkbox is actually selected in the UI
       scanConfigPage.verifyCheckboxIsChecked(td.CommonUniqueAttrib);
       scanConfigPage.getCheckedCheckboxCount().then((count) => {
-        scanConfigPage.verifySelectedCount(count.toString());
+      scanConfigPage.verifySelectedCount(count.toString());
       });
     },
   );
@@ -146,45 +150,10 @@ describe("Scan Config – Scan Configuration Tests (SCAN_CFG_001-SCAN_CFG_006)",
   });
 });
 
-describe("Cleanup: Delete POs and Categories", () => {
-  let td;
-
-  before(() => {
-    cy.fixture("Configuration/attributeDeletionTestData").then((data) => {
-      td = data;
-    });
-  });
-
-  beforeEach(() => {
-    loginSession();
-  });
-
-  it("SW_ATR_CLEANUP_01 - Delete Laptop Cat Import PO", () => {
-    const invPage = new IncomingInvPage();
-    const purchaseOrderPage = new PurchaseOrderPage();
-    invPage.navigateToPOTab();
-    purchaseOrderPage.deletePurchaseOrder(td.commonAttribDeleteTestsPO);
-  });
-
-  it("SW_ATR_CLEANUP_02 - Delete RAM Cat Import PO", () => {
-    const invPage = new IncomingInvPage();
-    const purchaseOrderPage = new PurchaseOrderPage();
-    invPage.navigateToPOTab();
-    purchaseOrderPage.deletePurchaseOrder(td.categoryAttribDeleteTestsPO);
-  });
-
-  it("SW_ATR_CLEANUP_03 - Delete Laptop Automation Cat", () => {
-    const categoryPage = new CategoryPage();
-    categoryPage.navigateToCategories();
-    categoryPage.clickDelCat(td.laptopCatName);
-    categoryPage.assertCatDelete(td.laptopCatName);
-  });
-
-  it("SW_ATR_CLEANUP_04 - Delete RAM Automation Cat", () => {
-    const categoryPage = new CategoryPage();
-    categoryPage.navigateToCategories();
-    categoryPage.clickDelCat(td.ramCatName);
-    categoryPage.assertCatDelete(td.ramCatName);
-  });
-});
+// NOTE: A "Cleanup: Delete POs and Categories" describe block used to live here and deleted the
+// shared "Laptop Automation Cat" / "RAM Automation Cat" categories (and their import POs). But
+// spec 08 runs BEFORE specs 09 (BrainBox) and 10 (General Config), which both depend on those
+// categories — so this premature cleanup collapsed 09/10. All shared-resource teardown is now
+// consolidated into the dedicated, alphabetically-last API teardown spec
+// `11-zz-teardownConfiguration.cy.js` (cy.request, no UI, runs once after spec 10).
 
