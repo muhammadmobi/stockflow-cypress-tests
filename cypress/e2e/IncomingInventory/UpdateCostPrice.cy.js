@@ -2,7 +2,7 @@ import IncomingInvPage from "../../pageObjects/IncomingInvPage";
 import InvViewPage from "../../pageObjects/InvViewPage";
 import PurchaseOrderPage from "../../pageObjects/PurchaseOrderPage";
 import "cypress-file-upload";
-import { importAttributesAndCategories } from "../../support/helpers/attributeHelpers";
+import { importAttributesAndCategories, ensureCommonAttributesOptional } from "../../support/helpers/attributeHelpers";
 import {
   makeRamRow,
   makeLaptopRowWithSerial,
@@ -13,19 +13,25 @@ import {
 
 /**
  * Update Cost & Price Tests — Incoming Inventory
- * Covers: SW_INC_CP_001 – SW_INC_CP_021
+ * Covers: SW_INC_CP_001 – SW_INC_CP_005, 008 – 012, 016 – 018  (13 tests)
  *
- * Product Only (RAM) Tests    — SW_INC_CP_001 – SW_INC_CP_004
- * Multiple Products in PO     — SW_INC_CP_005
- * Product Item (Laptop) Tests — SW_INC_CP_006 – SW_INC_CP_007
- * Mixed PO Tests              — SW_INC_CP_008 – SW_INC_CP_009
- * Validation (negative)       — SW_INC_CP_010 – SW_INC_CP_015
- * Validation (zero)           — SW_INC_CP_016 – SW_INC_CP_021
+ * Product Only (RAM) Tests — SW_INC_CP_001 – SW_INC_CP_004
+ * Multiple Products in PO  — SW_INC_CP_005
+ * Mixed PO Tests           — SW_INC_CP_008 – SW_INC_CP_009
+ * Validation (negative)    — SW_INC_CP_010 – SW_INC_CP_012
+ * Validation (zero)        — SW_INC_CP_016 – SW_INC_CP_018
+ *
+ * RETIRED 2026-07-14 — SW_INC_CP_006, 007, 013, 014, 015, 019, 020, 021.
+ * The dev team removed the "Update Cost & Price" option from the ITEM action menu
+ * for product-item (serialized) products on the Incoming Inventory page. Cost and
+ * price are now editable at PRODUCT level only, so the eight item-level tests were
+ * deleted rather than skipped — they exercised a menu entry that no longer exists.
+ * SW_INC_CP_009 still covers the one product-item behaviour that remains relevant:
+ * a serialized row must be UNAFFECTED by a product-only cost/price update.
  *
  * Setup (before): Import POs, enable Cost/Price columns via Customize Column.
- * The "Update Cost & Price" menu item is in the row action (long-button) menu.
- * Requires a specific PO to be selected (not "All POs") for Product Only rows.
- * For Product Item, cost/price update is at individual item level (via ItemActionMenu).
+ * The "Update Cost & Price" menu item is in the product row action (long-button) menu.
+ * Requires a specific PO to be selected (not "All POs").
  */
 const LOG_FILE = "cypress/logs/UpdateCostPrice-debug.log";
 
@@ -43,7 +49,7 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
   // Shared PO state across tests (POs created once in before())
   let ramSharedPO;   // product-only (RAM): SW_INC_CP_001–004
   let ramMultiPO;    // 2 products (Kingston + Corsair): SW_INC_CP_005
-  let laptopSharedPO; // product-item (Laptop): SW_INC_CP_006–007
+  let laptopSetupPO; // setup-only (see before()); no test drives it
   let mixedPO;       // RAM + Laptop: SW_INC_CP_008–009
 
   function ts() {
@@ -60,7 +66,7 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
       const laptopRowWithSerial = makeLaptopRowWithSerial(td);
       const runId = ts();
 
-      cy.adminSession();
+      cy.authSession('admin');
       cy.visit("/");
 
       cy.getAuthToken().then((token) => {
@@ -90,6 +96,7 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
       });
 
       importAttributesAndCategories();
+      ensureCommonAttributesOptional();
 
       incomingInvPage = new IncomingInvPage();
       invViewPage = new InvViewPage();
@@ -118,14 +125,22 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
       ]);
       importExcel(ramMultiFileName, ramMultiPO);
 
-      // ── Laptop shared PO (product item) — SW_INC_CP_006–007 ──────────────
+      // ── Laptop PO ────────────────────────────────────────────────────────
+      // No test drives this PO any more (its owners, SW_INC_CP_006/007, were
+      // retired with the item-level cost/price feature). It is deliberately still
+      // seeded because the Cost/Price column-enable loop below is ORDER-SENSITIVE:
+      // the per-PO column config is written to /configs and the loop's next
+      // selectPoNumber() does a full `?po_no=` page load, which aborts the previous
+      // PO's in-flight write. Dropping this PO changed which write survives and
+      // knocked out SW_INC_CP_001–004. Leave it until enableCostPriceColumns()
+      // properly gates on the write completing; then this PO can go.
       const lapStamp = ts();
-      laptopSharedPO = `PO-CostPriceLap-${lapStamp}`;
-      createdPOs.push(laptopSharedPO);
+      laptopSetupPO = `PO-CostPriceLap-${lapStamp}`;
+      createdPOs.push(laptopSetupPO);
       const lapFileName = `CostPriceLap-${lapStamp}.xlsx`;
       const laptopSerials = td.laptop.sharedSerials.map((s) => `${s}-${runId}`);
       createExcelFile(lapFileName, laptopSerials.map(laptopRowWithSerial));
-      importExcel(lapFileName, laptopSharedPO);
+      importExcel(lapFileName, laptopSetupPO);
 
       // ── Mixed PO (RAM + Laptop) — SW_INC_CP_008–009 ──────────────────────
       const mixedStamp = ts();
@@ -141,7 +156,8 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
 
       // ── Enable Cost/Price columns ─────────────────────────────────────────
       incomingInvPage.clickIncomingInventoryNav();
-      [ramSharedPO, ramMultiPO, laptopSharedPO].forEach((poNumber) => {
+      // ORDER-SENSITIVE — do not reorder or shorten (see the Laptop PO note above).
+      [ramSharedPO, ramMultiPO, laptopSetupPO].forEach((poNumber) => {
         incomingInvPage.selectPoNumber(poNumber);
         incomingInvPage.verifyTableHasRows();
         incomingInvPage.enableCostPriceColumns(td.successMessages.columnsUpdated);
@@ -163,7 +179,7 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
 
   // ─── beforeEach() ─────────────────────────────────────────────────────────
   beforeEach(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit("/");
     incomingInvPage = new IncomingInvPage();
     invViewPage = new InvViewPage();
@@ -185,7 +201,7 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
     //                  3. Enter cost=250, price=450 → click Update.
     // Expected Result: Success toast appears. Table row reflects cost=250, price=450.
     // =========================================================================
-    it.only(
+    it(
       "SW_INC_CP_001 – Product Only: Update both cost and price, verify new values in table row",
       { tags: ["@smoke", "@regression"] },
       () => {
@@ -312,59 +328,22 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
   });
 
   // ===========================================================================
-  // ██████████  PRODUCT ITEM (LAPTOP) TESTS  ██████████████████████████████████
+  // ██████████  PRODUCT ITEM (LAPTOP) TESTS — RETIRED  ████████████████████████
   // ===========================================================================
-  describe("Product Item (Laptop) Tests", () => {
-    // =========================================================================
-    // SW_INC_CP_006
-    // Scenario       : Update cost and price for a serialized item via the item
-    //                  action menu inside the product's item list view.
-    // Precondition   : laptopSharedPO imported with Lenovo laptop serial items.
-    //                  Cost and Price columns enabled.
-    // Test Steps     : 1. Navigate to Incoming Inventory, search for laptop in laptopSharedPO.
-    //                  2. Click the product row to open the item list.
-    //                  3. Open the first item's action menu → "Update Cost & Price".
-    //                  4. Enter cost=250, price=450 → click Update.
-    // Expected Result: Toast: "Cost and price of item '<serialNumber>' updated successfully".
-    // =========================================================================
-    it(
-      "SW_INC_CP_006 – Product Item: Update item cost and price via item action menu, verify toast",
-      { tags: ["@smoke", "@regression"] },
-      () => {
-        log(`SW_INC_CP_006: laptopSharedPO=${laptopSharedPO}, displayName=${td.laptop.displayName}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.costPriceUpdates.newCost, td.costPriceUpdates.newPrice);
-        incomingInvPage.verifyItemSuccessMessage();
-        log("SW_INC_CP_006: PASS");
-      },
-    );
-
-    // =========================================================================
-    // SW_INC_CP_007
-    // Scenario       : Cancel the item dialog without saving; no change occurs.
-    // Precondition   : laptopSharedPO with laptop serial items accessible.
-    // Test Steps     : 1. Navigate to the laptop item list in laptopSharedPO.
-    //                  2. Open first item's action menu → "Update Cost & Price".
-    //                  3. Enter cost=9999, price=9999.
-    //                  4. Click Cancel.
-    // Expected Result: Dialog closes. No success toast. Item cost/price unchanged.
-    // =========================================================================
-    it(
-      "SW_INC_CP_007 – Product Item: Cancel dialog in item action menu leaves cost/price unchanged",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_007: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.fillCostPrice(9999, 9999);
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_007: PASS");
-      },
-    );
-  });
+  // RETIRED 2026-07-14: the dev team REMOVED the "Update Cost & Price" option
+  // from the item action menu for product-item (serialized) products on the
+  // Incoming Inventory page. Item-level cost/price is no longer editable there,
+  // so every test that drove that menu entry is testing a feature that no longer
+  // exists and has been deleted rather than skipped:
+  //
+  //   SW_INC_CP_006, SW_INC_CP_007  — item update / cancel
+  //   SW_INC_CP_013, SW_INC_CP_014, SW_INC_CP_015  — item negative-value validation
+  //   SW_INC_CP_019, SW_INC_CP_020, SW_INC_CP_021  — item zero-value BVA
+  //
+  // Cost/price editing remains a PRODUCT-level action and is still covered by
+  // SW_INC_CP_001–005, 008–012, 016–018. SW_INC_CP_009 also still asserts that a
+  // product-item row is UNAFFECTED by a product-only update, which is the only
+  // product-item behaviour that still applies here.
 
   // ===========================================================================
   // ██████████  MIXED PO (RAM + LAPTOP) TESTS  ████████████████████████████████
@@ -372,6 +351,9 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
   describe("Mixed PO Tests", () => {
     // =========================================================================
     // SW_INC_CP_008
+    // Technique      : Use Case — actor updates cost/price on the product-only
+    //                  (RAM) row inside a mixed PO that also holds product-item
+    //                  (laptop) rows; the update must land on the RAM row only.
     // Scenario       : Update cost and price for the RAM (product-only) row
     //                  inside a PO that also contains laptop (product-item) rows.
     // Precondition   : mixedPO imported with Kingston DDR4 RAM and Lenovo laptop
@@ -388,10 +370,14 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
         log(`SW_INC_CP_008: poNumber=${mixedPO}, product=${td.ramKingston.displayName}`);
         searchProduct(mixedPO, td.ramKingston.displayName);
 
-        incomingInvPage.openUpdateCostPriceDialog();
+        // Mixed PO (RAM + Laptop): the grid search does not isolate one product,
+        // so target the RAM (product-only) row specifically by its unique support
+        // contact — the first row can be the laptop, whose ⋮ menu has no
+        // "Update Cost & Price" entry (removed for product-item rows).
+        incomingInvPage.openUpdateCostPriceDialogFor(td.ramKingston.supportContact);
         incomingInvPage.submitCostPrice(td.costPriceUpdates.newCost, td.costPriceUpdates.newPrice);
         incomingInvPage.verifySuccessMessage(td.successMessages.costPriceUpdated);
-        incomingInvPage.verifyCostPriceInRow(td.costPriceUpdates.newCost, td.costPriceUpdates.newPrice);
+        incomingInvPage.verifyCostPriceInRowFor(td.ramKingston.supportContact, td.costPriceUpdates.newCost, td.costPriceUpdates.newPrice);
         log("SW_INC_CP_008: PASS");
       },
     );
@@ -507,85 +493,10 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
       },
     );
 
-    // =========================================================================
-    // SW_INC_CP_013
-    // Scenario       : Negative cost + positive price on the item-level dialog
-    //                  is blocked by form validation.
-    // Precondition   : laptopSharedPO with serial items. Item "Update Cost & Price"
-    //                  dialog accessible from the item list view.
-    // Test Steps     : 1. Search for laptop in laptopSharedPO.
-    //                  2. Drill into item list → open first item's action menu
-    //                     → "Update Cost & Price".
-    //                  3. Enter cost=-50, price=200 → click Update.
-    // Expected Result: Dialog remains open. Inline error: "Cost must greater than or equal to 0".
-    // =========================================================================
-    it(
-      "SW_INC_CP_013 – Product Item: Negative cost + positive price shows cost validation error",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_013: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.validation.negativeCost, td.validation.positivePrice);
-        incomingInvPage.verifyDialogError(td.errorMessages.costNegative);
-        incomingInvPage.verifyDialogIsOpen();
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_013: PASS");
-      },
-    );
-
-    // =========================================================================
-    // SW_INC_CP_014
-    // Scenario       : Positive cost + negative price on the item-level dialog
-    //                  is blocked by form validation.
-    // Precondition   : laptopSharedPO with serial items. Item dialog accessible.
-    // Test Steps     : 1. Search for laptop in laptopSharedPO.
-    //                  2. Drill into item list → open first item's "Update Cost & Price".
-    //                  3. Enter cost=100, price=-100 → click Update.
-    // Expected Result: Dialog remains open. Inline error: "Price must greater than or equal to 0".
-    // =========================================================================
-    it(
-      "SW_INC_CP_014 – Product Item: Positive cost + negative price shows price validation error",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_014: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.validation.positiveCost, td.validation.negativePrice);
-        incomingInvPage.verifyDialogError(td.errorMessages.priceNegative);
-        incomingInvPage.verifyDialogIsOpen();
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_014: PASS");
-      },
-    );
-
-    // =========================================================================
-    // SW_INC_CP_015
-    // Scenario       : Both negative on the item-level dialog; both errors appear.
-    // Precondition   : laptopSharedPO with serial items. Item dialog accessible.
-    // Test Steps     : 1. Search for laptop in laptopSharedPO.
-    //                  2. Drill into item list → open first item's "Update Cost & Price".
-    //                  3. Enter cost=-50, price=-100 → click Update.
-    // Expected Result: Dialog remains open. Both cost and price inline errors displayed.
-    // =========================================================================
-    it(
-      "SW_INC_CP_015 – Product Item: Both negative shows both cost and price validation errors",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_015: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.validation.negativeCost, td.validation.negativePrice);
-        incomingInvPage.verifyDialogError(td.errorMessages.costNegative);
-        incomingInvPage.verifyDialogError(td.errorMessages.priceNegative);
-        incomingInvPage.verifyDialogIsOpen();
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_015: PASS");
-      },
-    );
+    // RETIRED 2026-07-14 — SW_INC_CP_013 / 014 / 015 (Product Item negative-value
+    // validation) deleted: the "Update Cost & Price" entry was removed from the
+    // item action menu, so the item-level dialog these drove no longer exists.
+    // Product-level negative validation is still covered by SW_INC_CP_010–012 above.
   });
 
   // ===========================================================================
@@ -679,98 +590,16 @@ describe("Update Cost & Price Tests (SW_INC_CP_001 – SW_INC_CP_021)", () => {
       },
     );
 
-    // =========================================================================
-    // SW_INC_CP_019
-    // Scenario       : cost=0 with a positive price saves successfully for a
-    //                  serialized item; persisted values are verified by reopening.
-    // Precondition   : laptopSharedPO with serial items. Item dialog accessible.
-    // Test Steps     : 1. Search for laptop in laptopSharedPO.
-    //                  2. Drill into item list → open first item's "Update Cost & Price".
-    //                  3. Enter cost=0, price=200 → click Update.
-    //                  4. Re-navigate, reopen item dialog and check input values.
-    // Expected Result: Item success toast. Reopened dialog shows cost=0, price=200.
-    // =========================================================================
-    it(
-      "SW_INC_CP_019 – Product Item: cost=0 + positive price saves successfully",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_019: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.validation.zeroValue, td.validation.positivePrice);
-        incomingInvPage.verifyItemSuccessMessage();
-
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.verifyDialogInputValues(td.validation.zeroValue, td.validation.positivePrice);
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_019: PASS");
-      },
-    );
-
-    // =========================================================================
-    // SW_INC_CP_020
-    // Scenario       : Positive cost with price=0 saves successfully for a
-    //                  serialized item; persisted values are verified by reopening.
-    // Precondition   : laptopSharedPO with serial items. Item dialog accessible.
-    // Test Steps     : 1. Search for laptop in laptopSharedPO.
-    //                  2. Drill into item list → open first item's "Update Cost & Price".
-    //                  3. Enter cost=100, price=0 → click Update.
-    //                  4. Re-navigate, reopen item dialog and check input values.
-    // Expected Result: Item success toast. Reopened dialog shows cost=100, price=0.
-    // =========================================================================
-    it(
-      "SW_INC_CP_020 – Product Item: positive cost + price=0 saves successfully",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_020: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.validation.positiveCost, td.validation.zeroValue);
-        incomingInvPage.verifyItemSuccessMessage();
-
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.verifyDialogInputValues(td.validation.positiveCost, td.validation.zeroValue);
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_020: PASS");
-      },
-    );
-
-    // =========================================================================
-    // SW_INC_CP_021
-    // Scenario       : Both cost=0 and price=0 saves successfully for a serialized
-    //                  item; persisted values are verified by reopening the dialog.
-    // Precondition   : laptopSharedPO with serial items. Item dialog accessible.
-    // Test Steps     : 1. Search for laptop in laptopSharedPO.
-    //                  2. Drill into item list → open first item's "Update Cost & Price".
-    //                  3. Enter cost=0, price=0 → click Update.
-    //                  4. Re-navigate, reopen item dialog and check input values.
-    // Expected Result: Item success toast. Reopened dialog shows cost=0, price=0.
-    // =========================================================================
-    it(
-      "SW_INC_CP_021 – Product Item: cost=0 + price=0 saves successfully",
-      { tags: ["@regression"] },
-      () => {
-        log(`SW_INC_CP_021: laptopSharedPO=${laptopSharedPO}`);
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.submitCostPrice(td.validation.zeroValue, td.validation.zeroValue);
-        incomingInvPage.verifyItemSuccessMessage();
-
-        searchProduct(laptopSharedPO, td.laptop.displayName);
-        incomingInvPage.openItemCostPriceDialog();
-        incomingInvPage.verifyDialogInputValues(td.validation.zeroValue, td.validation.zeroValue);
-        incomingInvPage.closeDialogViaCancel();
-        log("SW_INC_CP_021: PASS");
-      },
-    );
+    // RETIRED 2026-07-14 — SW_INC_CP_019 / 020 / 021 (Product Item zero-value BVA)
+    // deleted: the "Update Cost & Price" entry was removed from the item action
+    // menu, so the item-level dialog these drove no longer exists. Product-level
+    // zero-value BVA is still covered by SW_INC_CP_016–018 above.
   });
 
   // ─── after() — cleanup created POs ────────────────────────────────────────
   after(() => {
     if (createdPOs.length === 0) return;
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit("/");
     incomingInvPage = new IncomingInvPage();
     purchaseOrderPage = new PurchaseOrderPage();
