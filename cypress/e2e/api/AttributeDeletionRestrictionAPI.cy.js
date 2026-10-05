@@ -45,6 +45,8 @@
  *     - Disabled delete icon rendering for referenced attributes
  */
 
+import { withValidOtherInfo } from '../../support/helpers/attributeHelpers';
+
 describe('Attribute Deletion Restriction API', () => {
   // -------------------- Shared test state --------------------
   //   authToken        Bearer token fetched in before()
@@ -114,7 +116,7 @@ describe('Attribute Deletion Restriction API', () => {
         entityType,
         editable: true,
         required,
-        otherInfo,
+        otherInfo: withValidOtherInfo(type, otherInfo),
       },
     });
 
@@ -140,13 +142,8 @@ describe('Attribute Deletion Restriction API', () => {
    */
   before(() => {
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: { username: Cypress.env('email'), password: Cypress.env('pass') },
-    }).then((res) => {
-      authToken = res.body.accessToken || res.body.token;
+    cy.login().then((token) => {
+      authToken = token;
     });
     cy.then(() => {
       createCategory({
