@@ -1,204 +1,184 @@
 /**
- * Login API Tests (SW-AUTH-API-TC01..10)
+ * Login API Tests (SW-AUTH-API-TC01..06)
  * =============================================================================
  * Mirrors:  cypress/e2e/00-loginPageTest.cy.js
- * Backend:  Identity server —
- *   POST {IDENTITY_SERVER_BASE_URL}/auth/login
- *   POST {IDENTITY_SERVER_BASE_URL}/auth/refresh   (exchange refreshToken → accessToken)
+ * Auth:     Keycloak / IAM
  *
- * Endpoint behaviour (verified against QA):
- *   200 — { accessToken, refreshToken, name, username, role }
- *   401 — { message: "Invalid credentials", error: "Unauthorized", statusCode: 401 }
- *   400 — missing required fields (validated by the identity service)
+ * REWRITTEN for the Keycloak migration. The legacy identity server
+ * (`POST {IDENTITY}/auth/login` + `/auth/refresh`) is retired: the host returns
+ * 502 and the Backend route was deleted — only `POST /auth/logout` survives.
+ * There is no JSON login endpoint to test any more.
  *
- * Scope: pure authentication API. UI-only cases (page heading, field labels,
- * Sign-in button text, inline "required" errors, show/hide password toggle,
- * profile panel role display, logout redirect) are covered in the UI suite.
+ * Plan: cypress/qa/testPlans/auth/plan.md
  *
- * Per-case flow:
- *   1. POST /auth/login with the payload under test.
- *   2. Assert status + body shape.
- *   3. For successful admin/worker logins, assert tokens, username, role.
- *   4. Optionally exchange the access token against a protected StockWise API
- *      to verify the token is actually usable (smoke proof).
+ * Scope: what StockWise actually owns. The suite authenticates the one way the
+ * product does — the real IAM login — and these tests assert the parts our
+ * Backend depends on:
+ *
+ *   • the token is accepted by a protected StockWise route, and forged/absent
+ *     tokens are rejected  (our guard)
+ *   • the token carries the identity, roles and organization claim that
+ *     KeycloakPublicGuard + TenantInterceptor read  (the realm contract we rely on)
+ *   • the public client still refuses the direct-access grant  (security posture)
+ *
+ * Deliberately NOT covered: that Keycloak's own login flow issues tokens, rejects
+ * bad passwords, or honours a refresh grant. That is third-party behaviour, and
+ * if it broke, every spec in the suite would fail at `before()` anyway.
+ * Credential-rejection at the UI level is covered by
+ * cypress/e2e/Roles/RolePrivileges-Login.cy.js (SW-ROLE-LGN-TC11).
  */
 
-describe('Login API', () => {
-  let userData;
-  let identityUrl;
-  let apiBaseUrl;
 
-  const loginRequest = (body, headersOverride) =>
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      headers: headersOverride || { 'Content-Type': 'application/json' },
-      body,
-      failOnStatusCode: false,
-    });
+describe('Login API (Keycloak / IAM)', () => {
+  let apiBaseUrl;
+  let realmBase; // {idpOrigin}/realms/{realm}/protocol/openid-connect
+  let clientId;
+  let token;
+  let admin; // { username, password } for the active tenant
+
+  /** Decode a JWT payload without verifying the signature. */
+  const decodeJwt = (jwt) => {
+    const part = jwt.split('.')[1];
+    const b64 = part.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(b64 + '='.repeat((4 - (b64.length % 4)) % 4)));
+  };
 
   before(() => {
-    identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
     apiBaseUrl = Cypress.env('API_BASE_URL');
-    cy.fixture('users').then((data) => {
-      userData = data;
+    cy.keycloakConfig().then((cfg) => {
+      realmBase = `${cfg.idpOrigin}/realms/${cfg.realm}/protocol/openid-connect`;
+      clientId = cfg.clientId;
+    });
+    cy.credentials('admin').then((c) => {
+      admin = c;
+    });
+    cy.login().then((t) => {
+      token = t;
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Positive login flows
+  // The token the suite actually runs on
   // ──────────────────────────────────────────────────────────────────────────
 
   /**
-   * SW-AUTH-API-TC01 — Admin login returns 200 with access + refresh tokens.
-   * UI mirror: SW-AUTH-TC11 successful admin login.
+   * Technique: Use Case — smoke: the one auth path the whole suite depends on.
+   * SW-AUTH-API-TC01 — The login produces a usable JWT. Smoke test for the one
+   * auth path the whole suite depends on: if this fails, every other spec's
+   * before() hook is about to fail for the same reason.
    */
-  it('SW-AUTH-API-TC01: POST /auth/login with admin credentials returns 200 and tokens', () => {
-    loginRequest({ username: userData.admin.email, password: userData.admin.password }).then((res) => {
+  it('SW-AUTH-API-TC01: the IAM login yields a JWT access token', { tags: ['@smoke'] }, () => {
+    expect(token, 'access token').to.be.a('string').and.not.empty;
+    expect(token.split('.'), 'token is a three-part JWT').to.have.length(3);
+    const claims = decodeJwt(token);
+    expect(claims.exp, 'expiry claim').to.be.a('number');
+    expect(claims.exp * 1000, 'token is not already expired').to.be.greaterThan(Date.now());
+  });
+
+  /**
+   * Technique: Decision Table — identity + role claims the Backend authorises on.
+   * SW-AUTH-API-TC02 — The token identifies the authenticated user and carries
+   * realm roles. Replaces the old `role=admin` response-body assertion — roles
+   * live in the JWT claims now, which is what the Backend reads.
+   * UI mirror: SW-AUTH-TC07 profile panel shows the role.
+   */
+  it('SW-AUTH-API-TC02: access token carries the expected username and realm roles', { tags: ['@regression'] }, () => {
+    const claims = decodeJwt(token);
+    expect(String(claims.preferred_username).toLowerCase()).to.equal(
+      String(admin.username).toLowerCase(),
+    );
+    expect(claims.realm_access, 'realm_access claim').to.exist;
+    expect(claims.realm_access.roles, 'realm roles').to.be.an('array').and.not.empty;
+  });
+
+  /**
+   * Technique: Use Case — the org claim TenantInterceptor resolves the tenant from.
+   * SW-AUTH-API-TC03 — Multi-tenancy: the token carries the organization claim
+   * the Backend's TenantInterceptor resolves the org context from. Without it
+   * every request would land in the wrong tenant (or none).
+   */
+  it('SW-AUTH-API-TC03: access token carries an organization claim for tenant resolution', { tags: ['@regression'] }, () => {
+    const claims = decodeJwt(token);
+    expect(claims.organization, 'organization claim').to.be.an('object');
+    expect(Object.keys(claims.organization), 'at least one org').to.have.length.greaterThan(0);
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // StockWise's own guard
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Technique: Use Case — the token is accepted by a protected route, not merely well-formed.
+   * SW-AUTH-API-TC04 — The token is actually accepted by StockWise, not merely
+   * well-formed. UI mirror: successful dashboard load after login.
+   */
+  it('SW-AUTH-API-TC04: access token is accepted by a protected StockWise endpoint', { tags: ['@smoke'] }, () => {
+    cy.request({
+      method: 'GET',
+      url: `${apiBaseUrl}/products/searchable-fields`,
+      headers: { Authorization: `Bearer ${token}` },
+      failOnStatusCode: false,
+    }).then((res) => {
       expect(res.status).to.equal(200);
-      expect(res.body).to.have.property('accessToken').that.is.a('string').and.not.empty;
-      expect(res.body).to.have.property('refreshToken').that.is.a('string').and.not.empty;
-      expect(res.body).to.have.property('username', userData.admin.email);
     });
   });
 
   /**
-   * SW-AUTH-API-TC02 — Admin token carries role=admin.
-   * UI mirror: SW-AUTH-TC12 profile panel shows Admin role.
+   * Technique: Error Guessing — forged and absent bearer tokens must both be rejected.
+   * SW-AUTH-API-TC05 — A protected endpoint rejects a forged bearer token, and
+   * rejects an absent one. Guards against the guard being removed or weakened.
    */
-  it('SW-AUTH-API-TC02: Admin login response exposes role=admin', () => {
-    loginRequest({ username: userData.admin.email, password: userData.admin.password }).then((res) => {
-      expect(res.status).to.equal(200);
-      expect(String(res.body.role).toLowerCase()).to.equal('admin');
+  it('SW-AUTH-API-TC05: protected endpoint rejects forged and absent bearer tokens', { tags: ['@regression'] }, () => {
+    cy.request({
+      method: 'GET',
+      url: `${apiBaseUrl}/products/searchable-fields`,
+      headers: { Authorization: 'Bearer not-a-real-token' },
+      failOnStatusCode: false,
+    }).then((res) => {
+      expect(res.status, 'forged token').to.equal(401);
     });
-  });
 
-  /**
-   * SW-AUTH-API-TC03 — Worker login returns 200 and role=user/admin (role label
-   * varies per environment — we assert it is NOT empty).
-   * UI mirror: SW-AUTH-TC14 successful user login.
-   */
-  it('SW-AUTH-API-TC03: POST /auth/login with worker credentials returns 200 and tokens', () => {
-    loginRequest({ username: userData.worker.email, password: userData.worker.password }).then((res) => {
-      expect(res.status).to.equal(200);
-      expect(res.body).to.have.property('accessToken').that.is.a('string').and.not.empty;
-      expect(res.body).to.have.property('refreshToken').that.is.a('string').and.not.empty;
-      expect(res.body).to.have.property('role').that.is.a('string').and.not.empty;
-    });
-  });
-
-  /**
-   * SW-AUTH-API-TC04 — Admin access token is actually accepted by StockWise
-   * API. Exchanges the token against a lightweight protected endpoint to
-   * prove the token is usable, not just well-formed.
-   * UI mirror: successful dashboard load after login (SW-AUTH-TC11).
-   */
-  it('SW-AUTH-API-TC04: Admin access token is accepted by a protected StockWise endpoint', () => {
-    loginRequest({ username: userData.admin.email, password: userData.admin.password }).then((res) => {
-      const token = res.body.accessToken;
-      expect(token).to.exist;
-      cy.request({
-        method: 'GET',
-        url: `${apiBaseUrl}/products/searchable-fields`,
-        headers: { Authorization: `Bearer ${token}` },
-        failOnStatusCode: false,
-      }).then((protectedRes) => {
-        expect(protectedRes.status).to.equal(200);
-      });
+    cy.request({
+      method: 'GET',
+      url: `${apiBaseUrl}/products/searchable-fields`,
+      failOnStatusCode: false,
+    }).then((res) => {
+      expect(res.status, 'no Authorization header').to.equal(401);
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Negative login flows
+  // Client security posture
   // ──────────────────────────────────────────────────────────────────────────
 
   /**
-   * SW-AUTH-API-TC05 — Invalid email (valid password) → 401.
-   * UI mirror: SW-AUTH-TC07 invalid email credentials toast.
+   * Technique: Error Guessing — a misconfigured client would allow credential-for-token exchange.
+   * SW-AUTH-API-TC06 — Contract guard. `stockwise-app` is a PUBLIC client and
+   * MUST NOT accept the direct-access (password) grant; if this ever starts
+   * succeeding, credentials could be exchanged for tokens outside the
+   * authorization-code flow.
    */
-  it('SW-AUTH-API-TC05: POST /auth/login with unknown username returns 401', () => {
-    loginRequest({ username: userData.invalid.email, password: userData.admin.password }).then((res) => {
-      expect(res.status).to.equal(401);
-      expect(String(res.body.message || '').toLowerCase()).to.contain('invalid');
-    });
-  });
-
-  /**
-   * SW-AUTH-API-TC06 — Valid email, wrong password → 401.
-   * UI mirror: SW-AUTH-TC08 invalid password toast.
-   */
-  it('SW-AUTH-API-TC06: POST /auth/login with wrong password returns 401', () => {
-    loginRequest({ username: userData.admin.email, password: userData.invalid.password }).then((res) => {
-      expect(res.status).to.equal(401);
-      expect(String(res.body.message || '').toLowerCase()).to.contain('invalid');
-    });
-  });
-
-  /**
-   * SW-AUTH-API-TC07 — Missing password is rejected (4xx).
-   * UI mirror: SW-AUTH-TC06 "password required" inline error.
-   */
-  it('SW-AUTH-API-TC07: POST /auth/login with missing password returns 4xx', () => {
-    loginRequest({ username: userData.admin.email }).then((res) => {
-      expect(res.status).to.be.oneOf([400, 401, 422]);
-    });
-  });
-
-  /**
-   * SW-AUTH-API-TC08 — Missing username is rejected (4xx).
-   * UI mirror: SW-AUTH-TC05 "email required" inline error.
-   */
-  it('SW-AUTH-API-TC08: POST /auth/login with missing username returns 4xx', () => {
-    loginRequest({ password: userData.admin.password }).then((res) => {
-      expect(res.status).to.be.oneOf([400, 401, 422]);
-    });
-  });
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Refresh-token flow (apiService.ts uses POST /auth/refresh to swap an
-  // expired access token for a fresh one without bouncing the user back to
-  // the login screen).
-  // ──────────────────────────────────────────────────────────────────────────
-
-  const refreshRequest = (body) =>
+  it('SW-AUTH-API-TC06: direct access grant is disabled for the public client', { tags: ['@regression'] }, () => {
     cy.request({
       method: 'POST',
-      url: `${identityUrl}/auth/refresh`,
-      headers: { 'Content-Type': 'application/json' },
-      body,
+      url: `${realmBase}/token`,
+      form: true,
+      body: {
+        grant_type: 'password',
+        client_id: clientId,
+        username: admin.username,
+        password: admin.password,
+        scope: 'openid',
+      },
       failOnStatusCode: false,
-    });
-
-  /**
-   * SW-AUTH-API-TC09 — Happy path. Login, then exchange the refreshToken
-   * for a new accessToken via POST /auth/refresh.
-   */
-  it('SW-AUTH-API-TC09: POST /auth/refresh with a valid refreshToken returns a new accessToken', () => {
-    loginRequest({ username: userData.admin.email, password: userData.admin.password }).then((res) => {
-      expect(res.status).to.equal(200);
-      const refreshToken = res.body.refreshToken;
-      expect(refreshToken).to.be.a('string').and.not.empty;
-      refreshRequest({ refreshToken }).then((refreshRes) => {
-        expect(refreshRes.status).to.be.oneOf([200, 201]);
-        const newAccess = refreshRes.body.accessToken || refreshRes.body.token;
-        expect(newAccess).to.be.a('string').and.not.empty;
-      });
-    });
-  });
-
-  /**
-   * SW-AUTH-API-TC10 — Negative. An invalid / forged refreshToken is
-   * rejected (4xx, never a 5xx).
-   */
-  it('SW-AUTH-API-TC10: POST /auth/refresh with an invalid refreshToken is rejected', () => {
-    refreshRequest({ refreshToken: 'not-a-real-token' }).then((res) => {
-      expect(res.status).to.be.lessThan(500);
-      expect(res.status).to.not.equal(200);
+    }).then((res) => {
+      expect(res.status, 'direct grant must be refused').to.be.within(400, 499);
+      expect(res.body?.error).to.equal('unauthorized_client');
     });
   });
 
   // UI-only (not asserted here):
-  //   - Page heading / field labels / Sign In button caption.
-  //   - Show/hide password eye-icon toggle.
-  //   - Profile panel role display and Logout redirect to /auth/jwt/sign-in.
+  //   - Sign-in page heading / "Login with IAM Identity" button caption.
+  //   - Realm form field labels and show/hide password toggle.
+  //   - Profile panel role display and Logout redirect.
 });
