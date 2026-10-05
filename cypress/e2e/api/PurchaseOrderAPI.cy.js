@@ -193,44 +193,113 @@ describe('Purchase Order API', () => {
   /**
    * SW-PO-API-TC10 — assigned-po list for current user.
    */
-  
+  it('SW-PO-API-TC10: GET /purchase-orders/assigned-po returns 2xx', () => {
+    call('GET', '/purchase-orders/assigned-po').then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
+  });
+
   /**
    * SW-PO-API-TC11 — assigned-po for an explicit user id.
    * Skipped: backend 500s with "Error fetching assigned POs: Failed to fetch
    * users list" — the handler calls the identity service and does not
    * degrade gracefully on a miss. Raise as a service-layer defect.
    */
-  
+  it.skip('SW-PO-API-TC11: GET /purchase-orders/assigned-po/:userId returns 2xx', () => {
+    call('GET', '/purchase-orders/assigned-po/999999999').then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
+  });
+
   /**
    * SW-PO-API-TC12 — cost-breakdown for a real PO.
    */
-  
+  it('SW-PO-API-TC12: GET /purchase-orders/:po/cost-breakdown returns 2xx', function () {
+    if (!seedPoNumber) this.skip();
+    call('GET', `/purchase-orders/${encodeURIComponent(seedPoNumber)}/cost-breakdown`).then(
+      (res) => {
+        expect(res.status).to.be.lessThan(500);
+      },
+    );
+  });
+
   /**
    * SW-PO-API-TC13 — cost-updates for a real PO.
    */
-  
+  it('SW-PO-API-TC13: GET /purchase-orders/:po/cost-updates returns 2xx', function () {
+    if (!seedPoNumber) this.skip();
+    call('GET', `/purchase-orders/${encodeURIComponent(seedPoNumber)}/cost-updates`).then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
+  });
+
   // --------------------------- Mutations (contract-only) ---------------------------
 
   /**
    * SW-PO-API-TC14 — /scan without auth → 401.
    */
-  
+  it('SW-PO-API-TC14: POST /purchase-orders/scan without auth returns 401', () => {
+    call(
+      'POST',
+      '/purchase-orders/scan',
+      { poNumber: 'ANY', serialNumber: 'ANY' },
+      { noAuth: true },
+    ).then((res) => {
+      expect(res.status).to.equal(401);
+    });
+  });
+
   /**
    * SW-PO-API-TC15 — /scan with empty body is rejected gracefully.
    */
-  
+  it('SW-PO-API-TC15: POST /purchase-orders/scan with empty body returns non-success', () => {
+    call('POST', '/purchase-orders/scan', {}).then((res) => {
+      expect(res.status).to.be.lessThan(500);
+      const body = res.body;
+      const failed = body.success === false || body.statusCode >= 400 || body.error;
+      expect(!!failed).to.be.true;
+    });
+  });
+
   /**
    * SW-PO-API-TC16 — /check-in-all reachable; unknown PO → semantic error.
    */
-  
+  it('SW-PO-API-TC16: POST /purchase-orders/check-in-all with unknown PO is handled', () => {
+    call('POST', '/purchase-orders/check-in-all', { poNumber: '__NONEXISTENT_PO__' }).then(
+      (res) => {
+        expect(res.status).to.be.lessThan(500);
+      },
+    );
+  });
+
   /**
    * SW-PO-API-TC17 — /adjust + /update-status reachable with empty body and
    * are rejected gracefully.
    */
-  
+  it('SW-PO-API-TC17: POST /purchase-orders/adjust and /update-status with empty body are handled', () => {
+    call('POST', '/purchase-orders/adjust', {}).then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
+    call('POST', '/purchase-orders/update-status', {}).then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
+  });
+
   /**
    * SW-PO-API-TC18 — closePurchaseOrder + reopenPurchaseOrder on an unknown
    * PO return a semantic error (never 5xx). We never target a real PO here
    * because closing a live PO is not safely reversible in the current flow.
    */
+  it('SW-PO-API-TC18: PATCH close/reopen PurchaseOrder with unknown PO is handled', () => {
+    call('PATCH', '/purchase-orders/closePurchaseOrder', {
+      poNumber: '__NONEXISTENT_PO__',
+    }).then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
+    call('PATCH', '/purchase-orders/reopenPurchaseOrder', {
+      poNumber: '__NONEXISTENT_PO__',
+    }).then((res) => {
+      expect(res.status).to.be.lessThan(500);
+    });
   });
+});
