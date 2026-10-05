@@ -43,18 +43,9 @@ describe('Create Category API - Product-Only Category', () => {
 
   before(() => {
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
 
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: {
-        username: Cypress.env('email'),
-        password: Cypress.env('pass'),
-      },
-    }).then((response) => {
-      expect(response.status).to.equal(200);
-      authToken = response.body.accessToken || response.body.token;
+    cy.login().then((token) => {
+      authToken = token;
       expect(authToken).to.exist;
     });
   }); 
