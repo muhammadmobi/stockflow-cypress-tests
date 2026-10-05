@@ -2,6 +2,7 @@
  * InventoryChangeStatusTests.cy.js
  * ============================================================
  * Spec: Inventory → Change Status (product-items + product-only)
+ * Test Plan: cypress/qa/testPlans/inventory/sub/change-status-plan.md
  * Page Object: InvViewPage.js
  * Fixture: inventoryChangeStatusData.json
  *
@@ -38,11 +39,13 @@ import {
   apiMarkItemStatus,
   apiMarkProductOnlyStatus,
   apiStockOutSerial,
-  apiReserveViaWorkOrder,
+  apiReserveSerialViaWorkOrder,
   apiCheckInProductOnly,
   deletePO,
+  waitForInventorySearchable,
 } from '../../support/helpers/exportSeedingHelpers';
-import { importAttributesAndCategories } from '../../support/helpers/attributeHelpers';
+import { importAttributesAndCategories, ensureCommonAttributesOptional } from '../../support/helpers/attributeHelpers';
+import { apiSetGeneralConfigFlags } from '../../support/helpers/generalConfigApiHelpers';
 
 // ── Stamps & PO numbers ───────────────────────────────────────────────────────
 const suiteStamp  = `CS-${Date.now()}`;
@@ -100,14 +103,14 @@ let ramId3;
 // enablePoForDamaging=true also makes the dialog require a PO selection from
 // a list that filters by availableQuantity>0 — disabling it short-circuits
 // that gate. Pattern mirrors interceptConfigScanAll() in scanAllTestHelpers.js.
-function interceptConfigGeneral(alias = 'configLoad') {
+function interceptConfigGeneral(alias = 'configLoad', enablePoForDamaging = false) {
   cy.intercept('GET', '**/configs*type=general*', (req) => {
     req.continue((res) => {
       try {
         const body = JSON.parse(JSON.stringify(res.body));
         const list = body?.data?.list || [];
         if (list[0]?.configJson?.data) {
-          list[0].configJson.data.enablePoForDamaging = false;
+          list[0].configJson.data.enablePoForDamaging = enablePoForDamaging;
           if (!list[0].configJson.data.damageReason?.length) {
             list[0].configJson.data.damageReason = ['Physical Damage'];
           }
@@ -120,14 +123,48 @@ function interceptConfigGeneral(alias = 'configLoad') {
   }).as(alias);
 }
 
+// Assert the backend's Reserved-transition rejection surfaced to the user.
+//
+// Asserted on the MESSAGE, not on a container selector, because both obvious
+// selectors are traps here:
+//   • `[role="alert"]` matches the layout's standing "This is an info Alert."
+//     MuiAlert banner, which never becomes visible — so the assertion fails even
+//     when the toast rendered perfectly.
+//   • the react-hot-toast node's class is a goober hash that changes between
+//     builds (`.go3958317564` in InvViewPage.verifyToastMsg vs `.go4109123758`
+//     on the current QA build), so pinning it is a latent break.
+// The two endpoints word the rejection differently (both in
+// product-stock-out.service.ts), so the regex accepts either:
+//   • mark-status       → "Item with serial number <sn> is reserved and cannot
+//                          be marked as <status>."
+//   • mark-available    → "Unable to Restock, item "<sn>" is reserved."
+//                          (routed through restockBySerialNumber)
+// A bare /reserved/i would also match the item row's own "Reserved" status cell,
+// so the phrasing is anchored to the rejection sentence and the serial number is
+// asserted on the same node.
+function assertReservedRejectionToast(serialNumber) {
+  const rejection = /(is reserved and cannot be|unable to restock[\s\S]{0,120}is reserved)/i;
+  cy.contains(rejection, { timeout: 10000 })
+    .should('be.visible')
+    .and('include.text', serialNumber);
+}
+
 // ── Suite ─────────────────────────────────────────────────────────────────────
 describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
   const invPage = new InvViewPage();
 
   before(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     cy.visit(urls.dashboard);
     importAttributesAndCategories();
+    ensureCommonAttributesOptional();
+    // QA General Config has requireWorkOrderForStockOut / enablePoForStockOut ON
+    // (persisted by a gen-config toggle test), which 400s the seed stock-outs.
+    apiSetGeneralConfigFlags({
+      requireWorkOrderForStockOut: false,
+      enablePoForStockOut: false,
+      enableInventoryStockOut: true,
+    });
 
     // Laptop PO — 17 serials, various start states
     seedProductItemPO({ td, poNumber: laptopPo, stamp: laptopStamp, serials: allLaptopSerials }).then((id) => {
@@ -156,10 +193,12 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
       apiScanSerial(laptopPo, snStockedOut);
       apiStockOutSerial({ serialNumber: snStockedOut, reason: 'Lost', description: 'seeded for TC09' });
 
-      // Reserved (TC23-TC25) — scan then reserve via work order
-      // WO scan UI is broken — API-only reservation is mandatory
+      // Reserved (TC23-TC25) — scan the serial Available, then scan it INTO a
+      // work order so items.status becomes Reserved (POST /work-orders/scan).
+      // Reserving only product-level quantity leaves the serial Available and
+      // makes the Reserved-source transitions (TC24/TC25) untestable.
       apiScanSerial(laptopPo, snReserved).then(() => {
-        apiReserveViaWorkOrder({ productId: id, productName: laptopSearchTerm, quantity: 1 });
+        apiReserveSerialViaWorkOrder({ productId: id, productName: laptopSearchTerm, serialNumber: snReserved });
       });
     });
 
@@ -184,6 +223,13 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
         apiMarkProductOnlyStatus({ poNumber: ramPo3, productId: id, quantity: 2, status: 'Missing' });
       });
     });
+
+    // Gate on the seeded products actually being searchable — the inventory
+    // search index lags product creation on shared QA, which otherwise flakes
+    // the earliest searchInventory() calls in the suite.
+    waitForInventorySearchable(laptopSearchTerm);
+    waitForInventorySearchable(ramSearchTerm1);
+    waitForInventorySearchable(ramSearchTerm3);
   });
 
   after(() => {
@@ -196,7 +242,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
   });
 
   beforeEach(() => {
-    cy.adminSession();
+    cy.authSession('admin');
     interceptConfigGeneral('configLoad');
     cy.visit(urls.inventory);
     cy.wait('@configLoad', { timeout: 15000 });
@@ -207,6 +253,13 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
   // Product-Item category (hasItems=true — Laptop)
   // ==========================================================================
   describe('Product-Item category (hasItems=true — Laptop)', () => {
+
+    // Select the Laptop category so the Model Number column is visible — on the
+    // "All" view the row shows only the (null on QA) product name, so a row
+    // can't be located by its Model Number search term.
+    beforeEach(() => {
+      invPage.selectCategory(td.categories.laptop);
+    });
 
     // ── Group A: Available → non-available (State Transition) ───────────────
 
@@ -439,12 +492,15 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
     });
 
     // Error Guessing — Reserved → Damaged: BE rejects; success:false; error shown.
-    // Skipped: apiReserveViaWorkOrder only creates a WO (product-level qty
-    // reservation) — it does not scan the specific serial into the WO, so
-    // snReserved stays in Available state and the mark-status call succeeds
-    // rather than being rejected. Validating Reserved blocking requires a
-    // POST /work-orders/scan helper which is not yet available. See pending.md.
-    it.skip('SW-INV-CS-TC24 — Reserved→Damaged via mark-status: BE rejects; error shown', () => {
+    // Previously skipped on the belief that the WO-scan seed could not produce a
+    // BE-blockable Reserved item ("mark-status returns success:true"). That was a
+    // seeding bug, not a backend limitation: apiReserveSerialViaWorkOrder scanned
+    // a locally-invented work-order number, POST /work-orders ignores the supplied
+    // number and generates its own, so the scan 400'd and the serial stayed
+    // Available — of course the transition then succeeded. With the seeder fixed
+    // to scan the server-assigned number, the BE does reject the transition and
+    // this case runs green.
+    it('SW-INV-CS-TC24 — Reserved→Damaged via mark-status: BE rejects; error shown', () => {
       invPage.searchInventory(laptopSearchTerm);
       invPage.openItemList(laptopSearchTerm);
 
@@ -456,13 +512,18 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
 
       cy.wait('@invMarkStatus', { timeout: 15000 }).its('response.statusCode').should('be.lt', 500);
       cy.get('@invMarkStatus').its('response.body.success').should('equal', false);
-      cy.get('[role="alert"], .go3958317564', { timeout: 10000 }).should('be.visible');
+      // Scope the toast assertion to the react-hot-toast node. The original
+      // `[role="alert"], .go3958317564` also matched the page's standing MUI
+      // info banner (MuiAlert-standardInfo), which is never visible — so this
+      // line failed for the wrong reason even once the BE rejection worked.
+      assertReservedRejectionToast(snReserved);
     });
 
     // Error Guessing — Reserved → Available: BE rejects; success:false; error shown.
-    // Skipped: same root cause as TC24 — seeded serial isn't actually in
-    // Reserved state without a working /work-orders/scan helper. See pending.md.
-    it.skip('SW-INV-CS-TC25 — Reserved→Available via mark-available: BE rejects; error shown', () => {
+    // Same story as TC24: the skip rationale blamed the backend, but the cause was
+    // the WO-scan seeding bug (see TC24). With a genuinely Reserved item the BE
+    // does reject mark-available, so this case is active again.
+    it('SW-INV-CS-TC25 — Reserved→Available via mark-available: BE rejects; error shown', () => {
       invPage.searchInventory(laptopSearchTerm);
       invPage.openItemList(laptopSearchTerm);
 
@@ -473,7 +534,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
 
       cy.wait('@invMarkAvailable', { timeout: 15000 }).its('response.statusCode').should('be.lt', 500);
       cy.get('@invMarkAvailable').its('response.body.success').should('equal', false);
-      cy.get('[role="alert"], .go3958317564', { timeout: 10000 }).should('be.visible');
+      assertReservedRejectionToast(snReserved);
     });
 
   }); // describe Product-Item
@@ -482,6 +543,22 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
   // Product-Only category (hasItems=false — RAM)
   // ==========================================================================
   describe('Product-Only category (hasItems=false — RAM)', () => {
+
+    // Product-only (quantity-based) mark-status REQUIRES a poNumber at the BE
+    // ("PO Number is required for product status updates"). The FE only sends it
+    // when enablePoForDamaging is on (which renders the "Select Purchase Order"
+    // picker). Override the suite default (false) to true for these tests and
+    // pick the seeded PO in the dialog. mark-available (Available target, TC12)
+    // shows no PO picker and is unaffected.
+    beforeEach(() => {
+      interceptConfigGeneral('configLoadPo', true);
+      cy.reload();
+      cy.wait('@configLoadPo', { timeout: 15000 });
+      cy.get('table tbody tr', { timeout: 30000 }).should('have.length.greaterThan', 0);
+      // Select RAM so the Memory Generation column is visible for row-finding
+      // (cy.reload above reset the category filter to "All").
+      invPage.selectCategory(td.categories.ram);
+    });
 
     // State Transition — Available → Damaged qty-based (smoke)
     // Product-only mark-status requires a Container Source selection (FE rule).
@@ -492,6 +569,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
       invPage.openChangeStatusMenuForProduct(ramSearchTerm1);
       invPage.selectStatusInDialog(csd.statuses.damaged);
       invPage.selectFirstDamageReason();
+      invPage.selectChangeStatusPo(ramPo1);
       invPage.typeChangeStatusQuantity(csd.qty.bvaRepresentative);
       invPage.selectFirstContainerSource();
       invPage.submitChangeStatusDialog();
@@ -528,6 +606,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
       cy.intercept('POST', '**/products/mark-status').as('invMarkStatus');
       invPage.openChangeStatusMenuForProduct(ramSearchTerm1);
       invPage.selectStatusInDialog(csd.statuses.missing);
+      invPage.selectChangeStatusPo(ramPo1);
       invPage.typeChangeStatusQuantity(csd.qty.bvaRepresentative);
       invPage.selectFirstContainerSource();
       invPage.submitChangeStatusDialog();
@@ -543,6 +622,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
       cy.intercept('POST', '**/products/mark-status').as('invMarkStatus');
       invPage.openChangeStatusMenuForProduct(ramSearchTerm1);
       invPage.selectStatusInDialog(csd.statuses.disputed);
+      invPage.selectChangeStatusPo(ramPo1);
       invPage.typeChangeStatusQuantity(csd.qty.bvaRepresentative);
       invPage.selectFirstContainerSource();
       invPage.submitChangeStatusDialog();
@@ -559,6 +639,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
       invPage.openChangeStatusMenuForProduct(ramSearchTerm3);
       invPage.selectStatusInDialog(csd.statuses.damaged);
       invPage.selectFirstDamageReason();
+      invPage.selectChangeStatusPo(ramPo3);
       invPage.typeChangeStatusQuantity(csd.qty.bvaRepresentative);
       invPage.selectFirstContainerSource();
       invPage.submitChangeStatusDialog();
@@ -576,6 +657,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
 
     // Use Case (alternate path) — cancel dialog; item status unchanged; no POST fired
     it('SW-INV-CS-TC16 — Cancel dialog — no POST fired; item status unchanged', () => {
+      invPage.selectCategory(td.categories.laptop);
       invPage.searchInventory(laptopSearchTerm);
       invPage.openItemList(laptopSearchTerm);
 
@@ -594,6 +676,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
 
     // Use Case — Damaged selected; damage reason dropdown appears; submit succeeds
     it('SW-INV-CS-TC17 — Damaged selected → damage reason dropdown appears; submit with first reason succeeds', () => {
+      invPage.selectCategory(td.categories.laptop);
       invPage.searchInventory(laptopSearchTerm);
       invPage.openItemList(laptopSearchTerm);
 
@@ -615,6 +698,7 @@ describe('Change Status Tests — Inventory', { tags: ['@regression'] }, () => {
     // BVA (lower invalid) — product-only qty=0 rejected by FE validation; no POST fired
     it('SW-INV-CS-TC18 — Product-Only BVA: qty=0 in mark-status form rejected by FE validation', () => {
       cy.intercept('POST', '**/products/mark-status').as('invMarkStatus');
+      invPage.selectCategory(td.categories.ram);
       invPage.searchInventory(ramSearchTerm1);
       invPage.openChangeStatusMenuForProduct(ramSearchTerm1);
       invPage.selectStatusInDialog(csd.statuses.damaged);
