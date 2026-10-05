@@ -42,6 +42,8 @@
  *     - "Required" switch animation, list chip editor, column headers.
  */
 
+import { withValidOtherInfo } from '../../support/helpers/attributeHelpers';
+
 describe('Product + Item Category Attribute API', () => {
   // -------------------- Shared test state --------------------
   //   authToken        Bearer token fetched in before()
@@ -111,7 +113,7 @@ describe('Product + Item Category Attribute API', () => {
         entityType,
         editable: true,
         required,
-        otherInfo,
+        otherInfo: withValidOtherInfo(type, otherInfo),
       },
     });
 
@@ -139,7 +141,7 @@ describe('Product + Item Category Attribute API', () => {
         entityType: attr.entityType,
         editable: attr.editable ?? true,
         required: overrides.required ?? attr.required ?? false,
-        otherInfo: overrides.otherInfo ?? attr.otherInfo ?? {},
+        otherInfo: withValidOtherInfo(attr.type, overrides.otherInfo ?? attr.otherInfo),
         updatedAt: new Date().toISOString(),
         updatedBy: 'api-test',
       },
@@ -173,13 +175,8 @@ describe('Product + Item Category Attribute API', () => {
    */
   before(() => {
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: { username: Cypress.env('email'), password: Cypress.env('pass') },
-    }).then((res) => {
-      authToken = res.body.accessToken || res.body.token;
+    cy.login().then((token) => {
+      authToken = token;
     });
     cy.then(() => {
       const catName = `Laptop-API-${suffix()}`;
