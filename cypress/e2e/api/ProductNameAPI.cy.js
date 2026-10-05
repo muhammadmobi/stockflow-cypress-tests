@@ -20,6 +20,8 @@
  * UI-only cases (modal drag-drop, toast copy, attribute picker rendering) SKIPPED.
  */
 
+import { withValidOtherInfo } from '../../support/helpers/attributeHelpers';
+
 describe('Product Name API - per-category', () => {
   let authToken;
   let baseUrl;
@@ -77,9 +79,11 @@ describe('Product Name API - per-category', () => {
         entityType: 'Product',
         editable: true,
         required: false,
-        // otherInfo is required — backend crashes with "Cannot read properties of
-        // undefined (reading 'controlRules')" when omitted.
-        otherInfo: {},
+        // otherInfo must carry the type's sub-object, not just be non-null: a
+        // Text attribute needs `controlRules`. An empty {} passes create but then
+        // 500s every Excel import — getTypeBasedSchema derefs otherInfo.controlRules
+        // (and .vLookups) with no null-guard ("Could not fetch attribute schema").
+        otherInfo: withValidOtherInfo('Text'),
       },
     });
 
@@ -120,13 +124,8 @@ describe('Product Name API - per-category', () => {
 
   before(() => {
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: { username: Cypress.env('email'), password: Cypress.env('pass') },
-    }).then((res) => {
-      authToken = res.body.accessToken || res.body.token;
+    cy.login().then((token) => {
+      authToken = token;
       userID = jwtUserId(authToken);
     });
     cy.then(() => {
