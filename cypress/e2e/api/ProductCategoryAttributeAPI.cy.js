@@ -47,6 +47,8 @@
  *     - Inline rename UX & list-option chip editor.
  */
 
+import { withValidOtherInfo } from '../../support/helpers/attributeHelpers';
+
 describe('Product-Only Category Attribute API', () => {
   // -------------------- Shared test state --------------------
   //   authToken        Bearer token fetched in before()
@@ -127,7 +129,7 @@ describe('Product-Only Category Attribute API', () => {
         entityType,
         editable: true,
         required,
-        otherInfo,
+        otherInfo: withValidOtherInfo(type, otherInfo),
       },
     });
 
@@ -155,7 +157,7 @@ describe('Product-Only Category Attribute API', () => {
         entityType: attr.entityType,
         editable: attr.editable ?? true,
         required: overrides.required ?? attr.required ?? false,
-        otherInfo: overrides.otherInfo ?? attr.otherInfo ?? {},
+        otherInfo: withValidOtherInfo(attr.type, overrides.otherInfo ?? attr.otherInfo),
         updatedAt: new Date().toISOString(),
         updatedBy: 'api-test',
       },
@@ -189,14 +191,8 @@ describe('Product-Only Category Attribute API', () => {
    */
   before(() => {
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: { username: Cypress.env('email'), password: Cypress.env('pass') },
-    }).then((res) => {
-      expect(res.status).to.equal(200);
-      authToken = res.body.accessToken || res.body.token;
+    cy.login().then((token) => {
+      authToken = token;
     });
     cy.then(() => {
       const catName = `RAM-API-${suffix()}`;
