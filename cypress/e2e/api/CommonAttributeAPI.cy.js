@@ -4,7 +4,7 @@
  * =============================================================================
  *  Maps to UI suite : cypress/e2e/Configuration/01-common-attribute-tests.cy.js
  *  Backend module   : Backend/src/modules/attribute
- *  Auth             : Bearer JWT obtained via POST {IDENTITY}/auth/login
+ *  Auth             : Bearer JWT obtained via the Keycloak PKCE handshake (cy.login)
  *
  *  Endpoints exercised
  *  -------------------
@@ -37,6 +37,8 @@
  *    • Delete-confirmation dialog
  * =============================================================================
  */
+
+import { withValidOtherInfo } from '../../support/helpers/attributeHelpers';
 
 describe('Common Attribute API - CRUD across all 10 data types', () => {
   // ──────────────────────────────────────────────────────────────────────────
@@ -99,7 +101,7 @@ describe('Common Attribute API - CRUD across all 10 data types', () => {
         editable: true,
         required,
         entityType,
-        otherInfo,
+        otherInfo: withValidOtherInfo(type, otherInfo),
       },
     });
 
@@ -121,7 +123,7 @@ describe('Common Attribute API - CRUD across all 10 data types', () => {
         fieldName: attr.fieldName,
         editable: attr.editable ?? true,
         required: overrides.required ?? attr.required ?? false,
-        otherInfo: overrides.otherInfo ?? attr.otherInfo ?? {},
+        otherInfo: withValidOtherInfo(attr.type, overrides.otherInfo ?? attr.otherInfo),
         entityType: attr.entityType,
         updatedAt: new Date().toISOString(), // required by updateAttributeSchema
         updatedBy: 'api-test',                // required by updateAttributeSchema
@@ -187,17 +189,11 @@ describe('Common Attribute API - CRUD across all 10 data types', () => {
   before(() => {
     // Step 1: resolve config from cypress.env (set in cypress.config.js).
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
 
-    // Step 2: identity-server login — must return 200 + accessToken.
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: { username: Cypress.env('email'), password: Cypress.env('pass') },
-    }).then((res) => {
-      expect(res.status, 'identity /auth/login returned 200').to.equal(200);
-      authToken = res.body.accessToken || res.body.token;
-      expect(authToken, 'JWT token is present in login response').to.exist;
+    // Step 2: Keycloak PKCE handshake — must yield an access token.
+    cy.login().then((token) => {
+      authToken = token;
+      expect(authToken, 'JWT token is present after Keycloak login').to.exist;
     });
   });
 
