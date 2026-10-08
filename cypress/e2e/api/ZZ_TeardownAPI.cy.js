@@ -159,7 +159,6 @@ describe('API Teardown - cleanup test-created resources', () => {
 
   before(() => {
     baseUrl = Cypress.env('API_BASE_URL');
-    const identityUrl = Cypress.env('IDENTITY_SERVER_BASE_URL');
     dryRun = String(Cypress.env('TEARDOWN_DRY_RUN') || '').toLowerCase() === 'true';
     const overrideRegex = Cypress.env('TEARDOWN_PREFIX_REGEX');
     prefixRegex = overrideRegex ? new RegExp(overrideRegex, 'i') : DEFAULT_PREFIX_REGEX;
@@ -167,12 +166,8 @@ describe('API Teardown - cleanup test-created resources', () => {
     cy.log(`Teardown mode: ${dryRun ? 'DRY RUN' : 'LIVE DELETE'}`);
     cy.log(`Prefix regex: ${prefixRegex}`);
 
-    cy.request({
-      method: 'POST',
-      url: `${identityUrl}/auth/login`,
-      body: { username: Cypress.env('email'), password: Cypress.env('pass') },
-    }).then((res) => {
-      authToken = res.body.accessToken || res.body.token;
+    cy.login().then((token) => {
+      authToken = token;
       expect(authToken, 'auth token').to.exist;
     });
   });
